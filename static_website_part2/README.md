@@ -1,4 +1,6 @@
 
+https://d35nsyghtiz0ky.cloudfront.net/
+
 This project uses a remote S3 backend with DynamoDB state locking. The following resources must exist in AWS before initialization:
 
 | Resource       | Purpose        | Requirements                          |

@@ -8,12 +8,12 @@ resource "aws_cloudfront_distribution" "this" {
   enabled             = true
   is_ipv6_enabled     = true
   default_root_object = "index.html"
-  
+
   web_acl_id = var.waf_arn
 
   logging_config {
     include_cookies = false
-    bucket          = var.logs_bucket_domain_name 
+    bucket          = var.logs_bucket_domain_name
     prefix          = "cf-logs/"
   }
 
@@ -31,19 +31,18 @@ resource "aws_cloudfront_distribution" "this" {
       }
     }
 
-    min_ttl                = 0
-    default_ttl            = 3600
-    max_ttl                = 86400
+    min_ttl     = 0
+    default_ttl = 3600
+    max_ttl     = 86400
   }
 
   custom_error_response {
     error_code            = 403
     response_code         = 200
-    response_page_path    = "/error.html" 
+    response_page_path    = "/error.html"
     error_caching_min_ttl = 10
   }
 
-  # Obsługa błędu 404 (Not Found)
   custom_error_response {
     error_code            = 404
     response_code         = 200
@@ -51,7 +50,7 @@ resource "aws_cloudfront_distribution" "this" {
     error_caching_min_ttl = 10
   }
 
-  price_class = "PriceClass_100" 
+  price_class = "PriceClass_100"
 
   restrictions {
     geo_restriction {

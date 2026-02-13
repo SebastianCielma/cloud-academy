@@ -18,7 +18,10 @@ resource "aws_iam_role" "github_plan" {
       Action    = "sts:AssumeRoleWithWebIdentity"
       Effect    = "Allow"
       Principal = { Federated = aws_iam_openid_connect_provider.github.arn }
-      Condition = { StringLike = { "token.actions.githubusercontent.com:sub" = "repo:${var.github_repo}:*" } }
+      Condition = {
+        StringEquals = { "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com" }
+        StringLike   = { "token.actions.githubusercontent.com:sub" = "repo:${var.github_repo}:*" }
+      }
     }]
   })
 }
@@ -38,12 +41,21 @@ resource "aws_iam_role_policy" "plan_state_access" {
         Effect = "Allow"
         Action = [
           "s3:GetObject",
-          "s3:ListBucket",
+          "s3:ListBucket"
+        ]
+        Resource = [
+          "arn:aws:s3:::terraform-state-sebastian",
+          "arn:aws:s3:::terraform-state-sebastian/*"
+        ]
+      },
+      {
+        Effect = "Allow"
+        Action = [
           "dynamodb:GetItem",
           "dynamodb:PutItem",
           "dynamodb:DeleteItem"
         ]
-        Resource = "*"
+        Resource = "arn:aws:dynamodb:eu-north-1:*:table/terraform-locks"
       }
     ]
   })
@@ -57,14 +69,52 @@ resource "aws_iam_role" "github_apply" {
       Action    = "sts:AssumeRoleWithWebIdentity"
       Effect    = "Allow"
       Principal = { Federated = aws_iam_openid_connect_provider.github.arn }
-      Condition = { StringLike = { "token.actions.githubusercontent.com:sub" = "repo:${var.github_repo}:*" } }
+      Condition = {
+        StringEquals = { "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com" }
+        StringLike   = { "token.actions.githubusercontent.com:sub" = "repo:${var.github_repo}:*" }
+      }
     }]
   })
 }
 
-resource "aws_iam_role_policy_attachment" "apply_admin" {
+resource "aws_iam_role_policy_attachment" "apply_power_user" {
   role       = aws_iam_role.github_apply.name
-  policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
+  policy_arn = "arn:aws:iam::aws:policy/PowerUserAccess"
+}
+
+resource "aws_iam_role_policy" "apply_iam_limited" {
+  name = "IAMLimitedAccess"
+  role = aws_iam_role.github_apply.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "iam:CreateRole",
+          "iam:DeleteRole",
+          "iam:GetRole",
+          "iam:PassRole",
+          "iam:TagRole",
+          "iam:UntagRole",
+          "iam:UpdateRole",
+          "iam:AttachRolePolicy",
+          "iam:DetachRolePolicy",
+          "iam:PutRolePolicy",
+          "iam:DeleteRolePolicy",
+          "iam:GetRolePolicy",
+          "iam:ListRolePolicies",
+          "iam:ListAttachedRolePolicies",
+          "iam:CreateOpenIDConnectProvider",
+          "iam:DeleteOpenIDConnectProvider",
+          "iam:GetOpenIDConnectProvider",
+          "iam:TagOpenIDConnectProvider",
+          "iam:ListOpenIDConnectProviders"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
 }
 
 output "plan_role_arn" {

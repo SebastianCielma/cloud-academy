@@ -1,22 +1,19 @@
-# waf.tf
-
 resource "aws_wafv2_web_acl" "main" {
-  provider    = aws.us_east_1 # Używamy providera z USA
+  provider    = aws.us_east_1
   name        = "cloudfront-rate-limit"
-  description = "Rate limiting for CloudFront (100 req/min)"
+  description = "Rate limiting for CloudFront"
   scope       = "CLOUDFRONT"
 
   default_action {
     allow {}
   }
 
-  # Reguła: Blokuj powyżej 100 zapytań/min z jednego IP
   rule {
     name     = "RateLimit-100"
     priority = 1
 
     action {
-      block {} # Zablokuj
+      block {}
     }
 
     statement {

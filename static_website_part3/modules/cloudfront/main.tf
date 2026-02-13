@@ -1,5 +1,3 @@
-# modules/cloudfront/main.tf
-
 resource "aws_cloudfront_distribution" "this" {
   origin {
     domain_name              = var.origin_domain_name
@@ -11,13 +9,11 @@ resource "aws_cloudfront_distribution" "this" {
   is_ipv6_enabled     = true
   default_root_object = "index.html"
   
-  # --- 1. WAF (Bezpieczeństwo) ---
   web_acl_id = var.waf_arn
 
-  # --- 2. LOGGING (Monitoring) ---
   logging_config {
     include_cookies = false
-    bucket          = var.logs_bucket_domain_name # Logi lecą do bucketa z kroku 2
+    bucket          = var.logs_bucket_domain_name 
     prefix          = "cf-logs/"
   }
 
@@ -26,8 +22,7 @@ resource "aws_cloudfront_distribution" "this" {
     cached_methods   = ["GET", "HEAD"]
     target_origin_id = var.origin_id
 
-    # --- 3. HTTPS ENFORCEMENT (Bezpieczeństwo) ---
-    viewer_protocol_policy = "redirect-to-https" # Wymuszamy HTTPS (301)
+    viewer_protocol_policy = "redirect-to-https"
 
     forwarded_values {
       query_string = false
@@ -41,12 +36,10 @@ resource "aws_cloudfront_distribution" "this" {
     max_ttl                = 86400
   }
 
-  # --- 4. CUSTOM ERROR PAGES (User Experience) ---
-  # Obsługa błędu 403 (np. WAF block)
   custom_error_response {
     error_code            = 403
     response_code         = 200
-    response_page_path    = "/error.html" # Musimy wgrać ten plik do S3!
+    response_page_path    = "/error.html" 
     error_caching_min_ttl = 10
   }
 
@@ -58,7 +51,7 @@ resource "aws_cloudfront_distribution" "this" {
     error_caching_min_ttl = 10
   }
 
-  price_class = "PriceClass_100" # Najtańsza opcja (USA/Europa)
+  price_class = "PriceClass_100" 
 
   restrictions {
     geo_restriction {
@@ -74,7 +67,6 @@ resource "aws_cloudfront_distribution" "this" {
   tags = var.tags
 }
 
-# (Zasób OAC zostaje bez zmian)
 resource "aws_cloudfront_origin_access_control" "this" {
   name                              = "${var.origin_id}-oac"
   description                       = "Managed by Terraform"

@@ -1,7 +1,7 @@
 resource "aws_cloudwatch_dashboard" "main" {
   provider       = aws.us_east_1
   dashboard_name = "StaticWebsite-Monitor-Part3"
-  
+
   dashboard_body = jsonencode({
     widgets = [
       {
@@ -12,7 +12,7 @@ resource "aws_cloudwatch_dashboard" "main" {
         height = 6
         properties = {
           metrics = [
-            [ "AWS/CloudFront", "Requests", "DistributionId", module.cloudfront.distribution_id, "Region", "Global" ]
+            ["AWS/CloudFront", "Requests", "DistributionId", module.cloudfront.distribution_id, "Region", "Global"]
           ]
           view    = "timeSeries"
           stacked = false
@@ -29,8 +29,8 @@ resource "aws_cloudwatch_dashboard" "main" {
         height = 6
         properties = {
           metrics = [
-            [ "AWS/CloudFront", "4xxErrorRate", "DistributionId", module.cloudfront.distribution_id, "Region", "Global" ],
-            [ "AWS/CloudFront", "5xxErrorRate", "DistributionId", module.cloudfront.distribution_id, "Region", "Global" ]
+            ["AWS/CloudFront", "4xxErrorRate", "DistributionId", module.cloudfront.distribution_id, "Region", "Global"],
+            ["AWS/CloudFront", "5xxErrorRate", "DistributionId", module.cloudfront.distribution_id, "Region", "Global"]
           ]
           view    = "timeSeries"
           stacked = false
@@ -47,7 +47,7 @@ resource "aws_cloudwatch_dashboard" "main" {
         height = 6
         properties = {
           metrics = [
-            [ "AWS/WAFV2", "BlockedRequests", "WebACL", "cloudfront-rate-limit", "Region", "us-east-1", "Rule", "ALL" ]
+            ["AWS/WAFV2", "BlockedRequests", "WebACL", "cloudfront-rate-limit", "Region", "us-east-1", "Rule", "ALL"]
           ]
           view    = "timeSeries"
           stacked = false

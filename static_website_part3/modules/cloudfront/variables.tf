@@ -1,5 +1,3 @@
-# modules/cloudfront/variables.tf
-
 variable "origin_domain_name" {
   description = "Domain name of the S3 bucket"
   type        = string
@@ -15,8 +13,6 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
-
-# --- NOWE ZMIENNE DLA PART 3 ---
 
 variable "waf_arn" {
   description = "ARN of the WAF Web ACL"

@@ -1,7 +1,3 @@
-# modules/s3/main.tf
-
-# --- GŁÓWNY BUCKET NA STRONĘ ---
-
 resource "aws_s3_bucket" "this" {
   bucket        = var.bucket_name
   force_destroy = true 
@@ -11,7 +7,6 @@ resource "aws_s3_bucket" "this" {
   }
 }
 
-# PRZYWRÓCONE: Blokada publicznego dostępu dla głównego bucketa (Bezpieczeństwo!)
 resource "aws_s3_bucket_public_access_block" "this" {
   bucket = aws_s3_bucket.this.id
 
@@ -37,7 +32,6 @@ resource "aws_s3_object" "error" {
   etag         = filemd5("${path.module}/../../error.html")
 }
 
-# --- LOGGING BUCKET (DLA PART 3) ---
 
 resource "aws_s3_bucket" "logs" {
   bucket        = "${var.bucket_name}-logs"
@@ -57,6 +51,22 @@ resource "aws_s3_bucket_acl" "logs" {
   acl        = "log-delivery-write"
 }
 
+resource "aws_s3_bucket_versioning" "logs" {
+  bucket = aws_s3_bucket.logs.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "logs" {
+  bucket = aws_s3_bucket.logs.id
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
+  }
+}
+
 resource "aws_s3_bucket_lifecycle_configuration" "logs" {
   bucket = aws_s3_bucket.logs.id
 
@@ -64,7 +74,6 @@ resource "aws_s3_bucket_lifecycle_configuration" "logs" {
     id     = "expire-logs-30-days"
     status = "Enabled"
 
-    # POPRAWKA: Dodany pusty filtr, co oznacza "wszystkie pliki" (wymagane w nowym TF)
     filter {}
 
     expiration {

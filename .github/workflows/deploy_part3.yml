@@ -13,14 +13,13 @@ permissions:
 
 env:
   TF_WORKING_DIR: './static_website_part3' 
-  AWS_REGION: 'eu-north-1'                 
+  AWS_REGION: 'eu-north-1'
+  TF_VAR_website_bucket_name: ${{ secrets.TF_VAR_website_bucket_name }}                 
 
 jobs:
   terraform-plan:
     name: Terraform Plan
     runs-on: ubuntu-latest
-    env:
-      TF_VAR_website_bucket_name: ${{ secrets.TF_VAR_website_bucket_name }}
     defaults:
       run:
         working-directory: ${{ env.TF_WORKING_DIR }}

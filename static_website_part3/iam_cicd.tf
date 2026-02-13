@@ -1,7 +1,7 @@
 variable "github_repo" {
   description = "GitHub Repository"
   type        = string
-  default     = "sebastiancielma/cloud-academy"
+  default     = "SebastianCielma/cloud-academy"
 }
 
 resource "aws_iam_openid_connect_provider" "github" {

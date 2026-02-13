@@ -1,7 +1,7 @@
 variable "github_repo" {
   description = "GitHub Repository"
   type        = string
-  default     = "sebastiancielma/cloud-academy" 
+  default     = "sebastiancielma/cloud-academy"
 }
 
 resource "aws_iam_openid_connect_provider" "github" {
@@ -15,8 +15,8 @@ resource "aws_iam_role" "github_plan" {
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
-      Action = "sts:AssumeRoleWithWebIdentity"
-      Effect = "Allow"
+      Action    = "sts:AssumeRoleWithWebIdentity"
+      Effect    = "Allow"
       Principal = { Federated = aws_iam_openid_connect_provider.github.arn }
       Condition = { StringLike = { "token.actions.githubusercontent.com:sub" = "repo:${var.github_repo}:*" } }
     }]
@@ -37,13 +37,13 @@ resource "aws_iam_role_policy" "plan_state_access" {
       {
         Effect = "Allow"
         Action = [
-          "s3:GetObject", 
+          "s3:GetObject",
           "s3:ListBucket",
-          "dynamodb:GetItem", 
-          "dynamodb:PutItem", 
-          "dynamodb:DeleteItem" 
+          "dynamodb:GetItem",
+          "dynamodb:PutItem",
+          "dynamodb:DeleteItem"
         ]
-        Resource = "*" 
+        Resource = "*"
       }
     ]
   })
@@ -54,8 +54,8 @@ resource "aws_iam_role" "github_apply" {
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
-      Action = "sts:AssumeRoleWithWebIdentity"
-      Effect = "Allow"
+      Action    = "sts:AssumeRoleWithWebIdentity"
+      Effect    = "Allow"
       Principal = { Federated = aws_iam_openid_connect_provider.github.arn }
       Condition = { StringLike = { "token.actions.githubusercontent.com:sub" = "repo:${var.github_repo}:*" } }
     }]

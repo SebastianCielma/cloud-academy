@@ -19,6 +19,8 @@ jobs:
   terraform-plan:
     name: Terraform Plan
     runs-on: ubuntu-latest
+    env:
+      TF_VAR_website_bucket_name: ${{ secrets.TF_VAR_website_bucket_name }}
     defaults:
       run:
         working-directory: ${{ env.TF_WORKING_DIR }}

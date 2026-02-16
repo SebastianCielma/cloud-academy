@@ -62,7 +62,7 @@ jobs:
 
   terraform-apply:
     name: Terraform Apply (Manual)
-    needs: terraform-plan # Musi poczekać na zakończenie Planu
+    needs: terraform-plan
     if: github.event_name == 'workflow_dispatch' 
     runs-on: ubuntu-latest
     defaults:

@@ -5,7 +5,7 @@ variable "aws_region" {
   default     = "eu-central-1"
 }
 
-variable "aws_profile" {
+ variable "aws_profile" {
   description = "Optional AWS CLI profile"
   type        = string
 }

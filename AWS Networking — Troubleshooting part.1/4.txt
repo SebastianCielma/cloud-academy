@@ -1,0 +1,5 @@
+Here’s what I’m thinking we should tweak:
+
+State Management: We're keeping the Terraform state locally. We should move that to an S3 backend so we don't accidentally overwrite each other's work.
+
+Security: The instance is sitting in a public subnet with a public IP. We should move it to a private subnet and put a Load Balancer in front of it. That way, we aren't exposing the server directly to the internet.

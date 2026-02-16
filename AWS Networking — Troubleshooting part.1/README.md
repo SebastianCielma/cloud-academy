@@ -1,1 +1,18 @@
-<pre> ```mermaid graph TD subgraph AWS_Cloud ["AWS Cloud (eu-central-1)"] subgraph VPC ["VPC (10.100.0.0/16)"] IGW["Internet Gateway"] RT["Route Table (0.0.0.0/0 -> IGW)"] subgraph Public_Subnet ["Public Subnet (10.100.10.0/24)"] SG["Security Group (Allow: 80, 22)"] EC2["EC2 Instance (Nginx Server)"] end end end User((User/Admin)) --> IGW IGW --> RT RT --> SG SG --> EC2 ``` </pre>
+```mermaid
+graph TD
+    subgraph AWS_Cloud ["AWS Cloud (eu-central-1)"]
+        subgraph VPC ["VPC (10.100.0.0/16)"]
+            IGW["Internet Gateway"]
+            RT["Route Table (0.0.0.0/0 -> IGW)"]
+            subgraph Public_Subnet ["Public Subnet (10.100.10.0/24)"]
+                SG["Security Group (Allow: 80, 22)"]
+                EC2["EC2 Instance (Nginx Server)"]
+            end
+        end
+    end
+
+    User((User/Admin)) --> IGW
+    IGW --> RT
+    RT --> SG
+    SG --> EC2
+```

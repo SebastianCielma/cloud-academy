@@ -3,7 +3,7 @@ provider "aws" {
 
   default_tags {
     tags = {
-      Project     = "static-website"
+      Project = "static-website"
     }
   }
 }

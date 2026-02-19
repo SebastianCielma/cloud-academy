@@ -36,11 +36,11 @@ backend "s3" {
 
 ## Pipeline Stages
 
-The CI/CD pipeline (`cicd_ecs.yml`) runs automatically on push to `main` branch.
+The CI/CD is split into two separate workflows.
 
-### Init and Plan (automatic)
+### Init and Plan (`ecs_plan.yml`) - automatic
 
-Runs on every push:
+Runs automatically on every push to `main`:
 
 1. `terraform init`
 2. `terraform fmt -check`
@@ -49,11 +49,11 @@ Runs on every push:
 5. `terraform plan -out=tfplan`
 6. Upload plan as artifact
 
-### Apply and Docker Build (manual)
+### Apply and Docker Build (`ecs_apply.yml`) - manual
 
-Requires manual approval via `production-approval` environment:
+Triggered manually via GitHub Actions "Run workflow" button:
 
-1. Download plan artifact from previous stage
+1. Download plan artifact from the latest plan run
 2. Login to Amazon ECR
 3. Build and push Docker image to ECR
 4. `terraform init`

@@ -20,3 +20,9 @@ module "compute" {
   alb_security_group_id = module.load_balancing.alb_security_group_id
   target_group_arn      = module.load_balancing.target_group_arn
 }
+
+module "cicd" {
+  source       = "./modules/cicd"
+  project_name = var.project_name
+  github_repo  = "SebastianCielma/cloud-academy" 
+}

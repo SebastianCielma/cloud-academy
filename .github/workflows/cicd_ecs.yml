@@ -59,7 +59,7 @@ jobs:
           tflint
 
       - name: Terraform Plan
-        run: terraform plan -out=tfplan
+        run: terraform plan -var="project_name=part3" -out=tfplan
 
       - name: Upload Plan Artifact
         uses: actions/upload-artifact@v4

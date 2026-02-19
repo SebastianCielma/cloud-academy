@@ -32,11 +32,12 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Download Plan Artifact
-        uses: dawidd6/action-download-artifact@v6
-        with:
-          workflow: ecs_plan.yml
-          name: tfplan
-          path: ${{ env.WORKING_DIR }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          WORKFLOW="ecs_plan.yml"
+          RUN_ID=$(gh run list --workflow "$WORKFLOW" --status success --limit 1 --json databaseId --jq '.[0].databaseId')
+          gh run download "$RUN_ID" --name tfplan --dir .
 
       - name: Configure AWS Credentials (Apply Role)
         uses: aws-actions/configure-aws-credentials@v4
@@ -51,6 +52,13 @@ jobs:
         run: |
           docker build -t ${{ env.ECR_REPOSITORY_URL }}:latest .
           docker push ${{ env.ECR_REPOSITORY_URL }}:latest
+
+      - name: Force ECS Redeployment
+        run: |
+          aws ecs update-service \
+            --cluster ${{ env.TF_VAR_project_name }}-cluster \
+            --service ${{ env.TF_VAR_project_name }}-service \
+            --force-new-deployment
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3

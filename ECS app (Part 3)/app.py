@@ -7,7 +7,7 @@ app = Flask(__name__)
 def hello():
     today = date.today().strftime("%Y-%m-%d")
     return jsonify({
-        "message": f"Hello world! Today is {today}"
+        "message": f"Hello world! Today is {today} this is CI/CD TEST"
     })
 
 @app.route("/health", methods=["GET"])

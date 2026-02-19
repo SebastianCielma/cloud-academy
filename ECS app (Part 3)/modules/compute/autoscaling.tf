@@ -20,7 +20,7 @@ resource "aws_appautoscaling_policy" "scale_out" {
 
     step_adjustment {
       metric_interval_lower_bound = 0
-      scaling_adjustment          = 1 
+      scaling_adjustment          = 1
     }
   }
 }
@@ -33,7 +33,7 @@ resource "aws_cloudwatch_metric_alarm" "high_cpu" {
   namespace           = "AWS/ECS"
   period              = "60"
   statistic           = "Average"
-  threshold           = "50"  # CPU 50%
+  threshold           = "50" # CPU 50%
 
   dimensions = {
     ClusterName = aws_ecs_cluster.main.name
@@ -57,7 +57,7 @@ resource "aws_appautoscaling_policy" "scale_in" {
 
     step_adjustment {
       metric_interval_upper_bound = 0
-      scaling_adjustment          = -1 
+      scaling_adjustment          = -1
     }
   }
 }
@@ -65,12 +65,12 @@ resource "aws_appautoscaling_policy" "scale_in" {
 resource "aws_cloudwatch_metric_alarm" "low_cpu" {
   alarm_name          = "${var.project_name}-low-cpu"
   comparison_operator = "LessThanThreshold"
-  evaluation_periods  = "5"   
+  evaluation_periods  = "5"
   metric_name         = "CPUUtilization"
   namespace           = "AWS/ECS"
-  period              = "60"  
+  period              = "60"
   statistic           = "Average"
-  threshold           = "25"  
+  threshold           = "25"
 
   dimensions = {
     ClusterName = aws_ecs_cluster.main.name

@@ -1,5 +1,5 @@
 variable "project_name" { type = string }
-variable "github_repo" { 
+variable "github_repo" {
   type        = string
   description = "username/repo"
 }

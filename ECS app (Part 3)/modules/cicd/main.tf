@@ -23,7 +23,7 @@ data "aws_iam_policy_document" "github_assume_role" {
     condition {
       test     = "StringLike"
       variable = "token.actions.githubusercontent.com:sub"
-      values   = ["repo:${var.github_repo}:*"] 
+      values   = ["repo:${var.github_repo}:*"]
     }
   }
 }
@@ -39,15 +39,15 @@ resource "aws_iam_role_policy_attachment" "plan_read_only" {
 }
 
 resource "aws_iam_role_policy" "plan_state_access" {
-  name   = "TerraformStateAccess"
-  role   = aws_iam_role.plan_role.id
+  name = "TerraformStateAccess"
+  role = aws_iam_role.plan_role.id
   policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
       {
         Effect   = "Allow",
         Action   = ["s3:GetObject", "s3:PutObject", "s3:ListBucket"],
-        Resource = "*" 
+        Resource = "*"
       },
       {
         Effect   = "Allow",

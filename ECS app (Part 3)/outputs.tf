@@ -7,9 +7,9 @@ output "ecr_repository_url" {
 }
 
 output "github_plan_role_arn" {
-   value = module.cicd.plan_role_arn 
+  value = module.cicd.plan_role_arn
 }
 
-output "github_apply_role_arn" { 
+output "github_apply_role_arn" {
   value = module.cicd.apply_role_arn
 }

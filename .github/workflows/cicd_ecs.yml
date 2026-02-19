@@ -10,7 +10,8 @@ on:
 
 env:
   AWS_REGION: "eu-north-1"
-  WORKING_DIR: "ECS app (Part 3)" 
+  WORKING_DIR: "ECS app (Part 3)"
+  TF_VAR_project_name: "part3" 
   PLAN_ROLE_ARN: ${{ secrets.AWS_PLAN_ROLE_ARN }}
   APPLY_ROLE_ARN: ${{ secrets.AWS_APPLY_ROLE_ARN }}
   ECR_REPOSITORY_URL: ${{ secrets.AWS_ECR_URL }}

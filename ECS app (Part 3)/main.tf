@@ -24,5 +24,5 @@ module "compute" {
 module "cicd" {
   source       = "./modules/cicd"
   project_name = var.project_name
-  github_repo  = "SebastianCielma/cloud-academy" 
+  github_repo  = "SebastianCielma/cloud-academy"
 }

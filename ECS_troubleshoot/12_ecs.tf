@@ -82,6 +82,7 @@ resource "aws_ecs_service" "web" {
   load_balancer {
     container_name   = "web"
     container_port   = var.container_port
+    target_group_arn = aws_lb_target_group.web.arn
   }
 
   deployment_controller {

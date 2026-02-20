@@ -82,8 +82,8 @@ Logs are retained for 14 days and automatically deleted after that period.
 
 ```bash
 terraform init
-terraform plan -var="project_name=part3"
-terraform apply -var="project_name=part3"
+terraform plan
+terraform apply
 ```
 
 ## Accessing the Application

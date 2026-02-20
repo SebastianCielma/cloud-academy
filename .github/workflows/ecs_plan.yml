@@ -5,66 +5,22 @@ on:
     branches:
       - main
     paths:
-      - 'ECS app (Part 3)/**'
+      - 'ECS app (Part 3)/**' 
 
 concurrency:
-  group: terraform-ecs
+  group: terraform-ecs-plan
   cancel-in-progress: false
-
-env:
-  AWS_REGION: "eu-north-1"
-  WORKING_DIR: "ECS app (Part 3)"
-  TF_VAR_project_name: "part3"
-  PLAN_ROLE_ARN: ${{ secrets.AWS_PLAN_ROLE_ARN }}
 
 permissions:
   id-token: write
   contents: read
 
 jobs:
-  init-and-plan:
-    name: Init, Validate & Plan
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ${{ env.WORKING_DIR }}
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-
-      - name: Setup TFLint
-        uses: terraform-linters/setup-tflint@v3
-
-      - name: Configure AWS Credentials (Plan Role)
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ env.PLAN_ROLE_ARN }}
-          aws-region: ${{ env.AWS_REGION }}
-
-      - name: Terraform Init
-        run: terraform init
-
-      - name: Terraform Format Check
-        run: terraform fmt -check
-
-      - name: Terraform Validate
-        run: terraform validate
-
-      - name: TFLint Check
-        run: |
-          tflint --init
-          tflint
-
-      - name: Terraform Plan
-        run: terraform plan -var="project_name=part3" -out=tfplan
-
-      - name: Upload Plan Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: tfplan
-          path: ${{ env.WORKING_DIR }}/tfplan
-          retention-days: 5
+  plan:
+    uses: SebastianCielma/shared-actions/.github/workflows/ecs-part3-plan.yml@main
+    with:
+      aws_region: "eu-north-1"
+      working_dir: "ECS app (Part 3)"
+      project_name: "part3"
+    secrets:
+      PLAN_ROLE_ARN: ${{ secrets.AWS_PLAN_ROLE_ARN }}

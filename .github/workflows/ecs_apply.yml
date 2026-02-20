@@ -4,15 +4,8 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: terraform-ecs
+  group: terraform-ecs-apply
   cancel-in-progress: false
-
-env:
-  AWS_REGION: "eu-north-1"
-  WORKING_DIR: "ECS app (Part 3)"
-  TF_VAR_project_name: "part3"
-  APPLY_ROLE_ARN: ${{ secrets.AWS_APPLY_ROLE_ARN }}
-  ECR_REPOSITORY_URL: ${{ secrets.AWS_ECR_URL }}
 
 permissions:
   id-token: write
@@ -20,51 +13,13 @@ permissions:
   actions: read
 
 jobs:
-  apply-and-docker:
-    name: Build Docker & Terraform Apply
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ${{ env.WORKING_DIR }}
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Download Plan Artifact
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          WORKFLOW="ecs_plan.yml"
-          RUN_ID=$(gh run list --workflow "$WORKFLOW" --status success --limit 1 --json databaseId --jq '.[0].databaseId')
-          gh run download "$RUN_ID" --name tfplan --dir .
-
-      - name: Configure AWS Credentials (Apply Role)
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ env.APPLY_ROLE_ARN }}
-          aws-region: ${{ env.AWS_REGION }}
-
-      - name: Login to Amazon ECR
-        uses: aws-actions/amazon-ecr-login@v2
-
-      - name: Build and Push Docker Image
-        run: |
-          docker build -t ${{ env.ECR_REPOSITORY_URL }}:latest .
-          docker push ${{ env.ECR_REPOSITORY_URL }}:latest
-
-      - name: Force ECS Redeployment
-        run: |
-          aws ecs update-service \
-            --cluster ${{ env.TF_VAR_project_name }}-cluster \
-            --service ${{ env.TF_VAR_project_name }}-service \
-            --force-new-deployment
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-
-      - name: Terraform Init
-        run: terraform init
-
-      - name: Terraform Apply
-        run: terraform apply -auto-approve tfplan
+  apply:
+    uses: SebastianCielma/shared-actions/.github/workflows/ecs-part3-deploy.yml@main
+    with:
+      aws_region: "eu-north-1"
+      working_dir: "ECS app (Part 3)"
+      project_name: "part3"
+      plan_workflow_name: "ecs_plan.yml"
+    secrets:
+      APPLY_ROLE_ARN: ${{ secrets.AWS_APPLY_ROLE_ARN }}
+      ECR_REPOSITORY_URL: ${{ secrets.AWS_ECR_URL }}

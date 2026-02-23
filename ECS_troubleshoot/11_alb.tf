@@ -27,14 +27,14 @@ resource "aws_lb_listener" "http" {
 
 resource "aws_lb_target_group" "web" {
   name        = "ecs-web-tg"
-  port        = 8080
+  port        = 80
   protocol    = "HTTP"
   target_type = "ip" 
   
   vpc_id      = aws_vpc.main.id 
 
   health_check {
-    path                = "/health" 
+    path                = "/" 
     healthy_threshold   = 2
     unhealthy_threshold = 5
     timeout             = 5

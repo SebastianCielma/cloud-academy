@@ -108,3 +108,78 @@ resource "aws_ecs_service" "web" {
   ]
 }
 
+resource "aws_appautoscaling_policy" "scale_out" {
+  name               = "scale-out-cpu"
+  policy_type        = "StepScaling"
+  resource_id        = aws_appautoscaling_target.web.resource_id
+  scalable_dimension = aws_appautoscaling_target.web.scalable_dimension
+  service_namespace  = aws_appautoscaling_target.web.service_namespace
+
+  step_scaling_policy_configuration {
+    adjustment_type         = "ChangeInCapacity"
+    cooldown                = 60 
+    metric_aggregation_type = "Average"
+
+    step_adjustment {
+      metric_interval_lower_bound = 0
+      scaling_adjustment          = 1 
+    }
+  }
+}
+
+resource "aws_cloudwatch_metric_alarm" "cpu_high" {
+  alarm_name          = "ecs-cpu-high"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = "1" 
+  metric_name         = "CPUUtilization"
+  namespace           = "AWS/ECS"
+  period              = "60" 
+  statistic           = "Average"
+  threshold           = "70" 
+
+  dimensions = {
+    ClusterName = aws_ecs_cluster.this.name
+    ServiceName = aws_ecs_service.web.name
+  }
+
+  alarm_actions = [aws_appautoscaling_policy.scale_out.arn]
+}
+
+
+resource "aws_appautoscaling_policy" "scale_in" {
+  name               = "scale-in-cpu"
+  policy_type        = "StepScaling"
+  resource_id        = aws_appautoscaling_target.web.resource_id
+  scalable_dimension = aws_appautoscaling_target.web.scalable_dimension
+  service_namespace  = aws_appautoscaling_target.web.service_namespace
+
+  step_scaling_policy_configuration {
+    adjustment_type         = "ChangeInCapacity"
+    cooldown                = 300
+    metric_aggregation_type = "Average"
+
+    step_adjustment {
+      metric_interval_upper_bound = 0
+      scaling_adjustment          = -1 
+    }
+  }
+}
+
+resource "aws_cloudwatch_metric_alarm" "cpu_low" {
+  alarm_name          = "ecs-cpu-low"
+  comparison_operator = "LessThanThreshold"
+  evaluation_periods  = "3" 
+  metric_name         = "CPUUtilization"
+  namespace           = "AWS/ECS"
+  period              = "60"
+  statistic           = "Average"
+  threshold           = "30" 
+
+  dimensions = {
+    ClusterName = aws_ecs_cluster.this.name
+    ServiceName = aws_ecs_service.web.name
+  }
+
+  alarm_actions = [aws_appautoscaling_policy.scale_in.arn]
+}
+

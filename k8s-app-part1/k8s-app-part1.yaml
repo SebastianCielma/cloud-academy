@@ -1,0 +1,126 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nginx-app
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+  namespace: nginx-app
+data:
+  nginx.conf: |
+    events {}
+    http {
+        server {
+            listen 80;
+            
+            location / {
+                auth_basic "Security";
+                auth_basic_user_file /etc/nginx/auth/.htpasswd;
+                root /usr/share/nginx/html;
+                index index.html;
+            }
+
+            location /health {
+                return 200 'OK';
+                add_header Content-Type text/plain;
+            }
+        }
+    }
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: nginx-secret
+  namespace: nginx-app
+type: Opaque
+stringData:
+  .htpasswd: "admin:$apr1$randomsa$kAhhh/o/pw.bEgAvSCj0i/\n"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nginx-pvc
+  namespace: nginx-app
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  namespace: nginx-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest 
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "64Mi"
+          limits:
+            cpu: "250m"
+            memory: "128Mi"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+          readOnly: true
+        - name: secret-volume
+          mountPath: /etc/nginx/auth
+          readOnly: true
+        - name: data-volume
+          mountPath: /usr/share/nginx/html
+      volumes:
+      - name: config-volume
+        configMap:
+          name: nginx-config
+      - name: secret-volume
+        secret:
+          secretName: nginx-secret
+      - name: data-volume
+        persistentVolumeClaim:
+          claimName: nginx-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+  namespace: nginx-app
+spec:
+  type: LoadBalancer
+  selector:
+    app: nginx
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80

@@ -1,0 +1,23 @@
+Namespace: {{ .Values.namespace }}
+Replicas:  {{ .Values.replicaCount }}
+
+To access your application:
+
+  kubectl get svc -n {{ .Values.namespace }}
+
+{{- if eq .Values.service.type "LoadBalancer" }}
+  Wait for the external IP:
+  kubectl get svc nginx-app-service -n {{ .Values.namespace }} -w
+{{- end }}
+
+{{- if .Values.hpa.enabled }}
+
+HPA is enabled ({{ .Values.hpa.minReplicas }}-{{ .Values.hpa.maxReplicas }} replicas)
+  kubectl get hpa -n {{ .Values.namespace }}
+{{- end }}
+
+To test basic auth:
+  curl -u {{ .Values.auth.username }}:<password> <EXTERNAL-IP>
+
+To check health:
+  curl <EXTERNAL-IP>/health

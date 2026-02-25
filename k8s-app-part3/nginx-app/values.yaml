@@ -1,8 +1,10 @@
-replicaCount: 1
+replicaCount: 2
 
 image:
   repository: nginx
-  tag: latest
+  tag: "1.25.3"
+
+namespace: nginx-app
 
 service:
   type: LoadBalancer
@@ -10,10 +12,11 @@ service:
 
 auth:
   username: admin
-  password: "" 
+  password: ""
 
 persistence:
   size: 1Gi
+  storageClass: standard
 
 resources:
   requests:
@@ -22,3 +25,19 @@ resources:
   limits:
     cpu: 250m
     memory: 128Mi
+
+hpa:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 70
+
+probes:
+  liveness:
+    path: /health
+    initialDelaySeconds: 10
+    periodSeconds: 10
+  readiness:
+    path: /health
+    initialDelaySeconds: 5
+    periodSeconds: 5

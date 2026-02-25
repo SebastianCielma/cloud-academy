@@ -1,16 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-deployment
+  name: nginx-app-deployment
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "nginx-app.labels" . | nindent 4 }}
+  annotations:
+    {{- include "nginx-app.annotations" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ .Release.Name }}
+      {{- include "nginx-app.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        app: {{ .Release.Name }}
+        {{- include "nginx-app.selectorLabels" . | nindent 8 }}
+      annotations:
+        {{- include "nginx-app.annotations" . | nindent 8 }}
     spec:
       containers:
       - name: nginx
@@ -19,26 +26,39 @@ spec:
         - containerPort: {{ .Values.service.port }}
         resources:
           requests:
-            cpu: {{ .Values.resources.requests.cpu }}
-            memory: {{ .Values.resources.requests.memory }}
+            cpu: "{{ .Values.resources.requests.cpu }}"
+            memory: "{{ .Values.resources.requests.memory }}"
           limits:
-            cpu: {{ .Values.resources.limits.cpu }}
-            memory: {{ .Values.resources.limits.memory }}
+            cpu: "{{ .Values.resources.limits.cpu }}"
+            memory: "{{ .Values.resources.limits.memory }}"
+        livenessProbe:
+          httpGet:
+            path: {{ .Values.probes.liveness.path }}
+            port: {{ .Values.service.port }}
+          initialDelaySeconds: {{ .Values.probes.liveness.initialDelaySeconds }}
+          periodSeconds: {{ .Values.probes.liveness.periodSeconds }}
+        readinessProbe:
+          httpGet:
+            path: {{ .Values.probes.readiness.path }}
+            port: {{ .Values.service.port }}
+          initialDelaySeconds: {{ .Values.probes.readiness.initialDelaySeconds }}
+          periodSeconds: {{ .Values.probes.readiness.periodSeconds }}
         volumeMounts:
         - name: config-volume
           mountPath: /etc/nginx/nginx.conf
           subPath: nginx.conf
         - name: secret-volume
           mountPath: /etc/nginx/auth
+          readOnly: true
         - name: data-volume
           mountPath: /usr/share/nginx/html
       volumes:
       - name: config-volume
         configMap:
-          name: {{ .Release.Name }}-config
+          name: nginx-config
       - name: secret-volume
         secret:
-          secretName: {{ .Release.Name }}-secret
+          secretName: nginx-secret
       - name: data-volume
         persistentVolumeClaim:
-          claimName: {{ .Release.Name }}-pvc
+          claimName: nginx-app-pvc

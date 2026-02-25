@@ -1,0 +1,24 @@
+replicaCount: 1
+
+image:
+  repository: nginx
+  tag: latest
+
+service:
+  type: LoadBalancer
+  port: 80
+
+auth:
+  username: admin
+  password: "" 
+
+persistence:
+  size: 1Gi
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 64Mi
+  limits:
+    cpu: 250m
+    memory: 128Mi

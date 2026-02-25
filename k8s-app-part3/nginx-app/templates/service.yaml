@@ -1,11 +1,16 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Release.Name }}-service
+  name: nginx-app-service
+  namespace: {{ .Values.namespace }}
+  labels:
+    {{- include "nginx-app.labels" . | nindent 4 }}
+  annotations:
+    {{- include "nginx-app.annotations" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   selector:
-    app: {{ .Release.Name }}
+    {{- include "nginx-app.selectorLabels" . | nindent 4 }}
   ports:
   - protocol: TCP
     port: {{ .Values.service.port }}

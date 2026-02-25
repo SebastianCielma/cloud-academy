@@ -3,7 +3,6 @@ kind: Deployment
 metadata:
   name: {{ .Release.Name }}-deployment
 spec:
-  # Pobiera liczbę podów (domyślnie 1)
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
@@ -15,11 +14,9 @@ spec:
     spec:
       containers:
       - name: nginx
-        # Skleja nazwę repozytorium i tag z values.yaml (np. nginx:latest)
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         ports:
         - containerPort: {{ .Values.service.port }}
-        # Wstrzykuje limity zasobów z values.yaml
         resources:
           requests:
             cpu: {{ .Values.resources.requests.cpu }}
@@ -27,7 +24,6 @@ spec:
           limits:
             cpu: {{ .Values.resources.limits.cpu }}
             memory: {{ .Values.resources.limits.memory }}
-        # Tutaj montujemy nasze pliki wewnątrz kontenera
         volumeMounts:
         - name: config-volume
           mountPath: /etc/nginx/nginx.conf
@@ -37,7 +33,6 @@ spec:
         - name: data-volume
           mountPath: /usr/share/nginx/html
       volumes:
-      # Odwołania do zasobów, które stworzyłeś w poprzednim kroku
       - name: config-volume
         configMap:
           name: {{ .Release.Name }}-config

@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-deployment
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-apps
+    spec:
+      containers:
+        - name: my-app
+          image: nginx:1.27-alpines
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: app-config
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/app
+      volumes:
+        - name: datas
+          persistentVolumeClaim:
+            claimName: app-data-pvc

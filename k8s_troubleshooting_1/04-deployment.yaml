@@ -10,21 +10,21 @@ spec:
   template:
     metadata:
       labels:
-        app: my-apps
+        app: my-app-service
     spec:
       containers:
         - name: my-app
           image: nginx:1.27-alpines
           imagePullPolicy: Always
           ports:
-            - containerPort: 8080
+            - containerPort: 80
           envFrom:
             - configMapRef:
-                name: app-config
+                name: app-configs
           volumeMounts:
             - name: data
               mountPath: /var/lib/app
       volumes:
-        - name: datas
+        - name: data
           persistentVolumeClaim:
             claimName: app-data-pvc

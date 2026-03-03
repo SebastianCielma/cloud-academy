@@ -1,0 +1,37 @@
+name: "Terraform Apply (Merge Stage)"
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'Cloud-cluster-provisioning-EKS-Part2/**'
+
+jobs:
+  terraform-apply:
+    name: "Terraform Apply"
+    runs-on: ubuntu-latest
+    
+    defaults:
+      run:
+        working-directory: ./Cloud-cluster-provisioning-EKS-Part2
+    
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: "eu-central-1"
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.5.0"
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve

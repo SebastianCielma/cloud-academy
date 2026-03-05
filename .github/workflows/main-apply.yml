@@ -1,11 +1,8 @@
-name: "Terraform Apply (Merge Stage)"
+name: "Terraform Apply (Manual)"
+
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'Cloud-cluster-provisioning-EKS-Part2/**'
+  workflow_dispatch:
 
 jobs:
   terraform-apply:
@@ -14,17 +11,19 @@ jobs:
     
     defaults:
       run:
-        working-directory: ./Cloud-cluster-provisioning-EKS-Part2
-    
-    env:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
-      AWS_REGION: "eu-central-1"
+        working-directory: ./Cloud-cluster-provisioning-EKS-Part3
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: eu-central-1
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -35,4 +34,4 @@ jobs:
         run: terraform init
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve
+        run: terraform apply -auto-approve -no-color -input=false

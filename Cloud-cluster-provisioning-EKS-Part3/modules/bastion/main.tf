@@ -58,3 +58,18 @@ resource "aws_instance" "bastion" {
     Name = "eks-bastion-host"
   }
 }
+
+resource "aws_iam_role_policy" "eks_describe" {
+  name   = "bastion-eks-describe"
+  role   = aws_iam_role.bastion.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = "eks:DescribeCluster"
+        Resource = "*"
+      }
+    ]
+  })
+}

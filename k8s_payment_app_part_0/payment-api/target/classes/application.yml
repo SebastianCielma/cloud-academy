@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: payment-api
+
+  datasource:
+    url: ${PAYMENT_DB_URL:jdbc:postgresql://localhost:5433/payments}
+    username: ${PAYMENT_DB_USER:payments}
+    password: ${PAYMENT_DB_PASSWORD:payments}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: false
+
+payment:
+  worker:
+    base-url: ${PAYMENT_WORKER_BASE_URL:http://localhost:8090}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health,info"
+  endpoint:
+    health:
+      probes:
+        enabled: true

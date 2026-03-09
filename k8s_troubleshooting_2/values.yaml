@@ -1,0 +1,22 @@
+namespace: k8s-troubleshooting-ae
+
+app:
+  name: troubleshooting-app
+  image:
+    repository: nginx
+    tag: "1.27-alpine"
+  replicas: 1
+
+resources:
+  requests:
+    cpu: "250m"
+    memory: "256Mi"
+  limits:
+    cpu: "500m"
+    memory: "512Mi"
+
+nameOverride: ""
+fullnameOverride: ""
+
+networkPolicy:
+  enabled: true

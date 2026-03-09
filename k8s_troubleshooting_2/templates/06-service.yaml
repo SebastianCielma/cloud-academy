@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: troubleshooting-service
+  namespace: {{ .Values.namespace }}
+spec:
+  type: ClusterIP
+  selector:
+    app: {{ .Values.app.name }}   # troubleshooting-app
+  ports:
+    - port: 80
+      targetPort: 80

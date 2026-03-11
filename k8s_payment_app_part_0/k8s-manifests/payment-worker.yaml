@@ -14,7 +14,6 @@ spec:
     spec:
       containers:
       - name: worker
-        # UWAGA: Podmień <TWÓJ_ACCOUNT_ID>!
         image: 834948575491.dkr.ecr.eu-central-1.amazonaws.com/finpay/payment-worker:1.0.0
         ports:
         - containerPort: 8090
@@ -29,7 +28,6 @@ spec:
           valueFrom: { configMapKeyRef: { name: app-config, key: DB_USER } }
         - name: SPRING_DATASOURCE_PASSWORD
           valueFrom: { secretKeyRef: { name: db-credentials, key: password } }
-        # Wymóg dla Workera: Actuator endpoints
         livenessProbe:
           httpGet:
             path: /actuator/health

@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: payment-api
+  template:
+    metadata:
+      labels:
+        app: payment-api
+    spec:
+      containers:
+      - name: api
+        # UWAGA: Podmień <TWÓJ_ACCOUNT_ID>!
+        image: 834948575491.dkr.ecr.eu-central-1.amazonaws.com/finpay/payment-api:1.0.0
+        ports:
+        - containerPort: 8080
+        env:
+        - name: APP_ENV
+          valueFrom: { configMapKeyRef: { name: app-config, key: APP_ENV } }
+        - name: LOG_LEVEL
+          valueFrom: { configMapKeyRef: { name: app-config, key: LOG_LEVEL } }
+        - name: SPRING_DATASOURCE_URL
+          valueFrom: { configMapKeyRef: { name: app-config, key: DB_URL } }
+        - name: SPRING_DATASOURCE_USERNAME
+          valueFrom: { configMapKeyRef: { name: app-config, key: DB_USER } }
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom: { secretKeyRef: { name: db-credentials, key: password } }
+        # Sprawdzanie czy aplikacja w ogóle żyje (wymóg: /actuator/health)
+        livenessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 20
+          periodSeconds: 15
+        # Sprawdzanie czy apka jest gotowa przyjmować ruch (wymóg: /actuator/ready)
+        readinessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 20
+          periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: payment-api-service
+spec:
+  type: LoadBalancer 
+  ports:
+  - port: 80
+    targetPort: 8080
+  selector:
+    app: payment-api

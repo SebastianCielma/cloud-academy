@@ -14,7 +14,6 @@ spec:
     spec:
       containers:
       - name: api
-        # UWAGA: Podmień <TWÓJ_ACCOUNT_ID>!
         image: 834948575491.dkr.ecr.eu-central-1.amazonaws.com/finpay/payment-api:1.0.0
         ports:
         - containerPort: 8080
@@ -29,14 +28,12 @@ spec:
           valueFrom: { configMapKeyRef: { name: app-config, key: DB_USER } }
         - name: SPRING_DATASOURCE_PASSWORD
           valueFrom: { secretKeyRef: { name: db-credentials, key: password } }
-        # Sprawdzanie czy aplikacja w ogóle żyje (wymóg: /actuator/health)
         livenessProbe:
           httpGet:
             path: /actuator/health
             port: 8080
           initialDelaySeconds: 20
           periodSeconds: 15
-        # Sprawdzanie czy apka jest gotowa przyjmować ruch (wymóg: /actuator/ready)
         readinessProbe:
           httpGet:
             path: /actuator/health

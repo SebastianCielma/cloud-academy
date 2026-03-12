@@ -83,8 +83,8 @@ jobs:
       - name: Build Payment Worker Image
         uses: docker/build-push-action@v5
         with:
-          context: ${{ env.WORKING_DIR }}/worker
-          file: ${{ env.WORKING_DIR }}/worker/Dockerfile
+          context: ${{ env.WORKING_DIR }}/payment-worker
+          file: ${{ env.WORKING_DIR }}/payment-worker/Dockerfile
           load: true
           tags: finpay/payment-worker:${{ env.IMAGE_TAG }}
           cache-from: type=gha

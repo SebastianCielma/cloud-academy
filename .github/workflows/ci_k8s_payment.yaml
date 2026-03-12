@@ -35,7 +35,7 @@ jobs:
           severity: 'CRITICAL' 
 
       - name: Build Payment Worker Image
-        run: docker build -t finpay/payment-worker:${{ env.IMAGE_TAG }} -f Dockerfile .
+        run: docker build -t finpay/payment-worker:${{ env.IMAGE_TAG }} -f payment-worker/Dockerfile ./payment-worker
 
       - name: Scan Worker Image with Trivy
         uses: aquasecurity/trivy-action@master

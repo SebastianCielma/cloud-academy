@@ -19,7 +19,7 @@ module "database" {
   vpc_id          = module.vpc.vpc_id
   vpc_cidr_block  = var.vpc_cidr
   private_subnets = module.vpc.private_subnets
-  backend_sg_id = module.eks.node_security_group_id
+  backend_sg_id = module.kubernetes.node_security_group_id
   
   db_username     = "postgres"
   db_password     = var.db_password

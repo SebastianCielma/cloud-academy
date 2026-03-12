@@ -35,3 +35,10 @@ module "kubernetes" {
   vpc_id          = module.vpc.vpc_id
   subnet_ids      = module.vpc.private_subnets
 }
+
+module "ecr" {
+  source = "./modules/ecr"
+
+  environment      = var.environment
+  repository_names = ["payment-api", "payment-worker"]
+}

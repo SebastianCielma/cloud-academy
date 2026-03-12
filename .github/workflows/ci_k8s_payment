@@ -1,0 +1,48 @@
+name: CI - Build & Scan
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'k8s_payment_app_part_0/**' 
+
+env:
+  IMAGE_TAG: ${{ github.sha }} 
+
+jobs:
+  build-and-test:
+    name: Build and Scan Images
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./k8s_payment_app_part_0 
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Build Payment API Image
+        run: docker build -t finpay/payment-api:${{ env.IMAGE_TAG }} -f Dockerfile.api .
+
+      - name: Scan API Image with Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'finpay/payment-api:${{ env.IMAGE_TAG }}'
+          format: 'table'
+          exit-code: '1' 
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL' 
+
+      - name: Build Payment Worker Image
+        run: docker build -t finpay/payment-worker:${{ env.IMAGE_TAG }} -f Dockerfile.worker .
+
+      - name: Scan Worker Image with Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'finpay/payment-worker:${{ env.IMAGE_TAG }}'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL'

@@ -1,28 +1,63 @@
-name: CI - Build & Scan
+name: CI - Build, Scan & Validate
 
 on:
   push:
     branches: [ "main" ]
     paths:
-      - 'k8s_payment_app_part_0/**' 
+      - 'k8s_payment_app_part_0/**'
+      - '.github/workflows/ci.yaml'
 
 env:
   IMAGE_TAG: ${{ github.sha }} 
+  WORKING_DIR: ./k8s_payment_app_part_0
 
 jobs:
-  build-and-test:
-    name: Build and Scan Images
+
+  terraform-check:
+    name: Terraform Format & Validate
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./k8s_payment_app_part_0 
-
+        working-directory: ./k8s_payment_app_part_0/terraform
+    
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        run: terraform init -backend=false
+
+      - name: Terraform Format Check
+        run: terraform fmt -check
+
+      - name: Terraform Validate
+        run: terraform validate
+
+
+  build-and-test:
+    name: Build and Scan Images
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+
       - name: Build Payment API Image
-        run: docker build -t finpay/payment-api:${{ env.IMAGE_TAG }} -f payment-api/Dockerfile ./payment-api
+        uses: docker/build-push-action@v5
+        with:
+          context: ${{ env.WORKING_DIR }}/payment-api
+          file: ${{ env.WORKING_DIR }}/payment-api/Dockerfile
+          load: true 
+          tags: finpay/payment-api:${{ env.IMAGE_TAG }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Scan API Image with Trivy
         uses: aquasecurity/trivy-action@master
@@ -34,8 +69,26 @@ jobs:
           vuln-type: 'os,library'
           severity: 'CRITICAL' 
 
+      - name: Save API Image to Tarball
+        run: docker save finpay/payment-api:${{ env.IMAGE_TAG }} -o api-image.tar
+        working-directory: ${{ env.WORKING_DIR }}
+
+      - name: Upload API Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-docker-image
+          path: ${{ env.WORKING_DIR }}/api-image.tar
+          retention-days: 1 
+
       - name: Build Payment Worker Image
-        run: docker build -t finpay/payment-worker:${{ env.IMAGE_TAG }} -f payment-worker/Dockerfile ./payment-worker
+        uses: docker/build-push-action@v5
+        with:
+          context: ${{ env.WORKING_DIR }}/worker
+          file: ${{ env.WORKING_DIR }}/worker/Dockerfile
+          load: true
+          tags: finpay/payment-worker:${{ env.IMAGE_TAG }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Scan Worker Image with Trivy
         uses: aquasecurity/trivy-action@master
@@ -46,3 +99,14 @@ jobs:
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL'
+
+      - name: Save Worker Image to Tarball
+        run: docker save finpay/payment-worker:${{ env.IMAGE_TAG }} -o worker-image.tar
+        working-directory: ${{ env.WORKING_DIR }}
+
+      - name: Upload Worker Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: worker-docker-image
+          path: ${{ env.WORKING_DIR }}/worker-image.tar
+          retention-days: 1

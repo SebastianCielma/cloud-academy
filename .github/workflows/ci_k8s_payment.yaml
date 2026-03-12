@@ -22,7 +22,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build Payment API Image
-        run: docker build -t finpay/payment-api:${{ env.IMAGE_TAG }} -f Dockerfile .
+        run: docker build -t finpay/payment-api:${{ env.IMAGE_TAG }} -f payment-api/Dockerfile ./payment-api
 
       - name: Scan API Image with Trivy
         uses: aquasecurity/trivy-action@master

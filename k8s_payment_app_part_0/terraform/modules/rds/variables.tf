@@ -34,3 +34,8 @@ variable "environment" {
   description = "Environment name"
   type        = string
 }
+
+variable "backend_sg_id" {
+  description = "ID of the Security Group used by the EKS nodes (Backend) to allow database access"
+  type        = string
+}

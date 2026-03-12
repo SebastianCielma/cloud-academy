@@ -10,22 +10,24 @@ resource "aws_db_subnet_group" "this" {
 
 resource "aws_security_group" "rds" {
   name        = "finpay-${var.environment}-rds-sg"
-  description = "Allow PostgreSQL inbound traffic from VPC"
+  description = "Security Group for FinPay RDS PostgreSQL"
   vpc_id      = var.vpc_id
 
   ingress {
-    description = "Allow PostgreSQL traffic only from our VPC"
-    from_port   = 5432
-    to_port     = 5432
-    protocol    = "tcp"
-    cidr_blocks = [var.vpc_cidr_block] 
+    description     = "Allow PostgreSQL traffic only from Backend Security Group"
+    from_port       = 5432
+    to_port         = 5432
+    protocol        = "tcp"
+    security_groups = [var.backend_sg_id] 
   }
 
+
   egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    description     = "Allow outbound traffic only to Backend Security Group"
+    from_port       = 0
+    to_port         = 0
+    protocol        = "-1"
+    security_groups = [var.backend_sg_id] 
   }
 
   tags = {
@@ -57,7 +59,7 @@ resource "aws_db_instance" "this" {
   storage_encrypted      = true
 
 
-  skip_final_snapshot    = true 
+  skip_final_snapshot    = false 
 
   tags = {
     Environment = var.environment

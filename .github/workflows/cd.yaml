@@ -1,15 +1,15 @@
 name: CD - Push to AWS ECR
 
 on:
-  workflow_dispatch: 
+  workflow_dispatch:
 
 env:
   AWS_REGION: eu-central-1
-  ECR_REGISTRY: 834948575491.dkr.ecr.eu-central-1.amazonaws.com 
+  ECR_REGISTRY: 834948575491.dkr.ecr.eu-central-1.amazonaws.com
 
 permissions:
   actions: read    
-  contents: read
+  contents: read   
 
 jobs:
   deploy-to-ecr:
@@ -25,7 +25,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }} 
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Login to Amazon ECR
@@ -33,31 +33,43 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
 
 
-      - name: Download API Artifact from CI
-        uses: dawidd6/action-download-artifact@v3
+      - name: Find latest successful CI run ID
+        id: find-run
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          RUN_ID=$(gh run list --branch main --status success --json databaseId,name --jq '.[] | select(.name == "CI - Build, Scan & Validate") | .databaseId' | head -n 1)
+          
+          if [ -z "$RUN_ID" ]; then
+            echo "Error"
+            exit 1
+          fi
+          
+          
+          echo "run_id=$RUN_ID" >> $GITHUB_OUTPUT
+
+      - name: Download API Artifact
+        uses: actions/download-artifact@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          workflow: ci.yaml 
           name: api-docker-image
           path: ./artifacts
+          run-id: ${{ steps.find-run.outputs.run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Download Worker Artifact from CI
-        uses: dawidd6/action-download-artifact@v3
+      - name: Download Worker Artifact
+        uses: actions/download-artifact@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          workflow: ci.yaml
           name: worker-docker-image
           path: ./artifacts
+          run-id: ${{ steps.find-run.outputs.run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
 
       - name: Load, Tag and Push API Image
         run: |
           echo "Loading API image from tarball"
-          
           LOADED_IMAGE=$(docker load -i ./artifacts/api-image.tar | awk '/Loaded image: / {print $3}')
-          echo "Image successfully loaded: $LOADED_IMAGE"
           
-          # Doklejamy adres prywatnego rejestru AWS
           NEW_TAG="${{ env.ECR_REGISTRY }}/$LOADED_IMAGE"
           echo "Tagging for ECR: $NEW_TAG"
           
@@ -68,7 +80,6 @@ jobs:
         run: |
           echo "Loading Worker image from tarball"
           LOADED_IMAGE=$(docker load -i ./artifacts/worker-image.tar | awk '/Loaded image: / {print $3}')
-          echo "Image successfully loaded: $LOADED_IMAGE"
           
           NEW_TAG="${{ env.ECR_REGISTRY }}/$LOADED_IMAGE"
           echo "Tagging for ECR: $NEW_TAG"

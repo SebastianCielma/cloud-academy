@@ -1,0 +1,71 @@
+name: CD - Push to AWS ECR
+
+on:
+  workflow_dispatch: 
+
+env:
+  AWS_REGION: eu-central-1
+  ECR_REGISTRY: 834948575491.dkr.ecr.eu-central-1.amazonaws.com 
+
+jobs:
+  deploy-to-ecr:
+    name: Deploy Images to ECR
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }} 
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+
+      - name: Download API Artifact from CI
+        uses: dawidd6/action-download-artifact@v3
+        with:
+          workflow: ci.yaml 
+          name: api-docker-image
+          path: ./artifacts
+
+      - name: Download Worker Artifact from CI
+        uses: dawidd6/action-download-artifact@v3
+        with:
+          workflow: ci.yaml
+          name: worker-docker-image
+          path: ./artifacts
+
+
+      - name: Load, Tag and Push API Image
+        run: |
+          echo "Loading API image from tarball"
+          
+          LOADED_IMAGE=$(docker load -i ./artifacts/api-image.tar | awk '/Loaded image: / {print $3}')
+          echo "Image successfully loaded: $LOADED_IMAGE"
+          
+          # Doklejamy adres prywatnego rejestru AWS
+          NEW_TAG="${{ env.ECR_REGISTRY }}/$LOADED_IMAGE"
+          echo "Tagging for ECR: $NEW_TAG"
+          
+          docker tag $LOADED_IMAGE $NEW_TAG
+          docker push $NEW_TAG
+
+      - name: Load, Tag and Push Worker Image
+        run: |
+          echo "Loading Worker image from tarball"
+          LOADED_IMAGE=$(docker load -i ./artifacts/worker-image.tar | awk '/Loaded image: / {print $3}')
+          echo "Image successfully loaded: $LOADED_IMAGE"
+          
+          NEW_TAG="${{ env.ECR_REGISTRY }}/$LOADED_IMAGE"
+          echo "Tagging for ECR: $NEW_TAG"
+          
+          docker tag $LOADED_IMAGE $NEW_TAG
+          docker push $NEW_TAG

@@ -1,0 +1,168 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36" version="29.6.1">
+  <diagram name="Kubernetes Architecture" id="k8s-arch">
+    <mxGraphModel dx="1511" dy="881" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1400" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="alb" parent="1" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#8C4FFF;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;fontStyle=1;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.application_load_balancer;" value="AWS ALB&#xa;(Internet-facing)&#xa;Port 80/443" vertex="1">
+          <mxGeometry height="60" width="60" x="400" y="10" as="geometry" />
+        </mxCell>
+        <mxCell id="rds" parent="1" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#C925D1;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=1;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.rds_postgresql_instance;" value="Amazon RDS&#xa;PostgreSQL 15&#xa;Multi-AZ, Encrypted&#xa;(Private Subnet)" vertex="1">
+          <mxGeometry height="50" width="50" x="650" y="10" as="geometry" />
+        </mxCell>
+        <mxCell id="cw" parent="1" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#E7157B;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=1;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.cloudwatch;" value="Amazon CloudWatch&#xa;Metrics + Logs + Alarms" vertex="1">
+          <mxGeometry height="50" width="50" x="1320" y="10" as="geometry" />
+        </mxCell>
+        <mxCell id="ecr" parent="1" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#ED7100;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=10;fontStyle=1;aspect=fixed;pointerEvents=1;shape=mxgraph.aws4.ecr;" value="Amazon ECR&#xa;(Private Registry)" vertex="1">
+          <mxGeometry height="50" width="50" x="1060" y="10" as="geometry" />
+        </mxCell>
+        <mxCell id="cluster" parent="1" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=14;fontStyle=1;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_eks_cluster;strokeColor=#FF8000;fillColor=#FFF8F0;verticalAlign=top;align=center;spacingTop=10;dashed=0;" value="EKS Cluster: finpay-production-cluster" vertex="1">
+          <mxGeometry height="1200" width="1420" x="40" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="ns_finpay" parent="1" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=13;fontStyle=1;shape=mxgraph.aws4.group;strokeColor=#1565C0;fillColor=#E3F2FD;verticalAlign=top;align=center;spacingTop=10;dashed=0;" value="Namespace: finpay" vertex="1">
+          <mxGeometry height="1130" width="920" x="60" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="dep_api" parent="1" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=11;fontStyle=1;shape=mxgraph.aws4.group;strokeColor=#2E7D32;fillColor=#E8F5E9;verticalAlign=top;align=center;spacingTop=5;" value="Deployment: payment-api&#xa;replicas: 2 | strategy: RollingUpdate&#xa;maxUnavailable: 0, maxSurge: 1" vertex="1">
+          <mxGeometry height="260" width="520" x="80" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="api_pod1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#2E7D32;fontSize=9;align=left;spacingLeft=10;" value="Pod: payment-api-1&#xa;────────────────&#xa;Container: api&#xa;Image: ECR/payment-api:1.0.0&#xa;Port: 8080&#xa;────────────────&#xa;Liveness: /actuator/health/liveness&#xa;  (interval: 15s, delay: 20s)&#xa;Readiness: /actuator/health/readiness&#xa;  (interval: 10s, delay: 20s)&#xa;────────────────&#xa;Env from: ConfigMap + Secret&#xa;Resource Requests/Limits" vertex="1">
+          <mxGeometry height="190" width="240" x="95" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="api_pod2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#2E7D32;fontSize=9;align=left;spacingLeft=10;" value="Pod: payment-api-2&#xa;────────────────&#xa;Container: api&#xa;Image: ECR/payment-api:1.0.0&#xa;Port: 8080&#xa;────────────────&#xa;Liveness: /actuator/health/liveness&#xa;  (interval: 15s, delay: 20s)&#xa;Readiness: /actuator/health/readiness&#xa;  (interval: 10s, delay: 20s)&#xa;────────────────&#xa;Env from: ConfigMap + Secret&#xa;Resource Requests/Limits" vertex="1">
+          <mxGeometry height="190" width="240" x="345" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="hpa_api" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#1565C0;fontSize=10;fontStyle=1;" value="HPA: payment-api-hpa&#xa;min=2 | max=6 | CPU target: 70%" vertex="1">
+          <mxGeometry height="40" width="230" x="690" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="svc_api" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF9C4;strokeColor=#F57F17;fontSize=10;fontStyle=1;" value="Service: payment-api-service&#xa;Type: LoadBalancer&#xa;Port: 80 → targetPort: 8080&#xa;Selector: app=payment-api" vertex="1">
+          <mxGeometry height="60" width="260" x="140" y="500" as="geometry" />
+        </mxCell>
+        <mxCell id="dep_worker" parent="1" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=11;fontStyle=1;shape=mxgraph.aws4.group;strokeColor=#E65100;fillColor=#FFF3E0;verticalAlign=top;align=center;spacingTop=5;" value="Deployment: payment-worker&#xa;replicas: 2 | strategy: RollingUpdate&#xa;maxUnavailable: 0, maxSurge: 1" vertex="1">
+          <mxGeometry height="260" width="520" x="80" y="595" as="geometry" />
+        </mxCell>
+        <mxCell id="worker_pod1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE0B2;strokeColor=#E65100;fontSize=9;align=left;spacingLeft=10;" value="Pod: payment-worker-1&#xa;────────────────&#xa;Container: worker&#xa;Image: ECR/payment-worker:1.0.0&#xa;Port: 8090&#xa;────────────────&#xa;Liveness: /actuator/health/liveness&#xa;  (interval: 15s, delay: 20s)&#xa;Readiness: /actuator/health/readiness&#xa;  (interval: 10s, delay: 20s)&#xa;────────────────&#xa;Env from: ConfigMap + Secret&#xa;CPU_LOAD_MS: 300" vertex="1">
+          <mxGeometry height="190" width="240" x="95" y="650" as="geometry" />
+        </mxCell>
+        <mxCell id="worker_pod2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE0B2;strokeColor=#E65100;fontSize=9;align=left;spacingLeft=10;" value="Pod: payment-worker-2&#xa;────────────────&#xa;Container: worker&#xa;Image: ECR/payment-worker:1.0.0&#xa;Port: 8090&#xa;────────────────&#xa;Liveness: /actuator/health/liveness&#xa;  (interval: 15s, delay: 20s)&#xa;Readiness: /actuator/health/readiness&#xa;  (interval: 10s, delay: 20s)&#xa;────────────────&#xa;Env from: ConfigMap + Secret&#xa;CPU_LOAD_MS: 300" vertex="1">
+          <mxGeometry height="190" width="240" x="345" y="650" as="geometry" />
+        </mxCell>
+        <mxCell id="hpa_worker" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#1565C0;fontSize=10;fontStyle=1;" value="HPA: payment-worker-hpa&#xa;min=2 | max=8 | CPU target: 70%" vertex="1">
+          <mxGeometry height="40" width="230" x="710" y="710" as="geometry" />
+        </mxCell>
+        <mxCell id="svc_worker" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF9C4;strokeColor=#F57F17;fontSize=10;fontStyle=1;" value="Service: payment-worker-service&#xa;Type: ClusterIP (internal only)&#xa;Port: 8090 → targetPort: 8090&#xa;Selector: app=payment-worker" vertex="1">
+          <mxGeometry height="60" width="260" x="140" y="890" as="geometry" />
+        </mxCell>
+        <mxCell id="configmap" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8EAF6;strokeColor=#3949AB;fontSize=9;align=left;spacingLeft=10;fontStyle=0;" value="ConfigMap: app-config&#xa;──────────────────&#xa;APP_ENV: production&#xa;LOG_LEVEL: INFO&#xa;DB_URL: jdbc:postgresql://rds:5432/paymentdb&#xa;DB_USER: postgres" vertex="1">
+          <mxGeometry height="100" width="300" x="130" y="990" as="geometry" />
+        </mxCell>
+        <mxCell id="secret" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FCE4EC;strokeColor=#C62828;fontSize=9;align=left;spacingLeft=10;fontStyle=0;" value="Secret: db-credentials&#xa;──────────────────&#xa;Type: Opaque&#xa;password: ******** (base64)" vertex="1">
+          <mxGeometry height="80" width="230" x="500" y="990" as="geometry" />
+        </mxCell>
+        <mxCell id="netpol" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#C62828;fontSize=9;align=left;spacingLeft=10;fontStyle=0;dashed=1;" value="NetworkPolicies&#xa;──────────────────&#xa;payment-api-netpol:&#xa;  Ingress: from ALB&#xa;  Egress: to worker-svc, RDS&#xa;&#xa;payment-worker-netpol:&#xa;  Ingress: from api pods only&#xa;  Egress: to api-svc, RDS" vertex="1">
+          <mxGeometry height="150" width="250" x="130" y="1110" as="geometry" />
+        </mxCell>
+        <mxCell id="resourcequota" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F3E5F5;strokeColor=#9C27B0;fontSize=9;align=left;spacingLeft=10;fontStyle=0;dashed=1;" value="ResourceQuota&#xa;──────────────────&#xa;Limits CPU/memory per namespace&#xa;Prevents resource exhaustion" vertex="1">
+          <mxGeometry height="80" width="250" x="420" y="1110" as="geometry" />
+        </mxCell>
+        <mxCell id="ns_kubesystem" parent="1" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=1;shape=mxgraph.aws4.group;strokeColor=#616161;fillColor=#F5F5F5;verticalAlign=top;align=center;spacingTop=10;dashed=0;" value="Namespace: kube-system" vertex="1">
+          <mxGeometry height="400" width="420" x="1010" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="coredns" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#616161;fontSize=9;" value="CoreDNS&#xa;(Service Discovery)&#xa;Resolves K8s service names&#xa;to ClusterIP addresses" vertex="1">
+          <mxGeometry height="70" width="180" x="1030" y="210" as="geometry" />
+        </mxCell>
+        <mxCell id="kubeproxy" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#616161;fontSize=9;" value="kube-proxy&#xa;(Networking)&#xa;iptables/IPVS rules&#xa;Service → Pod routing" vertex="1">
+          <mxGeometry height="70" width="180" x="1230" y="210" as="geometry" />
+        </mxCell>
+        <mxCell id="metrics" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#616161;fontSize=9;" value="metrics-server&#xa;(Resource Metrics)&#xa;Provides CPU/Memory metrics&#xa;Required for HPA" vertex="1">
+          <mxGeometry height="70" width="180" x="1030" y="310" as="geometry" />
+        </mxCell>
+        <mxCell id="lbc" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ECEFF1;strokeColor=#616161;fontSize=9;" value="AWS Load Balancer Controller&#xa;Manages ALB lifecycle&#xa;Based on K8s Service/Ingress" vertex="1">
+          <mxGeometry height="70" width="180" x="1230" y="310" as="geometry" />
+        </mxCell>
+        <mxCell id="ns_monitoring" parent="1" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=12;fontStyle=1;shape=mxgraph.aws4.group;strokeColor=#E7157B;fillColor=#FDE8F0;verticalAlign=top;align=center;spacingTop=10;dashed=0;" value="Namespace: monitoring" vertex="1">
+          <mxGeometry height="180" width="420" x="1010" y="600" as="geometry" />
+        </mxCell>
+        <mxCell id="cw_agent" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FCE4EC;strokeColor=#E7157B;fontSize=9;align=left;spacingLeft=10;" value="CloudWatch Agent&#xa;(DaemonSet — runs on every node)&#xa;──────────────────&#xa;Collects: pod logs, node metrics,&#xa;container insights, custom metrics&#xa;Ships to: Amazon CloudWatch" vertex="1">
+          <mxGeometry height="100" width="340" x="1050" y="650" as="geometry" />
+        </mxCell>
+        <mxCell id="a1" edge="1" parent="1" source="alb" style="edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=10;strokeColor=#1565C0;strokeWidth=2;" target="svc_api" value="HTTP/HTTPS traffic">
+          <mxGeometry relative="1" x="0.1186" y="20" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="430" y="280" />
+              <mxPoint x="270" y="280" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="a2" edge="1" parent="1" source="svc_api" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#2E7D32;strokeWidth=1;dashed=1;" target="dep_api" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a3" edge="1" parent="1" source="dep_api" style="edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=9;strokeColor=#FF6F00;strokeWidth=2;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="svc_worker" value="POST /worker/process">
+          <mxGeometry relative="1" x="0.2" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="340" y="580" />
+              <mxPoint x="270" y="580" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="a4" edge="1" parent="1" source="svc_worker" style="edgeStyle=orthogonalEdgeStyle;rounded=1;strokeColor=#E65100;strokeWidth=1;dashed=1;exitX=0.5;exitY=0;entryX=0.5;entryY=1;" target="dep_worker" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a5" edge="1" parent="1" source="dep_worker" style="edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=9;strokeColor=#FF6F00;strokeWidth=1;exitX=1;exitY=0.5;entryX=1;entryY=0.5;dashed=1;" target="dep_api" value="POST /payments/internal/{id}/complete&#xa;(callback)">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="620" y="730" />
+              <mxPoint x="620" y="340" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="a6" edge="1" parent="1" source="dep_api" style="edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=10;strokeColor=#C925D1;strokeWidth=2;exitX=1;exitY=0.2;entryX=0;entryY=0.5;" target="rds" value="JDBC :5432">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="660" y="262" />
+              <mxPoint x="660" y="35" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="a7" edge="1" parent="1" source="hpa_api" style="edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=9;strokeColor=#1565C0;dashed=1;" target="dep_api" value="scales">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a8" edge="1" parent="1" source="hpa_worker" style="edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=9;strokeColor=#1565C0;dashed=1;" target="dep_worker" value="scales">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a9" edge="1" parent="1" source="configmap" style="edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=9;strokeColor=#3949AB;dashed=1;" target="dep_api" value="env vars">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a10" edge="1" parent="1" source="configmap" style="edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=9;strokeColor=#3949AB;dashed=1;" target="dep_worker" value="env vars">
+          <mxGeometry relative="1" x="0.5385" y="-30" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="a11" edge="1" parent="1" source="secret" style="edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=9;strokeColor=#C62828;dashed=1;" target="dep_api" value="db password">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a12" edge="1" parent="1" source="secret" style="edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=9;strokeColor=#C62828;dashed=1;" target="dep_worker" value="db password">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a13" edge="1" parent="1" source="ecr" style="edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=10;strokeColor=#ED7100;dashed=1;" target="cluster" value="Image Pull">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a14" edge="1" parent="1" source="cw_agent" style="edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=10;strokeColor=#E7157B;strokeWidth=2;" target="cw" value="Logs &amp; Metrics">
+          <mxGeometry relative="1" x="0.0209" y="-56" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="1220" y="35" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="a15" edge="1" parent="1" source="metrics" style="edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=9;strokeColor=#616161;dashed=1;" target="hpa_api" value="CPU metrics">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a16" edge="1" parent="1" source="lbc" style="edgeStyle=orthogonalEdgeStyle;rounded=1;fontSize=9;strokeColor=#616161;dashed=1;" target="alb" value="Provisions ALB">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

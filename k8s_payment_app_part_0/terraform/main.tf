@@ -60,9 +60,9 @@ provider "helm" {
 }
 
 resource "helm_release" "finpay" {
-  name       = "finpay"
-  chart      = "${path.module}/../helm/finpay"
-  namespace  = "default"
+  name      = "finpay"
+  chart     = "${path.module}/../helm/finpay"
+  namespace = "default"
 
   values = [
     templatefile("${path.module}/../helm/finpay/values-${var.environment}.yaml", {})

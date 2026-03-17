@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "finpay.fullname" . }}-worker
+  labels:
+    {{- include "finpay.labels" . | nindent 4 }}
+    app: payment-worker
+spec:
+  replicas: {{ .Values.worker.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "finpay.selectorLabels" . | nindent 6 }}
+      app: payment-worker
+  template:
+    metadata:
+      labels:
+        {{- include "finpay.selectorLabels" . | nindent 8 }}
+        app: payment-worker
+    spec:
+      containers:
+      - name: worker
+        image: "{{ .Values.worker.image.repository }}:{{ .Values.worker.image.tag }}"
+        imagePullPolicy: {{ .Values.worker.image.pullPolicy }}
+        ports:
+        - containerPort: 8090
+          name: http
+        env:
+        - name: APP_ENV
+          valueFrom:
+            configMapKeyRef:
+              name: {{ include "finpay.fullname" . }}-config
+              key: APP_ENV
+        - name: LOG_LEVEL
+          valueFrom:
+            configMapKeyRef:
+              name: {{ include "finpay.fullname" . }}-config
+              key: LOG_LEVEL
+        - name: SPRING_DATASOURCE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: {{ include "finpay.fullname" . }}-config
+              key: DB_URL
+        - name: SPRING_DATASOURCE_USERNAME
+          valueFrom:
+            configMapKeyRef:
+              name: {{ include "finpay.fullname" . }}-config
+              key: DB_USER
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "finpay.fullname" . }}-db-credentials
+              key: password
+        - name: PAYMENT_API_BASE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: {{ include "finpay.fullname" . }}-config
+              key: PAYMENT_API_BASE_URL
+        livenessProbe:
+          httpGet:
+            path: /actuator/health/liveness
+            port: http
+          initialDelaySeconds: 20
+          periodSeconds: 15
+        readinessProbe:
+          httpGet:
+            path: /actuator/health/readiness
+            port: http
+          initialDelaySeconds: 20
+          periodSeconds: 10
+        resources:
+          {{- toYaml .Values.worker.resources | nindent 10 }}

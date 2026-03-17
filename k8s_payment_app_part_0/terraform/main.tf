@@ -42,3 +42,44 @@ module "ecr" {
   environment      = var.environment
   repository_names = ["payment-api", "payment-worker"]
 }
+
+data "aws_eks_cluster" "cluster" {
+  name = module.kubernetes.cluster_name
+}
+
+data "aws_eks_cluster_auth" "cluster" {
+  name = module.kubernetes.cluster_name
+}
+
+provider "helm" {
+  kubernetes {
+    host                   = data.aws_eks_cluster.cluster.endpoint
+    cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority[0].data)
+    token                  = data.aws_eks_cluster_auth.cluster.token
+  }
+}
+
+resource "helm_release" "finpay" {
+  name       = "finpay"
+  chart      = "${path.module}/../helm/finpay"
+  namespace  = "default"
+
+  values = [
+    templatefile("${path.module}/../helm/finpay/values-${var.environment}.yaml", {})
+  ]
+
+  set {
+    name  = "config.dbUrl"
+    value = "jdbc:postgresql://${module.database.db_endpoint}/paymentdb"
+  }
+
+  set {
+    name  = "config.dbPassword"
+    value = var.db_password
+  }
+
+  depends_on = [
+    module.kubernetes,
+    module.database
+  ]
+}

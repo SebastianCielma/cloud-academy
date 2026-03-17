@@ -1,19 +1,27 @@
 terraform {
   required_version = ">= 1.5.0"
 
-  backend "s3" {
-    bucket         = "finpay-tf-state-sebastian-akademia"
-    key            = "finpay/production/terraform.tfstate"
-    region         = "eu-central-1"
-    dynamodb_table = "finpay-tf-lock"
-    encrypt        = true
-  }
-
   required_providers {
     aws = {
       source  = "hashicorp/aws"
       version = "~> 5.0"
     }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "~> 2.30"
+    }
+    helm = {
+      source  = "hashicorp/helm"
+      version = "~> 2.13"
+    }
+  }
+
+  backend "s3" {
+    bucket         = "bucket-sebastian-eks-part3"
+    key            = "payment-app/terraform.tfstate"
+    region         = "eu-central-1"
+    dynamodb_table = "state-lock-sebastian-part3"
+    encrypt        = true
   }
 }
 

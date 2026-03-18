@@ -26,6 +26,16 @@ module "database" {
 
 }
 
+module "ec2_postgres" {
+  source = "./modules/ec2-postgres"
+
+  environment    = var.environment
+  vpc_id         = module.vpc.vpc_id
+  subnet_id      = module.vpc.private_subnets[0]
+  eks_node_sg_id = module.kubernetes.node_security_group_id
+  db_password    = var.db_password
+}
+
 module "kubernetes" {
   source = "./modules/eks"
 
@@ -45,6 +55,7 @@ module "ecr" {
 
 data "aws_eks_cluster" "cluster" {
   name = module.kubernetes.cluster_name
+  depends_on = [module.kubernetes]
 }
 
 data "aws_eks_cluster_auth" "cluster" {

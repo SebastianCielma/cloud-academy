@@ -18,6 +18,11 @@ variable "eks_node_sg_id" {
   type        = string
 }
 
+variable "vpc_cidr" {
+  description = "VPC CIDR block to allow internal traffic"
+  type        = string
+}
+
 variable "db_password" {
   description = "Password for the PostgreSQL database"
   type        = string

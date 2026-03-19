@@ -3,11 +3,19 @@ resource "aws_security_group" "postgres_ec2" {
   vpc_id      = var.vpc_id
 
   ingress {
-    description     = "Allow PostgreSQL access strictly from EKS worker nodes"
+    description     = "Allow PostgreSQL access from EKS worker nodes SG"
     from_port       = 5432
     to_port         = 5432
     protocol        = "tcp"
     security_groups = [var.eks_node_sg_id]
+  }
+
+  ingress {
+    description = "Allow PostgreSQL access from entire VPC (for K8S pods)"
+    from_port   = 5432
+    to_port     = 5432
+    protocol    = "tcp"
+    cidr_blocks = [var.vpc_cidr]
   }
 
   egress {

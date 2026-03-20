@@ -1,0 +1,63 @@
+stages:
+  - test
+  - build_docker
+  - build_helm
+  - deploy
+
+
+variables:
+  IMAGE_TAG: $CI_COMMIT_SHORT_SHA
+  DOCKER_REGISTRY: $REGISTRY_URL
+  IMAGE_NAME: $DOCKER_REGISTRY/python-hello-world
+
+workflow:
+  rules:
+    - if: $CI_COMMIT_BRANCH == "master"
+
+
+test_app:
+  stage: test
+  image: python:3.13-slim
+  script:
+    - pip install uv
+    - uv pip install --system .[test]
+    - pytest app/test_main.py
+
+build_docker_image:
+  stage: build_docker
+  image: docker:24.0.5
+  services:
+    - docker:24.0.5-dind
+  variables:
+    DOCKER_BUILDKIT: 1
+  script:
+    - echo $REGISTRY_PASSWORD | docker login -u $REGISTRY_USER --password-stdin $DOCKER_REGISTRY
+    - docker build -t $IMAGE_NAME:$IMAGE_TAG .
+    - docker push $IMAGE_NAME:$IMAGE_TAG
+
+build_helm_chart:
+  stage: build_helm
+  image:
+    name: alpine/helm:3.12.0
+    entrypoint: [""]
+
+  script:
+    - echo $REGISTRY_PASSWORD | helm registry login $DOCKER_REGISTRY -u $REGISTRY_USER --password-stdin
+    - helm package ./chart --version 0.1.0-$IMAGE_TAG --app-version $IMAGE_TAG
+    - helm push python-hello-world-0.1.0-$IMAGE_TAG.tgz oci://$DOCKER_REGISTRY/charts
+
+deploy_to_k8s:
+  stage: deploy
+  image:
+    name: alpine/helm:3.12.0
+    entrypoint: [""]
+  script:
+    - apk add --no-cache aws-cli
+    - echo $REGISTRY_PASSWORD | helm registry login $DOCKER_REGISTRY -u $REGISTRY_USER --password-stdin
+    - echo "$KUBECONFIG_CONTENT" > kubeconfig.yaml
+    - chmod 600 kubeconfig.yaml
+    - export KUBECONFIG=kubeconfig.yaml
+    - helm upgrade --install python-hello-world oci://$DOCKER_REGISTRY/charts/python-hello-world 
+      --version 0.1.0-$IMAGE_TAG 
+      --set image.repository=$IMAGE_NAME 
+      --set image.tag=$IMAGE_TAG

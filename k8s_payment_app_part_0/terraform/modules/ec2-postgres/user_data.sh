@@ -3,25 +3,29 @@ set -e
 
 exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
 
-echo "Starting PostgreSQL installation and configuration..."
 
+DB_PASSWORD="${db_password}"
+APP_CIDR="${app_cidr:-10.0.0.0/16}" 
+
+export DEBIAN_FRONTEND=noninteractive
 apt-get update
-DEBIAN_FRONTEND=noninteractive apt-get install -y postgresql postgresql-contrib
+apt-get install -y postgresql postgresql-contrib
+
 
 sed -i "s/#listen_addresses = 'localhost'/listen_addresses = '*'/g" /etc/postgresql/*/main/postgresql.conf
 
 
-echo "host    all             all             0.0.0.0/0               md5" >> /etc/postgresql/*/main/pg_hba.conf
+echo "host    paymentdb       payment_user    $APP_CIDR        scram-sha-256" >> /etc/postgresql/*/main/pg_hba.conf
 
 systemctl restart postgresql
 
 sudo -u postgres psql -c "CREATE DATABASE paymentdb;"
-sudo -u postgres psql -c "CREATE USER postgres WITH ENCRYPTED PASSWORD '${db_password}';" || true
-sudo -u postgres psql -c "ALTER ROLE postgres WITH ENCRYPTED PASSWORD '${db_password}';"
-sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE paymentdb TO postgres;"
-sudo -u postgres psql -d paymentdb -c "GRANT ALL ON SCHEMA public TO postgres;"
+sudo -u postgres psql -c "CREATE USER payment_user WITH ENCRYPTED PASSWORD '$DB_PASSWORD';"
 
-echo "PostgreSQL installed and configured successfully."
+sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE paymentdb TO payment_user;"
+sudo -u postgres psql -d paymentdb -c "GRANT ALL ON SCHEMA public TO payment_user;"
+
+echo "PostgreSQL installed and configured securely."
 
 mkdir -p /var/backups/postgresql
 

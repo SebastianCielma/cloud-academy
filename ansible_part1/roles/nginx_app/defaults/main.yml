@@ -1,0 +1,3 @@
+---
+# defaults file for roles/nginx_app
+nginx_package: "nginx"

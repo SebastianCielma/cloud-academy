@@ -1,21 +1,6 @@
-- name: Deploy NGINX Web Server
+---
+- name: Deploy NGINX Web Server using Roles
   hosts: webservers
-  become: yes 
-  vars:
-    nginx_package: "nginx" 
-  tasks:
-    - name: 1. Update the system package index
-      ansible.builtin.apt:
-        update_cache: yes
-        cache_valid_time: 3600 
-
-    - name: 2. Install the NGINX web server
-      ansible.builtin.apt:
-        name: "{{ nginx_package }}"
-        state: present 
-
-    - name: 3. Ensure the NGINX service is started and enabled
-      ansible.builtin.service:
-        name: nginx
-        state: started
-        enabled: yes
+  become: yes
+  roles:
+    - nginx_app

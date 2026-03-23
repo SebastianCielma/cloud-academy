@@ -10,13 +10,7 @@
     name: "{{ nginx_package }}"
     state: present
 
-- name: 3. Ensure the NGINX service is started and enabled
-  ansible.builtin.service:
-    name: nginx
-    state: started
-    enabled: yes
-
-- name: 4. Deploy static index.html
+- name: 3. Deploy static index.html
   ansible.builtin.copy:
     src: index.html
     dest: /var/www/html/index.html
@@ -24,7 +18,7 @@
     group: root
     mode: '0644'
 
-- name: 5. Deploy templated NGINX configuration
+- name: 4. Deploy templated NGINX configuration
   ansible.builtin.template:
     src: nginx.conf.j2
     dest: /etc/nginx/nginx.conf
@@ -32,3 +26,9 @@
     group: root
     mode: '0644'
   notify: Restart NGINX
+
+- name: 5. Ensure the NGINX service is started and enabled
+  ansible.builtin.service:
+    name: nginx
+    state: started
+    enabled: yes

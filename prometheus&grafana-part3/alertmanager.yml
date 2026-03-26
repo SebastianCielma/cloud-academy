@@ -1,0 +1,5 @@
+route:
+  receiver: 'dummy_receiver'
+
+receivers:
+  - name: 'dummy_receiver'

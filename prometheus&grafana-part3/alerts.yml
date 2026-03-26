@@ -1,0 +1,18 @@
+groups:
+  - name: example_app_alerts
+    rules:
+      - alert: AppDown
+        expr: up{job="example_app"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "The example_app application has stopped responding"
+
+      - alert: HighErrorRate
+        expr: (sum(rate(http_requests_total{job="example_app", code=~"4..|5.."}[1m])) / sum(rate(http_requests_total{job="example_app"}[1m]))) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "The error rate exceeded 5%"

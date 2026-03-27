@@ -21,3 +21,17 @@ scrape_configs:
   - job_name: 'example_app'
     static_configs:
       - targets: ['example-app:8080']
+
+  - job_name: 'blackbox'
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+      - targets: ['http://example-app:8080/', 'http://example-app:8080/err']
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox-exporter:9115

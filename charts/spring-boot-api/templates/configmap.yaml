@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-configmap
+  labels:
+    app: spring-api
+data:
+  config.json: |-
+    {
+      "applicationName": "Spring Boot API",
+      "environment": "{{ .Values.spring.profile }}",
+      "features": {
+        "enableLogs": true,
+        "enableSoap": true
+      },
+      "maintenanceMode": false
+    }

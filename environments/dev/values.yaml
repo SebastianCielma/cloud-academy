@@ -1,0 +1,8 @@
+# environments/dev/values.yaml
+replicaCount: 3
+
+spring:
+  profile: dev
+
+ingress:
+  host: api.dev.cloud-academy.local

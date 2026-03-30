@@ -1,0 +1,8 @@
+# environments/prd/values.yaml
+replicaCount: 5
+
+spring:
+  profile: prd
+
+ingress:
+  host: api.dev.cloud-academy.local

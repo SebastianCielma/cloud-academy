@@ -29,7 +29,7 @@ spec:
         - name: spring-boot-api
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           
-          command: ["/bin/sh", "-c", "httpd -f -p 3600"]
+          command: ["/bin/sh", "-c", "httpd -f -p 8080"]
 
           args:
             - "--spring.profiles.active={{ .Values.spring.profile }}"

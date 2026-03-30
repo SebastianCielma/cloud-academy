@@ -1,0 +1,49 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: spring-boot-api-appset
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          - clusterName: dev-global-cluster-0
+            env: dev
+            serverUrl: https://kubernetes.default.svc 
+          - clusterName: prd-global-cluster-5
+            env: prd
+            serverUrl: https://kubernetes.default.svc 
+            
+  template:
+    metadata:
+      name: 'spring-api-{{env}}'
+    spec:
+      project: default
+      destination:
+        server: '{{serverUrl}}'
+        namespace: spring-api-{{env}}-ns
+      
+      ignoreDifferences:
+        - group: ""
+          kind: Secret
+          name: 'spring-api-{{env}}-secret'
+          jsonPointers:
+            - /data
+            
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+      sources:
+        - repoURL: 'https://github.com/SebastianCielma/cloud-academy.git'
+          targetRevision: main
+          path: charts/spring-boot-api
+          helm:
+            valueFiles:
+              - $valuesRepo/environments/{{env}}/values.yaml
+              
+        - repoURL: 'https://github.com/SebastianCielma/cloud-academy.git'
+          targetRevision: main
+          ref: valuesRepo

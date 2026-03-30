@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-spring-api
+  labels:
+    app: spring-api
+spec:
+  replicas: {{ .Values.replicaCount }}
+
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1       
+      maxUnavailable: 0 
+
+  selector:
+    matchLabels:
+      app: spring-api
+
+  template:
+    metadata:
+      labels:
+        app: spring-api
+      annotations:
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+    spec:
+      containers:
+        - name: spring-boot-api
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          
+          command: ["/bin/sh", "-c", "sleep 3600"]
+
+          args:
+            - "--spring.profiles.active={{ .Values.spring.profile }}"
+
+          ports:
+            - containerPort: 8080
+            - containerPort: 8081
+            - containerPort: 8082
+
+          env:
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+          envFrom:
+            - secretRef:
+                name: {{ .Release.Name }}-secret 
+
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+
+          livenessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          readinessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/bin/sh", "-c", "wget http://localhost:8080/service/shutdown"]
+
+          volumeMounts:
+            - name: config-volume
+              mountPath: /app/config.json
+              subPath: config.json
+
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ .Release.Name }}-configmap

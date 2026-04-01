@@ -5,4 +5,4 @@ spring:
   profile: prd
 
 ingress:
-  host: api.dev.cloud-academy.local
+  host: api.prd.cloud-academy.local

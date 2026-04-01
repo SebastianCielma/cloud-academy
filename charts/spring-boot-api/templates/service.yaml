@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-service
+  labels:
+    app: spring-api
+spec:
+  type: {{ .Values.service.type }}
+  
+  selector:
+    app: spring-api
+    
+  ports:
+    - name: api
+      port: 8080
+      targetPort: 8080
+    - name: logs
+      port: 8081
+      targetPort: 8081
+    - name: soap
+      port: 8082
+      targetPort: 8082

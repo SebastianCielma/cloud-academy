@@ -1,3 +1,12 @@
+data "aws_ami" "amazon_linux_2023" {
+  most_recent = true
+  owners      = ["amazon"] 
+
+  filter {
+    name   = "name"
+    values = ["al2023-ami-2023.*-x86_64"]
+  }
+}
 # ------------------------------------------------------------------------
 # IAM EC2
 # ------------------------------------------------------------------------
@@ -36,7 +45,7 @@ resource "aws_iam_instance_profile" "ec2_profile" {
 # ------------------------------------------------------------------------
 module "ec2_web" {
   source               = "./modules/ec2_instance"
-  ami_id               = var.ami_id
+  ami_id = data.aws_ami.amazon_linux_2023.id
   iam_instance_profile = aws_iam_instance_profile.ec2_profile.name
   
   instance_name = "web-1"
@@ -48,7 +57,7 @@ module "ec2_web" {
 
 module "ec2_api" {
   source               = "./modules/ec2_instance"
-  ami_id               = var.ami_id
+  ami_id = data.aws_ami.amazon_linux_2023.id
   iam_instance_profile = aws_iam_instance_profile.ec2_profile.name
   
   instance_name = "api-1"
@@ -60,7 +69,7 @@ module "ec2_api" {
 
 module "ec2_worker" {
   source               = "./modules/ec2_instance"
-  ami_id               = var.ami_id
+  ami_id = data.aws_ami.amazon_linux_2023.id
   iam_instance_profile = aws_iam_instance_profile.ec2_profile.name
   
   instance_name = "worker-1"

@@ -90,6 +90,9 @@ resource "aws_cloudwatch_event_rule" "alarm_trigger" {
     source      = ["aws.cloudwatch"]
     detail-type = ["CloudWatch Alarm State Change"]
     detail = {
+      alarmName = [{
+        prefix = "StressAlarm-"
+      }]
       state = {
         value = ["ALARM"]
       }

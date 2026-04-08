@@ -1,24 +1,44 @@
-const { Kafka } = require('kafkajs');
-
-const instanceName = process.env.INSTANCE_NAME || 'Processor-Default';
+const { Kafka, Partitioners } = require('kafkajs');
+const { randomUUID } = require('crypto');
 
 const kafka = new Kafka({
-  clientId: `processor-app-${instanceName}`, 
+  clientId: 'publisher-app',
   brokers: ['localhost:9092']
 });
 
-const consumer = kafka.consumer({ groupId: 'processor-group' });
+const producer = kafka.producer({
+  createPartitioner: Partitioners.LegacyPartitioner
+});
 
 const run = async () => {
-  await consumer.connect();
+  await producer.connect();
+  console.log('Publisher connected to Kafka.');
 
-  await consumer.subscribe({ topic: 'system-events', fromBeginning: true });
+  const event = {
+    event_id: randomUUID(),
+    event_type: "order_created",
+    source_service: "publisher-service",
+    timestamp: new Date().toISOString(),
+    payload: {
+      order_id: "A-10001",
+      customer_id: "C-42",
+      amount: 199.90,
+      currency: "PLN"
+    }
+  };
 
-  await consumer.run({
-    eachMessage: async ({ topic, partition, message }) => {
-      const eventData = JSON.parse(message.value.toString());      
-    },
+  await producer.send({
+    topic: 'system-events',
+    messages: [
+      { 
+        key: event.payload.order_id, 
+        value: JSON.stringify(event) 
+      },
+    ],
   });
+
+  console.log('Sent event:', event);
+  await producer.disconnect();
 };
 
 run().catch(console.error);

@@ -26,64 +26,75 @@ const sendToDLQ = async (originalMessage, reason, originalId = 'UNKNOWN') => {
       { key: originalId, value: JSON.stringify(dlqEvent) }
     ]
   });
-  console.log(`Event ${originalId} sent to DLQ. Reason: ${reason}`);
+  console.log(` Event ${originalId} sent to DLQ. Reason: ${reason}`);
 };
 
 const run = async () => {
   await producer.connect();
   await consumer.connect();
-  
-  console.log('Processor connected to Kafka. Starting to consume...');
+  console.log('Processor connected to Kafka. Starting to consume');
 
   await consumer.subscribe({ topic: 'raw-data-topic', fromBeginning: true });
 
   await consumer.run({
+    autoCommit: false, 
     eachMessage: async ({ topic, partition, message }) => {
       const rawValue = message.value.toString();
+      const currentOffset = message.offset;
       let parsedEvent;
+      let eventId = 'UNKNOWN';
 
       try {
-        parsedEvent = JSON.parse(rawValue);
-      } catch (error) {
-        await sendToDLQ(rawValue, 'INVALID_JSON_FORMAT');
-        return; 
-      }
-
-      const eventId = parsedEvent.event_id || 'UNKNOWN';
-      const amount = parsedEvent.payload?.amount;
-
-
-      if (amount === undefined || typeof amount !== 'number') {
-        await sendToDLQ(parsedEvent, 'INVALID_OR_MISSING_AMOUNT', eventId);
-        return; 
-      }
-
-
-      const processedEvent = {
-        processed_event_id: randomUUID(),       
-        original_event_id: eventId,             
-        status: 'PROCESSED_SUCCESSFULLY',
-        processed_at: new Date().toISOString(),
-        enriched_data: {
-          order_id: parsedEvent.payload.order_id,
-          customer_id: parsedEvent.payload.customer_id,
-          original_amount: amount,
-          tax_added: parseFloat((amount * 0.23).toFixed(2)), 
-          total_amount: parseFloat((amount * 1.23).toFixed(2))
+        let isJsonValid = true;
+        
+        try {
+          parsedEvent = JSON.parse(rawValue);
+          eventId = parsedEvent.event_id || 'UNKNOWN';
+        } catch (error) {
+          isJsonValid = false;
+          await sendToDLQ(rawValue, 'INVALID_JSON_FORMAT');
         }
-      };
 
-      await producer.send({
-        topic: 'processed-data-topic',
-        messages: [
-          { 
-            key: processedEvent.enriched_data.order_id, 
-            value: JSON.stringify(processedEvent) 
+        if (isJsonValid) {
+          const amount = parsedEvent.payload?.amount;
+
+          if (amount === undefined || typeof amount !== 'number') {
+             await sendToDLQ(parsedEvent, 'INVALID_OR_MISSING_AMOUNT', eventId);
+          } else {
+            const processedEvent = {
+              processed_event_id: randomUUID(),
+              original_event_id: eventId,
+              status: 'PROCESSED_SUCCESSFULLY',
+              processed_at: new Date().toISOString(),
+              enriched_data: {
+                order_id: parsedEvent.payload.order_id,
+                customer_id: parsedEvent.payload.customer_id,
+                original_amount: amount,
+                tax_added: parseFloat((amount * 0.23).toFixed(2)),
+                total_amount: parseFloat((amount * 1.23).toFixed(2))
+              }
+            };
+
+            await producer.send({
+              topic: 'processed-data-topic',
+              messages: [{ key: processedEvent.enriched_data.order_id, value: JSON.stringify(processedEvent) }]
+            });
+            console.log(`Event ${eventId} routed successfully.`);
           }
-        ]
-      });
+        }
 
-      console.log(`Event ${eventId} successfully transformed and routed.`);
+
+        const nextOffset = (BigInt(currentOffset) + 1n).toString();
+        
+        await consumer.commitOffsets([
+          { topic, partition, offset: nextOffset }
+        ]);
+        console.log(`Offset ${currentOffset} saved safely.\n`);
+
+      } catch (error) {
+        console.error(`Failed processing offset ${currentOffset}. Offset will NOT be committed.`);
+        throw error;
+      }
     },
   });
 };

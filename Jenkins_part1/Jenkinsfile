@@ -1,0 +1,57 @@
+pipeline {
+    agent any
+    
+    tools {
+        nodejs 'Node18' 
+    }
+
+    options {
+        timestamps()
+        disableConcurrentBuilds()
+    }
+
+    parameters {
+        choice(name: 'ENV', choices: ['dev', 'test'], description: 'Select the target environment')
+        booleanParam(name: 'RUN_TESTS', defaultValue: true, description: 'Run automated tests')
+        string(name: 'BUILD_VERSION', defaultValue: '1.0.0', description: 'Current build version')
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+        
+        stage('Install Dependencies') {
+            steps {
+                sh 'npm install'
+            }
+        }
+        
+        stage('Run Tests') {
+            when {
+                expression { return params.RUN_TESTS == true }
+            }
+            steps {
+                sh 'npm test'
+                
+                sh 'echo "Tests passed successfully for version ${BUILD_VERSION}" > test-report.txt'
+            }
+        }
+    }
+
+    post {
+        always {
+            echo "Build version: ${params.BUILD_VERSION}"
+            echo "Executing always - cleanup or final logging."
+            archiveArtifacts artifacts: 'test-report.txt', allowEmptyArchive: true
+        }
+        success {
+            echo "Build completed successfully"
+        }
+        failure {
+            echo "Build failed - check logs"
+        }
+    }
+}

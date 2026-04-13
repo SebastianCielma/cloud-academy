@@ -10,9 +10,10 @@ pipeline {
         disableConcurrentBuilds()
     }
 
+    // Pipeline parameterization
     parameters {
         choice(name: 'ENV', choices: ['dev', 'test'], description: 'Select the target environment')
-        booleanParam(name: 'RUN_TESTS', defaultValue: true, description: 'Run automated tests')
+        booleanParam(name: 'RUN_TESTS', defaultValue: true, description: 'Run automated tests?')
         string(name: 'BUILD_VERSION', defaultValue: '1.0.0', description: 'Current build version')
     }
 
@@ -25,7 +26,9 @@ pipeline {
         
         stage('Install Dependencies') {
             steps {
-                sh 'npm install'
+                dir('Jenkins_part1') {
+                    sh 'npm install'
+                }
             }
         }
         
@@ -34,7 +37,9 @@ pipeline {
                 expression { return params.RUN_TESTS == true }
             }
             steps {
-                sh 'npm test'
+                dir('Jenkins_part1') {
+                    sh 'npm test'
+                }
                 
                 sh 'echo "Tests passed successfully for version ${BUILD_VERSION}" > test-report.txt'
             }

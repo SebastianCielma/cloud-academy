@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: publisher-app
+  namespace: kafka
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: publisher
+  template:
+    metadata:
+      labels:
+        app: publisher
+    spec:
+      containers:
+      - name: publisher
+        image: my-publisher:v1
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: KAFKA_BOOTSTRAP_SERVERS
+          value: "my-cluster-kafka-bootstrap.kafka.svc:9092"
+        - name: TOPIC_RAW_DATA
+          value: "raw-data"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: processor-app
+  namespace: kafka
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: processor
+  template:
+    metadata:
+      labels:
+        app: processor
+    spec:
+      containers:
+      - name: processor
+        image: my-processor:v1
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: KAFKA_BOOTSTRAP_SERVERS
+          value: "my-cluster-kafka-bootstrap.kafka.svc:9092"
+        - name: TOPIC_RAW_DATA
+          value: "raw-data"
+        - name: TOPIC_PROCESSED_DATA
+          value: "processed-data"
+        - name: TOPIC_DLQ
+          value: "dlq-topic"
+        - name: CONSUMER_GROUP
+          value: "processor-group"

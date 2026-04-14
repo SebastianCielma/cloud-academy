@@ -1,0 +1,55 @@
+pipeline {
+    agent { label 'ci' } 
+
+    environment {
+        API_TOKEN = credentials('MY_API_TOKEN')
+    }
+
+    options {
+        timestamps()
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Docker Build') {
+            steps {
+                dir('Jenkins_part2') {
+                    sh 'docker build -t task-api:local .'
+                }
+            }
+        }
+
+        stage('Docker Run & Verify') {
+            steps {
+                dir('Jenkins_part2') {
+                    sh 'docker rm -f task-api-container || true'
+                    
+                    sh 'docker run -d -p 3000:3000 --name task-api-container task-api:local'
+                    
+                    sh 'sleep 5'
+                    
+                    sh 'curl -f http://localhost:3000/health'
+                    
+                    sh 'echo " token: ${API_TOKEN}"'
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            sh 'docker rm -f task-api-container || true'
+        }
+        success {
+            echo "Ok"
+        }
+        failure {
+            echo "Error"
+        }
+    }
+}

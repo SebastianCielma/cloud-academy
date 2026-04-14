@@ -33,7 +33,7 @@ pipeline {
                     
                     sh 'sleep 5'
                     
-                    sh 'curl -f http://localhost:3000/health'
+                    sh 'curl -f http://host.docker.internal:3000/health'
                     
                     sh 'echo " token: ${API_TOKEN}"'
                 }

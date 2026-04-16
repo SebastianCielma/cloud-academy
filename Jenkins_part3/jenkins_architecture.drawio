@@ -1,0 +1,217 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36" version="29.6.3" pages="2">
+  <diagram id="diagram-a" name="Diagram A – App Deployment">
+    <mxGraphModel dx="1360" dy="827" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title-a" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1;" value="Diagram A — Application Deployment Architecture (AWS)" vertex="1">
+          <mxGeometry height="40" width="700" x="300" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="user" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontStyle=1;fontSize=13;" value="User / Internet" vertex="1">
+          <mxGeometry height="50" width="200" x="550" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" source="user" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=11;" target="route53" value="HTTPS">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="route53" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=13;" value="Route 53&#xa;DNS routing" vertex="1">
+          <mxGeometry height="50" width="200" x="550" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="route53" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="alb" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="alb" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=13;" value="Application Load Balancer&#xa;TLS termination · public subnet" vertex="1">
+          <mxGeometry height="50" width="300" x="500" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="vpc" parent="1" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];shape=mxgraph.cisco.sites.generic_building;dashed=1;strokeColor=#0066CC;fillColor=none;verticalLabelPosition=top;labelPosition=center;verticalAlign=bottom;align=center;fontSize=12;fontColor=#0066CC;strokeWidth=2;" value="AWS VPC (private subnets)" vertex="1">
+          <mxGeometry height="430" width="1100" x="100" y="340" as="geometry" />
+        </mxCell>
+        <mxCell id="vpc-bg" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=12;fontColor=#0066CC;fontStyle=2;" value="AWS VPC (private subnets)" vertex="1">
+          <mxGeometry height="20" width="260" x="120" y="348" as="geometry" />
+        </mxCell>
+        <mxCell id="vpc-rect" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#0066CC;strokeWidth=1;dashed=1;dashPattern=8 4;" value="" vertex="1">
+          <mxGeometry height="420" width="1080" x="110" y="340" as="geometry" />
+        </mxCell>
+        <mxCell id="dev-bg" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#00897B;strokeWidth=1;dashed=1;" value="" vertex="1">
+          <mxGeometry height="230" width="360" x="140" y="375" as="geometry" />
+        </mxCell>
+        <mxCell id="dev-label" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=12;fontColor=#00897B;fontStyle=2;" value="dev environment" vertex="1">
+          <mxGeometry height="20" width="140" x="155" y="382" as="geometry" />
+        </mxCell>
+        <mxCell id="ecs-dev" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=13;" value="ECS Fargate (dev)&#xa;Node.js Task API container" vertex="1">
+          <mxGeometry height="60" width="290" x="170" y="410" as="geometry" />
+        </mxCell>
+        <mxCell id="rds-dev" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=13;" value="RDS PostgreSQL (dev)&#xa;Private subnet" vertex="1">
+          <mxGeometry height="60" width="290" x="170" y="510" as="geometry" />
+        </mxCell>
+        <mxCell id="e-ecs-rds-dev" edge="1" parent="1" source="ecs-dev" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="rds-dev" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="prod-bg" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#7B1FA2;strokeWidth=1;dashed=1;" value="" vertex="1">
+          <mxGeometry height="230" width="360" x="800" y="375" as="geometry" />
+        </mxCell>
+        <mxCell id="prod-label" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=12;fontColor=#7B1FA2;fontStyle=2;" value="prod environment" vertex="1">
+          <mxGeometry height="20" width="150" x="815" y="382" as="geometry" />
+        </mxCell>
+        <mxCell id="ecs-prod" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=13;" value="ECS Fargate (prod)&#xa;Node.js Task API container" vertex="1">
+          <mxGeometry height="60" width="290" x="830" y="410" as="geometry" />
+        </mxCell>
+        <mxCell id="rds-prod" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=13;" value="RDS PostgreSQL (prod)&#xa;Private subnet" vertex="1">
+          <mxGeometry height="60" width="290" x="830" y="510" as="geometry" />
+        </mxCell>
+        <mxCell id="e-ecs-rds-prod" edge="1" parent="1" source="ecs-prod" style="edgeStyle=orthogonalEdgeStyle;html=1;" target="rds-prod" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-alb-dev" edge="1" parent="1" source="alb" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;" target="ecs-dev" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-alb-prod" edge="1" parent="1" source="alb" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.75;exitY=1;exitDx=0;exitDy=0;" target="ecs-prod" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="shared-bg" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#888780;strokeWidth=1;dashed=1;" value="" vertex="1">
+          <mxGeometry height="105" width="1020" x="140" y="635" as="geometry" />
+        </mxCell>
+        <mxCell id="shared-label" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=12;fontColor=#888780;fontStyle=2;" value="shared services" vertex="1">
+          <mxGeometry height="20" width="150" x="155" y="642" as="geometry" />
+        </mxCell>
+        <mxCell id="secrets" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=13;" value="Secrets Manager&#xa;API keys, DB passwords" vertex="1">
+          <mxGeometry height="60" width="230" x="160" y="665" as="geometry" />
+        </mxCell>
+        <mxCell id="cloudwatch" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=13;" value="CloudWatch&#xa;Logs, metrics" vertex="1">
+          <mxGeometry height="60" width="230" x="430" y="665" as="geometry" />
+        </mxCell>
+        <mxCell id="ecr" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=13;" value="ECR&#xa;Docker image registry" vertex="1">
+          <mxGeometry height="60" width="230" x="700" y="665" as="geometry" />
+        </mxCell>
+        <mxCell id="s3tf" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=12;" value="S3 (Terraform state) + DynamoDB (state lock)" vertex="1">
+          <mxGeometry height="60" width="170" x="970" y="665" as="geometry" />
+        </mxCell>
+        <mxCell id="e-dev-sec" edge="1" parent="1" source="ecs-dev" style="edgeStyle=orthogonalEdgeStyle;html=1;dashed=1;strokeColor=#999999;fontSize=11;" target="secrets" value="fetch secrets">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-prod-sec" edge="1" parent="1" source="ecs-prod" style="edgeStyle=orthogonalEdgeStyle;html=1;dashed=1;strokeColor=#999999;fontSize=11;" target="secrets" value="fetch secrets">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="diagram-b" name="Diagram B – CI/CD Platform">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <!-- Title -->
+        <mxCell id="title-b" value="Diagram B — CI/CD Platform Architecture (AWS + Jenkins)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="300" y="20" width="760" height="40" as="geometry" />
+        </mxCell>
+        <!-- Developer -->
+        <mxCell id="dev" value="Developer&#xa;pushes code" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="80" y="80" width="180" height="60" as="geometry" />
+        </mxCell>
+        <!-- Git -->
+        <mxCell id="git" value="Git Repository&#xa;GitHub / GitLab" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="380" y="80" width="200" height="60" as="geometry" />
+        </mxCell>
+        <!-- Terraform provisioning -->
+        <mxCell id="tf-prov" value="Terraform (IaC)&#xa;provisions Jenkins infra" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="900" y="80" width="220" height="60" as="geometry" />
+        </mxCell>
+        <!-- Arrow: dev -> git -->
+        <mxCell id="eb1" value="git push" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=11;" edge="1" source="dev" target="git" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <!-- Jenkins Platform VPC -->
+        <mxCell id="j-vpc-rect" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#0066CC;strokeWidth=1;dashed=1;dashPattern=8 4;" vertex="1" parent="1">
+          <mxGeometry x="80" y="200" width="1080" height="370" as="geometry" />
+        </mxCell>
+        <mxCell id="j-vpc-label" value="Jenkins platform VPC (private subnet)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=12;fontColor=#0066CC;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="100" y="208" width="320" height="20" as="geometry" />
+        </mxCell>
+        <!-- EC2 Jenkins box -->
+        <mxCell id="ec2-bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#7B1FA2;strokeWidth=1;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="110" y="235" width="400" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="ec2-label" value="EC2 instance (t3.medium)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=12;fontColor=#7B1FA2;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="126" y="243" width="220" height="20" as="geometry" />
+        </mxCell>
+        <!-- Jenkins Controller -->
+        <mxCell id="jenkins" value="Jenkins Controller&#xa;Pipelines, UI, scheduling" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="140" y="270" width="340" height="60" as="geometry" />
+        </mxCell>
+        <!-- EBS -->
+        <mxCell id="ebs" value="EBS Volume&#xa;Persistent Jenkins data" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="140" y="360" width="340" height="60" as="geometry" />
+        </mxCell>
+        <!-- IAM Role -->
+        <mxCell id="iam" value="IAM Role (least privilege)&#xa;ECR push, ECS deploy only" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="140" y="450" width="340" height="60" as="geometry" />
+        </mxCell>
+        <!-- Access control box -->
+        <mxCell id="ac-bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#00897B;strokeWidth=1;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="560" y="235" width="560" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="ac-label" value="access control" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=12;fontColor=#00897B;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="576" y="243" width="150" height="20" as="geometry" />
+        </mxCell>
+        <!-- SSM -->
+        <mxCell id="ssm" value="SSM Session Manager&#xa;No public SSH port" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="590" y="270" width="490" height="60" as="geometry" />
+        </mxCell>
+        <!-- ALB Jenkins -->
+        <mxCell id="alb-j" value="ALB + Jenkins built-in auth&#xa;UI access · HTTPS only" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="590" y="360" width="490" height="60" as="geometry" />
+        </mxCell>
+        <!-- Security Group -->
+        <mxCell id="sg" value="Security Group&#xa;Restrict inbound — no 0.0.0.0/0" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="590" y="450" width="490" height="60" as="geometry" />
+        </mxCell>
+        <!-- Application infra box -->
+        <mxCell id="app-bg" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#E65100;strokeWidth=1;dashed=1;dashPattern=8 4;" vertex="1" parent="1">
+          <mxGeometry x="80" y="600" width="1080" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="app-label" value="Application infrastructure (separate VPC / accounts)" style="text;html=1;strokeColor=none;fillColor=none;align=left;fontSize=12;fontColor=#E65100;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="100" y="608" width="420" height="20" as="geometry" />
+        </mxCell>
+        <!-- ECR app -->
+        <mxCell id="ecr-app" value="ECR&#xa;Docker image store" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="110" y="640" width="230" height="60" as="geometry" />
+        </mxCell>
+        <!-- ECS app -->
+        <mxCell id="ecs-app" value="ECS Fargate&#xa;dev + prod services" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="430" y="640" width="230" height="60" as="geometry" />
+        </mxCell>
+        <!-- S3 TF state -->
+        <mxCell id="s3-tf" value="S3 + DynamoDB&#xa;Remote Terraform state" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="760" y="640" width="230" height="60" as="geometry" />
+        </mxCell>
+        <!-- Manual approval gate -->
+        <mxCell id="approval" value="Manual Approval Gate&#xa;Required before prod deploy" style="rhombus;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=13;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="390" y="730" width="380" height="70" as="geometry" />
+        </mxCell>
+        <!-- Arrows: git -> Jenkins (webhook) -->
+        <mxCell id="eb2" value="webhook trigger" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=11;" edge="1" source="git" target="jenkins" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <!-- Terraform -> EC2 (provisions) -->
+        <mxCell id="eb3" value="provisions" style="edgeStyle=orthogonalEdgeStyle;html=1;dashed=1;strokeColor=#999999;fontSize=11;" edge="1" source="tf-prov" target="ec2-bg" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <!-- Jenkins -> ECR -->
+        <mxCell id="eb4" value="push image" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=11;" edge="1" source="jenkins" target="ecr-app" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <!-- Jenkins -> ECS -->
+        <mxCell id="eb5" value="deploy" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=11;" edge="1" source="jenkins" target="ecs-app" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <!-- Jenkins -> S3 TF -->
+        <mxCell id="eb6" value="terraform apply" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=11;" edge="1" source="jenkins" target="s3-tf" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <!-- ECS -> approval -->
+        <mxCell id="eb7" value="prod pipeline" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=11;" edge="1" source="ecs-app" target="approval" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

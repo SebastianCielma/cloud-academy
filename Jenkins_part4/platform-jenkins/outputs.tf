@@ -4,6 +4,6 @@ output "jenkins_url" {
 }
 
 output "jenkins_private_ip" {
-  description = "Private IP address of the Jenkins EC2 instance (for SSM access)"
+  description = "Private IP address of the Jenkins EC2 instance"
   value       = module.jenkins_node.private_ip
 }

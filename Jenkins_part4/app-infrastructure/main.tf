@@ -21,8 +21,9 @@ module "ecr" {
 }
 
 module "ecs" {
-  source = "./modules/ecs"
-  env    = local.env
+  source             = "./modules/ecs"
+  env                = local.env
+  ecr_repository_url = module.ecr.repository_url 
 }
 
 output "ecr_repository_url" {

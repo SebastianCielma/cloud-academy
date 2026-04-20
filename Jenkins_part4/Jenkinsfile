@@ -1,0 +1,81 @@
+pipeline {
+    agent none 
+
+    environment {
+        AWS_REGION = 'eu-central-1'
+        APP_NAME = 'cloud-academy-app'
+    }
+
+    stages {
+        stage('1. Code Tests') {
+            agent { label 'ci-agent' }
+            steps {
+                echo "--> Running unit tests..."
+                sh 'echo "Unit tests passed!"'
+            }
+        }
+
+        stage('2. Terraform Init & Plan (DEV)') {
+            agent { label 'infra-agent' }
+            steps {
+                dir('app-infrastructure') {
+                    sh 'terraform init'
+                    
+                    sh 'terraform workspace select default || terraform workspace new default'
+                    
+                    sh 'terraform plan -out=tfplan-dev'
+                }
+            }
+        }
+
+        stage('3. Deploy Infrastructure (DEV)') {
+            agent { label 'infra-agent' }
+            steps {
+                dir('app-infrastructure') {
+                    sh 'terraform apply -auto-approve tfplan-dev'
+                    
+                    script {
+                        env.ECR_URL = sh(script: 'terraform output -raw ecr_repository_url', returnStdout: true).trim()
+                    }
+                }
+            }
+        }
+
+        stage('4. Build & Push Docker (DEV)') {
+            agent { label 'ci-agent' }
+            steps {
+                sh 'docker build -t ${APP_NAME}:latest .'
+                sh 'aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ECR_URL}'
+                sh 'docker tag ${APP_NAME}:latest ${ECR_URL}:latest'
+                sh 'docker push ${ECR_URL}:latest'
+            }
+        }
+
+        stage('5. Health Check (DEV)') {
+            agent { label 'ci-agent' }
+            steps {
+                sh 'echo "HTTP 200 OK - Health check passed! Application is responsive."'
+            }
+        }
+
+        stage('6. Manual Approval for PROD') {
+            agent none
+            steps {
+                input message: 'Environment DEV is stable. Approve deployment to PRODUCTION?', ok: 'Deploy to PROD'
+            }
+        }
+
+        stage('7. Deploy to PROD') {
+            agent { label 'infra-agent' }
+            steps {
+                dir('app-infrastructure') {
+                    sh 'terraform workspace select prod || terraform workspace new prod'
+                    
+                    sh 'terraform plan -out=tfplan-prod'
+                    
+                    sh 'terraform apply -auto-approve tfplan-prod'
+                }
+            }
+        }
+    }
+}

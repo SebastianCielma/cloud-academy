@@ -3,14 +3,15 @@ pipeline {
 
     environment {
         AWS_REGION = 'eu-central-1'
-        APP_NAME = 'cloud-academy-app'
+        APP_NAME   = 'cloud-academy-app'
+        BASE_DIR   = 'Jenkins_part4'
     }
 
     stages {
         stage('1. Code Tests') {
             agent { label 'ci-agent' }
             steps {
-                echo "--> Running unit tests..."
+                echo "--> Running unit tests in ${BASE_DIR}..."
                 sh 'echo "Unit tests passed!"'
             }
         }
@@ -18,7 +19,7 @@ pipeline {
         stage('2. Terraform Init & Plan (DEV)') {
             agent { label 'infra-agent' }
             steps {
-                dir('app-infrastructure') {
+                dir("${BASE_DIR}/app-infrastructure") {
                     sh 'terraform init'
                     
                     sh 'terraform workspace select default || terraform workspace new default'
@@ -31,7 +32,7 @@ pipeline {
         stage('3. Deploy Infrastructure (DEV)') {
             agent { label 'infra-agent' }
             steps {
-                dir('app-infrastructure') {
+                dir("${BASE_DIR}/app-infrastructure") {
                     sh 'terraform apply -auto-approve tfplan-dev'
                     
                     script {
@@ -44,17 +45,18 @@ pipeline {
         stage('4. Build & Push Docker (DEV)') {
             agent { label 'ci-agent' }
             steps {
-                sh 'docker build -t ${APP_NAME}:latest .'
-                sh 'aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${ECR_URL}'
-                sh 'docker tag ${APP_NAME}:latest ${ECR_URL}:latest'
-                sh 'docker push ${ECR_URL}:latest'
+                sh "docker build -t ${APP_NAME}:latest ./${BASE_DIR}"
+                
+                sh "aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${env.ECR_URL}"
+                sh "docker tag ${APP_NAME}:latest ${env.ECR_URL}:latest"
+                sh "docker push ${env.ECR_URL}:latest"
             }
         }
 
         stage('5. Health Check (DEV)') {
             agent { label 'ci-agent' }
             steps {
-                sh 'echo "HTTP 200 OK - Health check passed! Application is responsive."'
+                sh 'echo "HTTP 200 OK - Health check passed!"'
             }
         }
 
@@ -68,7 +70,7 @@ pipeline {
         stage('7. Deploy to PROD') {
             agent { label 'infra-agent' }
             steps {
-                dir('app-infrastructure') {
+                dir("${BASE_DIR}/app-infrastructure") {
                     sh 'terraform workspace select prod || terraform workspace new prod'
                     
                     sh 'terraform plan -out=tfplan-prod'

@@ -16,7 +16,7 @@ pipeline {
             }
         }
 
-        stage('2. Terraform Init & Plan (DEV)') {
+        stage('2. Deploy Infrastructure (DEV)') {
             agent { label 'infra-agent' }
             steps {
                 dir("${BASE_DIR}/app-infrastructure") {
@@ -25,14 +25,6 @@ pipeline {
                     sh 'terraform workspace select default || terraform workspace new default'
                     
                     sh 'terraform plan -out=tfplan-dev'
-                }
-            }
-        }
-
-        stage('3. Deploy Infrastructure (DEV)') {
-            agent { label 'infra-agent' }
-            steps {
-                dir("${BASE_DIR}/app-infrastructure") {
                     sh 'terraform apply -auto-approve tfplan-dev'
                     
                     script {
@@ -42,7 +34,7 @@ pipeline {
             }
         }
 
-        stage('4. Build & Push Docker (DEV)') {
+        stage('3. Build & Push Docker (DEV)') {
             agent { label 'ci-agent' }
             steps {
                 sh "docker build -t ${APP_NAME}:latest ./${BASE_DIR}"
@@ -53,28 +45,29 @@ pipeline {
             }
         }
 
-        stage('5. Health Check (DEV)') {
+        stage('4. Health Check (DEV)') {
             agent { label 'ci-agent' }
             steps {
                 sh 'echo "HTTP 200 OK - Health check passed!"'
             }
         }
 
-        stage('6. Manual Approval for PROD') {
+        stage('5. Manual Approval for PROD') {
             agent none
             steps {
                 input message: 'Environment DEV is stable. Approve deployment to PRODUCTION?', ok: 'Deploy to PROD'
             }
         }
 
-        stage('7. Deploy to PROD') {
+        stage('6. Deploy to PROD') {
             agent { label 'infra-agent' }
             steps {
                 dir("${BASE_DIR}/app-infrastructure") {
+                    sh 'terraform init'
+                    
                     sh 'terraform workspace select prod || terraform workspace new prod'
                     
                     sh 'terraform plan -out=tfplan-prod'
-                    
                     sh 'terraform apply -auto-approve tfplan-prod'
                 }
             }

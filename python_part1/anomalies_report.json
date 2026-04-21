@@ -1,0 +1,22 @@
+[
+    {
+        "date": "2026-03-04",
+        "service": "EKS",
+        "environment": "prod",
+        "actual cost": 245.0,
+        "baseline cost": 119.67,
+        "increase percent": 104.74,
+        "severity": "CRITICAL",
+        "reason": "cost exceeded anomaly threshold"
+    },
+    {
+        "date": "2026-03-04",
+        "service": "NATGateway",
+        "environment": "prod",
+        "actual cost": 96.0,
+        "baseline cost": 32.0,
+        "increase percent": 200.0,
+        "severity": "CRITICAL",
+        "reason": "cost exceeded anomaly threshold"
+    }
+]

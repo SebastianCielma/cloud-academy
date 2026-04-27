@@ -1,0 +1,73 @@
+=== DIAGNOSTIC REPORT ===
+Timestamp: Mon Apr 27 06:26:11 PM CEST 2026
+Service: payment-api
+
+--- 1. Service Status (systemctl status) ---
+● payment-api.service - Fake Payment API for Self-Healing Toolkit Lab
+     Loaded: loaded (/etc/systemd/system/payment-api.service; enabled; preset: enabled)
+     Active: activating (auto-restart) (Result: exit-code) since Mon 2026-04-27 18:26:09 CEST; 1s ago
+    Process: 1375474 ExecStart=/usr/bin/python3 /opt/payment-api-lab/app.py (code=exited, status=1/FAILURE)
+   Main PID: 1375474 (code=exited, status=1/FAILURE)
+        CPU: 200ms
+
+--- 2. Recent Logs (journalctl) ---
+Apr 27 18:25:21 sebastian-HP-Pavilion-Laptop-15-eg0xxx python3[1374897]:   File "/usr/lib/python3.12/socketserver.py", line 473, in server_bind
+Apr 27 18:25:21 sebastian-HP-Pavilion-Laptop-15-eg0xxx python3[1374897]:     self.socket.bind(self.server_address)
+Apr 27 18:25:21 sebastian-HP-Pavilion-Laptop-15-eg0xxx python3[1374897]: OSError: [Errno 98] Address already in use
+Apr 27 18:25:21 sebastian-HP-Pavilion-Laptop-15-eg0xxx systemd[1]: payment-api.service: Main process exited, code=exited, status=1/FAILURE
+Apr 27 18:25:21 sebastian-HP-Pavilion-Laptop-15-eg0xxx systemd[1]: payment-api.service: Failed with result 'exit-code'.
+Apr 27 18:25:24 sebastian-HP-Pavilion-Laptop-15-eg0xxx systemd[1]: payment-api.service: Scheduled restart job, restart counter is at 41.
+Apr 27 18:25:24 sebastian-HP-Pavilion-Laptop-15-eg0xxx systemd[1]: Started payment-api.service - Fake Payment API for Self-Healing Toolkit Lab.
+Apr 27 18:25:24 sebastian-HP-Pavilion-Laptop-15-eg0xxx python3[1374939]: Traceback (most recent call last):
+Apr 27 18:25:24 sebastian-HP-Pavilion-Laptop-15-eg0xxx python3[1374939]:   File "/opt/payment-api-lab/app.py", line 27, in <module>
+Apr 27 18:25:24 sebastian-HP-Pavilion-Laptop-15-eg0xxx python3[1374939]:     server = HTTPServer(("0.0.0.0", PORT), Handler)
+Apr 27 18:25:24 sebastian-HP-Pavilion-Laptop-15-eg0xxx python3[1374939]:              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Apr 27 18:25:24 sebastian-HP-Pavilion-Laptop-15-eg0xxx python3[1374939]:   File "/usr/lib/python3.12/socketserver.py", line 457, in __init__
+Apr 27 18:25:24 sebastian-HP-Pavilion-Laptop-15-eg0xxx python3[1374939]:     self.server_bind()
+Apr 27 18:25:24 sebastian-HP-Pavilion-Laptop-15-eg0xxx python3[1374939]:   File "/usr/lib/python3.12/http/server.py", line 136, in server_bind
+Apr 27 18:25:24 sebastian-HP-Pavilion-Laptop-15-eg0xxx python3[1374939]:     socketserver.TCPServer.server_bind(self)
+Apr 27 18:25:24 sebastian-HP-Pavilion-Laptop-15-eg0xxx python3[1374939]:   File "/usr/lib/python3.12/socketserver.py", line 473, in server_bind
+Apr 27 18:25:24 sebastian-HP-Pavilion-Laptop-15-eg0xxx python3[1374939]:     self.socket.bind(self.server_address)
+Apr 27 18:25:24 sebastian-HP-Pavilion-Laptop-15-eg0xxx python3[1374939]: OSError: [Errno 98] Address already in use
+Apr 27 18:25:24 sebastian-HP-Pavilion-Laptop-15-eg0xxx systemd[1]: payment-api.service: Main process exited, code=exited, status=1/FAILURE
+Apr 27 18:25:24 sebastian-HP-Pavilion-Laptop-15-eg0xxx systemd[1]: payment-api.service: Failed with result 'exit-code'.
+Apr 27 18:25:25 sebastian-HP-Pavilion-Laptop-15-eg0xxx systemd[1]: Stopped payment-api.service - Fake Payment API for Self-Healing Toolkit Lab.
+Apr 27 18:26:06 sebastian-HP-Pavilion-Laptop-15-eg0xxx systemd[1]: Started payment-api.service - Fake Payment API for Self-Healing Toolkit Lab.
+Apr 27 18:26:06 sebastian-HP-Pavilion-Laptop-15-eg0xxx python3[1375404]: Traceback (most recent call last):
+Apr 27 18:26:06 sebastian-HP-Pavilion-Laptop-15-eg0xxx python3[1375404]:   File "/opt/payment-api-lab/app.py", line 27, in <module>
+Apr 27 18:26:06 sebastian-HP-Pavilion-Laptop-15-eg0xxx python3[1375404]:     server = HTTPServer(("0.0.0.0", PORT), Handler)
+Apr 27 18:26:06 sebastian-HP-Pavilion-Laptop-15-eg0xxx python3[1375404]:              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Apr 27 18:26:06 sebastian-HP-Pavilion-Laptop-15-eg0xxx python3[1375404]:   File "/usr/lib/python3.12/socketserver.py", line 457, in __init__
+Apr 27 18:26:06 sebastian-HP-Pavilion-Laptop-15-eg0xxx python3[1375404]:     self.server_bind()
+Apr 27 18:26:06 sebastian-HP-Pavilion-Laptop-15-eg0xxx python3[1375404]:   File "/usr/lib/python3.12/http/server.py", line 136, in server_bind
+Apr 27 18:26:06 sebastian-HP-Pavilion-Laptop-15-eg0xxx python3[1375404]:     socketserver.TCPServer.server_bind(self)
+Apr 27 18:26:06 sebastian-HP-Pavilion-Laptop-15-eg0xxx python3[1375404]:   File "/usr/lib/python3.12/socketserver.py", line 473, in server_bind
+Apr 27 18:26:06 sebastian-HP-Pavilion-Laptop-15-eg0xxx python3[1375404]:     self.socket.bind(self.server_address)
+Apr 27 18:26:06 sebastian-HP-Pavilion-Laptop-15-eg0xxx python3[1375404]: OSError: [Errno 98] Address already in use
+Apr 27 18:26:06 sebastian-HP-Pavilion-Laptop-15-eg0xxx systemd[1]: payment-api.service: Main process exited, code=exited, status=1/FAILURE
+Apr 27 18:26:06 sebastian-HP-Pavilion-Laptop-15-eg0xxx systemd[1]: payment-api.service: Failed with result 'exit-code'.
+Apr 27 18:26:09 sebastian-HP-Pavilion-Laptop-15-eg0xxx systemd[1]: payment-api.service: Scheduled restart job, restart counter is at 42.
+Apr 27 18:26:09 sebastian-HP-Pavilion-Laptop-15-eg0xxx systemd[1]: Started payment-api.service - Fake Payment API for Self-Healing Toolkit Lab.
+Apr 27 18:26:09 sebastian-HP-Pavilion-Laptop-15-eg0xxx python3[1375474]: Traceback (most recent call last):
+Apr 27 18:26:09 sebastian-HP-Pavilion-Laptop-15-eg0xxx python3[1375474]:   File "/opt/payment-api-lab/app.py", line 27, in <module>
+Apr 27 18:26:09 sebastian-HP-Pavilion-Laptop-15-eg0xxx python3[1375474]:     server = HTTPServer(("0.0.0.0", PORT), Handler)
+Apr 27 18:26:09 sebastian-HP-Pavilion-Laptop-15-eg0xxx python3[1375474]:              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Apr 27 18:26:09 sebastian-HP-Pavilion-Laptop-15-eg0xxx python3[1375474]:   File "/usr/lib/python3.12/socketserver.py", line 457, in __init__
+Apr 27 18:26:09 sebastian-HP-Pavilion-Laptop-15-eg0xxx python3[1375474]:     self.server_bind()
+Apr 27 18:26:09 sebastian-HP-Pavilion-Laptop-15-eg0xxx python3[1375474]:   File "/usr/lib/python3.12/http/server.py", line 136, in server_bind
+Apr 27 18:26:09 sebastian-HP-Pavilion-Laptop-15-eg0xxx python3[1375474]:     socketserver.TCPServer.server_bind(self)
+Apr 27 18:26:09 sebastian-HP-Pavilion-Laptop-15-eg0xxx python3[1375474]:   File "/usr/lib/python3.12/socketserver.py", line 473, in server_bind
+Apr 27 18:26:09 sebastian-HP-Pavilion-Laptop-15-eg0xxx python3[1375474]:     self.socket.bind(self.server_address)
+Apr 27 18:26:09 sebastian-HP-Pavilion-Laptop-15-eg0xxx python3[1375474]: OSError: [Errno 98] Address already in use
+Apr 27 18:26:09 sebastian-HP-Pavilion-Laptop-15-eg0xxx systemd[1]: payment-api.service: Main process exited, code=exited, status=1/FAILURE
+Apr 27 18:26:09 sebastian-HP-Pavilion-Laptop-15-eg0xxx systemd[1]: payment-api.service: Failed with result 'exit-code'.
+
+--- 3. Port Inspection (ss -ltnp) ---
+LISTEN 0      5                 0.0.0.0:8080       0.0.0.0:*    users:(("python3",pid=715331,fd=3))        
+
+--- 4. Health Endpoint Check (curl) ---
+{"status":"UP","version":"v1"}
+--- 5. Summary of Actions Taken ---
+Action: Automated recovery (restart) attempted.
+Result: Recovery failed. Validations did not pass after restart.
+=========================

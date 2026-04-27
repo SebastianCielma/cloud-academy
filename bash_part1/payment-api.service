@@ -1,0 +1,16 @@
+[Unit]
+Description=Fake Payment API for Self-Healing Toolkit Lab
+After=network.target
+
+[Service]
+Type=simple
+Environment=APP_PORT=8080
+Environment=BROKEN_HEALTH=false
+ExecStart=/usr/bin/python3 /opt/payment-api-lab/app.py
+Restart=always
+RestartSec=3
+User=root
+WorkingDirectory=/opt/payment-api-lab
+
+[Install]
+WantedBy=multi-user.target

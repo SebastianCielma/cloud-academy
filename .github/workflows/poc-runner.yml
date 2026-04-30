@@ -1,0 +1,26 @@
+name: K8s Runner Validation
+
+on:
+  push:
+    paths:
+      - 'self_hosted_runners_part1/**'
+  workflow_dispatch:
+
+jobs:
+  validation-job:
+    runs-on: my-runner-set 
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Environment validation
+        run: |
+          echo "=== Operating System Information ==="
+          cat /etc/os-release
+          
+          echo "=== Pod Name (Hostname) ==="
+          hostname
+          
+          echo "=== Kubernetes Environment Variables ==="
+          env | grep KUBE

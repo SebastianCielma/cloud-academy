@@ -28,11 +28,11 @@ jobs:
 
       - name: Build Payment API
         working-directory: ./self_hosted_runners_part2/payment-api
-        run: ./gradlew clean build 
+        run: mvn clean install
 
       - name: Build Payment Worker
         working-directory: ./self_hosted_runners_part2/payment-worker
-        run: ./gradlew clean build
+        run: mvn clean install
 
       - name: Build Docker Image - Payment API
         working-directory: ./self_hosted_runners_part2/payment-api

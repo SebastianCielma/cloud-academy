@@ -1,0 +1,43 @@
+name: Payment Platform CI (Self-Hosted)
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'self_hosted_runners_part2/**'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'self_hosted_runners_part2/**'
+
+jobs:
+  build-and-test:
+    runs-on: k8s-runner-set 
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Build Payment API
+        working-directory: ./self_hosted_runners_part2/payment-api
+        run: ./gradlew clean build 
+
+      - name: Build Payment Worker
+        working-directory: ./self_hosted_runners_part2/payment-worker
+        run: ./gradlew clean build
+
+      - name: Build Docker Image - Payment API
+        working-directory: ./self_hosted_runners_part2/payment-api
+        run: docker build -t finpay/payment-api:latest .
+      
+      - name: Build Docker Image - Payment Worker
+        working-directory: ./self_hosted_runners_part2/payment-worker
+        run: docker build -t finpay/payment-worker:latest .

@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  APP_ENV: "production"
+  LOG_LEVEL: "INFO"
+  DB_URL: "jdbc:postgresql://finpay-production-postgres.cb2m2ymm2sc3.eu-central-1.rds.amazonaws.com:5432/paymentdb"
+  DB_USER: "postgres"
+  PAYMENT_WORKER_BASE_URL: "http://payment-worker-service:8090"
+  PAYMENT_API_BASE_URL: "http://payment-api-service:80"

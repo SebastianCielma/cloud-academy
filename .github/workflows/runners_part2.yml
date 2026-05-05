@@ -26,18 +26,15 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      - name: Setup Maven
+        uses: stCarolas/setup-maven@v4.5
+        with:
+          maven-version: 3.9.5
+
       - name: Build Payment API
         working-directory: ./self_hosted_runners_part2/payment-api
-        run: mvn clean install
+        run: mvn clean install 
 
       - name: Build Payment Worker
         working-directory: ./self_hosted_runners_part2/payment-worker
         run: mvn clean install
-
-      - name: Build Docker Image - Payment API
-        working-directory: ./self_hosted_runners_part2/payment-api
-        run: docker build -t finpay/payment-api:latest .
-      
-      - name: Build Docker Image - Payment Worker
-        working-directory: ./self_hosted_runners_part2/payment-worker
-        run: docker build -t finpay/payment-worker:latest .

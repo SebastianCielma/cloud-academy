@@ -40,9 +40,7 @@ module "ecr" {
   repository_names = ["payment-api", "payment-worker"]
 }
 
-# ---------------------------------------------------------
-# Uwierzytelnianie do klastra EKS
-# ---------------------------------------------------------
+
 data "aws_eks_cluster" "cluster" {
   name = module.kubernetes.cluster_name
   depends_on = [module.kubernetes]
@@ -52,9 +50,7 @@ data "aws_eks_cluster_auth" "cluster" {
   name = module.kubernetes.cluster_name
 }
 
-# ---------------------------------------------------------
-# Providery dla wdrożeń wewnątrz K8s
-# ---------------------------------------------------------
+
 provider "helm" {
   kubernetes {
     host                   = data.aws_eks_cluster.cluster.endpoint
@@ -69,9 +65,7 @@ provider "kubernetes" {
   token                  = data.aws_eks_cluster_auth.cluster.token
 }
 
-# ---------------------------------------------------------
-# Aplikacja FinPay (stare wdrożenie)
-# ---------------------------------------------------------
+
 resource "helm_release" "finpay" {
   name      = "finpay"
   chart     = "${path.module}/../helm/finpay"
@@ -96,16 +90,43 @@ resource "helm_release" "finpay" {
   ]
 }
 
-# ---------------------------------------------------------
-# Wdrożenie GitHub Self-Hosted Runners (Nowe zadanie)
-# ---------------------------------------------------------
+
 module "self_hosted_runners" {
   source = "./modules/github-runners"
 
   github_config_url = "https://github.com/SebastianCielma/cloud-academy"
   github_pat        = var.github_pat
 
-  # Wymusza poczekanie z wdrożeniem ARC do momentu powstania klastra
+  depends_on = [
+    module.kubernetes
+  ]
+}
+
+
+resource "helm_release" "karpenter" {
+  namespace        = "kube-system"
+  name             = "karpenter"
+  repository       = "oci://public.ecr.aws/karpenter"
+  chart            = "karpenter"
+  version          = "1.0.1" 
+
+  wait             = true
+
+  set {
+    name  = "settings.clusterName"
+    value = module.kubernetes.cluster_name
+  }
+
+  set {
+    name  = "settings.interruptionQueue"
+    value = module.kubernetes.karpenter_queue_name
+  }
+
+  set {
+    name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
+    value = module.kubernetes.karpenter_iam_role_arn
+  }
+
   depends_on = [
     module.kubernetes
   ]

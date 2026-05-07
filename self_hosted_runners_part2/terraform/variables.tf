@@ -33,3 +33,9 @@ variable "db_password" {
   type        = string
   sensitive   = true
 }
+
+variable "github_pat" {
+  description = "GitHub Personal Access Token for the runners"
+  type        = string
+  sensitive   = true
+}

@@ -57,21 +57,22 @@ resource "helm_release" "arc_runner_set" {
     githubConfigUrl: "${var.github_config_url}"
     githubConfigSecret: "${kubernetes_secret.github_auth.metadata[0].name}"
     runnerGroup: "default"
-    
-    # Define resource requests and limits for CI runner pods
+
     template:
       spec:
         containers:
-        - name: runner
-          image: ghcr.io/actions/actions-runner:latest
-          command: ["/home/runner/run.sh"]
-          resources:
-            requests:
-              cpu: "500m"
-              memory: "512Mi"
-            limits:
-              cpu: "1000m"
-              memory: "1Gi"
+          - name: runner
+            image: ghcr.io/actions/actions-runner:latest
+            command: ["/home/runner/run.sh"]
+            resources:
+              requests:
+                cpu: "2"       
+                memory: "4Gi" 
+        tolerations:
+          - key: "ci-workload"
+            operator: "Equal"
+            value: "true"
+            effect: "NoSchedule"
     EOT
   ]
 }

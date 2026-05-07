@@ -1,0 +1,43 @@
+name: runners_part3
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  heavy-build:
+    runs-on: k8s-runner-set
+    
+    strategy:
+      matrix:
+        partition: [1, 2, 3, 4]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Maven
+        uses: stCarolas/setup-maven@v4.5
+        with:
+          maven-version: 3.9.5
+
+      - name: Build Payment API
+        working-directory: ./payment-api 
+        run: mvn clean package -DskipTests
+
+      - name: Build Payment Worker
+        working-directory: ./payment-worker
+        run: mvn clean package -DskipTests
+
+      - name: Simulated Vulnerability Scan & Compression
+        run: |
+          echo "Running intense vulnerability scan simulation for partition ${{ matrix.partition }}..."
+          dd if=/dev/urandom of=/tmp/dummy_data bs=1M count=100
+          gzip /tmp/dummy_data
+          echo "Scan and compression complete."

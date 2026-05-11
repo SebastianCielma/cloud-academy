@@ -6,6 +6,8 @@ terraform {
     storage_account_name = "tfstate18687dev"   
     container_name       = "tfstate"
     key                  = "prod.terraform.tfstate"
+    use_oidc             = true
+    use_azuread_auth     = true
   }
 
   required_providers {

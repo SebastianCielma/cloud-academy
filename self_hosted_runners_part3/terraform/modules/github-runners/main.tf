@@ -31,6 +31,7 @@ resource "kubernetes_secret" "github_auth" {
 # ---------------------------------------------------------
 # Actions Runner Controller Helm Releases
 # ---------------------------------------------------------
+#
 
 resource "helm_release" "arc_controller" {
   name       = "arc"
@@ -57,7 +58,7 @@ resource "helm_release" "arc_runner_set" {
     githubConfigUrl: "${var.github_config_url}"
     githubConfigSecret: "${kubernetes_secret.github_auth.metadata[0].name}"
     runnerGroup: "default"
-
+    
     template:
       spec:
         containers:
@@ -66,8 +67,8 @@ resource "helm_release" "arc_runner_set" {
             command: ["/home/runner/run.sh"]
             resources:
               requests:
-                cpu: "2"       
-                memory: "4Gi" 
+                cpu: "2"       # Masywne żądanie CPU, wymusza autoskalowanie
+                memory: "4Gi"  # Masywne żądanie RAM
         tolerations:
           - key: "ci-workload"
             operator: "Equal"

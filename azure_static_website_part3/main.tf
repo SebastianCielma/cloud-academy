@@ -25,3 +25,4 @@ module "cdn_frontdoor" {
   origin_host_name    = module.storage.web_endpoint_host
   tags                = var.tags
 }
+#

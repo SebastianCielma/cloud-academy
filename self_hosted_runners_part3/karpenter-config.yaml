@@ -5,7 +5,7 @@ metadata:
   name: ci-runners
 spec:
   amiFamily: AL2023
-  role: "finpay-production-cluster-karpenter-node"
+  role: "karpenter-node-production"
   
   subnetSelectorTerms:
     - tags:
@@ -35,7 +35,7 @@ spec:
           values: ["m5", "c5", "t3"]
         - key: karpenter.k8s.aws/instance-size
           operator: NotIn
-          values: ["nano", "micro", "small"] 
+          values: ["nano", "micro", "small"]
       taints:
         - key: ci-workload
           value: "true"

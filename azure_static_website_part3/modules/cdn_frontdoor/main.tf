@@ -53,11 +53,10 @@ resource "azurerm_cdn_frontdoor_route" "fd_route" {
   https_redirect_enabled        = true
 }
 
-# Polityka WAF
 resource "azurerm_cdn_frontdoor_firewall_policy" "waf" {
   name                              = "WafPolicyPart3"
   resource_group_name               = var.resource_group_name
-  sku_name                          = var.sku_name # Zakładam, że masz taką zmienną, jeśli nie wpisz "Standard_AzureFrontDoor"
+  sku_name                          = "Standard_AzureFrontDoor"
   enabled                           = true
   mode                              = "Prevention"
   custom_block_response_status_code = 403

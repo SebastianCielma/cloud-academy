@@ -22,10 +22,4 @@ terraform {
 
 provider "azurerm" {
   features {}
-
-  default_tags {
-    tags = {
-      project = "static-website"
-    }
-  }
 }

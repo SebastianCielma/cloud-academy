@@ -9,3 +9,11 @@ variable "project_name" {
   type        = string
   default     = "part2"
 }
+
+variable "tags" {
+  description = "Common map of tags to apply to all resources."
+  type        = map(string)
+  default = {
+    project = "static-website"
+  }
+}

@@ -46,20 +46,25 @@ resource "azurerm_network_security_group" "app_nsg" {
   security_rule {
     name                       = "Allow-SSH-from-Bastion"
     priority                   = 100
-    direction                  = "Outbound" 
+    direction                  = "Inbound" 
     access                     = "Allow"
-    protocol                   = "*" 
+    protocol                   = "Tcp" 
     source_port_range          = "*"
-    destination_port_range     = "*" 
-    source_address_prefix      = "*" 
+    destination_port_range     = "22" 
+    source_address_prefix      = var.subnet_bastion_cidr 
     destination_address_prefix = "*"
-    description                = "Allow egress to resources inside VNet"
+    description                = "Allow inbound SSH only from Bastion subnet"
   }
 
   tags = {
     Project = var.project_name
     Owner   = var.owner
   }
+}
+
+resource "azurerm_subnet_network_security_group_association" "nsg_assoc" {
+  subnet_id                 = azurerm_subnet.app.id
+  network_security_group_id = azurerm_network_security_group.app_nsg.id
 }
 
 #######################
@@ -88,12 +93,10 @@ resource "azurerm_nat_gateway" "ngw" {
   }
 }
 
-# --- ZMIANA ETAP 1 ---
 resource "azurerm_subnet_nat_gateway_association" "nat_assoc" {
   subnet_id      = azurerm_subnet.app.id
   nat_gateway_id = azurerm_nat_gateway.ngw.id
 }
-# ---------------------
 
 #######################
 # BASTION

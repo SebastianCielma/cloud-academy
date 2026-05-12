@@ -28,11 +28,11 @@ jobs:
           maven-version: 3.9.5
 
       - name: Build Payment API
-        working-directory: ./payment-api 
+        working-directory: ./self_hosted_runners_part3/payment-api 
         run: mvn clean package -DskipTests
 
       - name: Build Payment Worker
-        working-directory: ./payment-worker
+        working-directory: ./self_hosted_runners_part3/payment-worker
         run: mvn clean package -DskipTests
 
       - name: Simulated Vulnerability Scan & Compression

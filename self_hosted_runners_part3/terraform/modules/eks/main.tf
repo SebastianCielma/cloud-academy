@@ -13,6 +13,10 @@ module "eks" {
 
   enable_cluster_creator_admin_permissions = true
 
+  node_security_group_tags = {
+    "karpenter.sh/discovery" = var.cluster_name
+  }
+
   eks_managed_node_groups = {
     payment_nodes = {
       min_size     = 1
@@ -27,4 +31,38 @@ module "eks" {
   tags = {
     Environment = var.environment
   }
+}
+
+
+module "karpenter" {
+  source  = "terraform-aws-modules/eks/aws//modules/karpenter"
+  version = "~> 20.0"
+
+  cluster_name = module.eks.cluster_name
+
+  enable_v1_permissions = true
+
+  enable_irsa                     = true
+  irsa_oidc_provider_arn          = module.eks.oidc_provider_arn
+  irsa_namespace_service_accounts = ["kube-system:karpenter"]
+
+  create_node_iam_role = true
+  node_iam_role_name   = "karpenter-node"
+}
+
+
+resource "aws_iam_role_policy" "karpenter_passrole_fix" {
+  name   = "karpenter-passrole-fix"
+  role   = split("/", module.karpenter.iam_role_arn)[1]
+  
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action   = "iam:PassRole"
+        Effect   = "Allow"
+        Resource = module.karpenter.node_iam_role_arn
+      }
+    ]
+  })
 }

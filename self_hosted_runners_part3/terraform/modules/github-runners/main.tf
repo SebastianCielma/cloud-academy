@@ -31,7 +31,7 @@ resource "kubernetes_secret" "github_auth" {
 # ---------------------------------------------------------
 # Actions Runner Controller Helm Releases
 # ---------------------------------------------------------
-
+#
 
 resource "helm_release" "arc_controller" {
   name       = "arc"

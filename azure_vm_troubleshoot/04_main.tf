@@ -112,7 +112,7 @@ resource "azurerm_subnet_nat_gateway_association" "nat_assoc" {
 
 #######################
 # BASTION
-#######################
+########################
 resource "azurerm_public_ip" "bastion_pip" {
   name                = "${var.project_name}-bastion-pip"
   location            = azurerm_resource_group.rg.location

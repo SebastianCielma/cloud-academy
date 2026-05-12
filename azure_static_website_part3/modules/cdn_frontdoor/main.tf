@@ -52,3 +52,48 @@ resource "azurerm_cdn_frontdoor_route" "fd_route" {
   link_to_default_domain        = true
   https_redirect_enabled        = true
 }
+
+# Polityka WAF
+resource "azurerm_cdn_frontdoor_firewall_policy" "waf" {
+  name                              = "WafPolicyPart3"
+  resource_group_name               = var.resource_group_name
+  sku_name                          = var.sku_name # Zakładam, że masz taką zmienną, jeśli nie wpisz "Standard_AzureFrontDoor"
+  enabled                           = true
+  mode                              = "Prevention"
+  custom_block_response_status_code = 403
+
+  custom_rule {
+    name                           = "RateLimitRule"
+    enabled                        = true
+    priority                       = 100
+    rate_limit_duration_in_minutes = 1
+    rate_limit_threshold           = 100
+    type                           = "RateLimitRule"
+    action                         = "Block"
+
+    match_condition {
+      match_variable     = "RemoteAddr"
+      operator           = "IPMatch"
+      negation_condition = false
+      match_values       = ["0.0.0.0/0"]
+    }
+  }
+}
+
+resource "azurerm_cdn_frontdoor_security_policy" "waf_link" {
+  name                     = "WafSecurityPolicy"
+  cdn_frontdoor_profile_id = azurerm_cdn_frontdoor_profile.fd.id
+
+  security_policies {
+    firewall {
+      cdn_frontdoor_firewall_policy_id = azurerm_cdn_frontdoor_firewall_policy.waf.id
+
+      association {
+        domain {
+          cdn_frontdoor_domain_id = azurerm_cdn_frontdoor_endpoint.fd_endpoint.id
+        }
+        patterns_to_match = ["/*"]
+      }
+    }
+  }
+}

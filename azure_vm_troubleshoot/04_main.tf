@@ -56,6 +56,19 @@ resource "azurerm_network_security_group" "app_nsg" {
     description                = "Allow inbound SSH only from Bastion subnet"
   }
 
+  security_rule {
+    name                       = "Allow-HTTP-Inbound"
+    priority                   = 110
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "80"
+    source_address_prefix      = "*" 
+    destination_address_prefix = "*"
+    description                = "Allow public access to web application"
+  }
+
   tags = {
     Project = var.project_name
     Owner   = var.owner
@@ -133,6 +146,19 @@ resource "azurerm_bastion_host" "bastion" {
 #######################
 # VIRTUAL MACHINE
 #######################
+
+resource "azurerm_public_ip" "vm_pip" {
+  name                = "${var.project_name}-vm-pip"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+  allocation_method   = "Static"
+  sku                 = "Standard"
+  tags = {
+    Project = var.project_name
+    Owner   = var.owner
+  }
+}
+
 resource "azurerm_network_interface" "vm_nic" {
   name                = "${var.project_name}-vm-nic"
   location            = azurerm_resource_group.rg.location
@@ -142,6 +168,7 @@ resource "azurerm_network_interface" "vm_nic" {
     name                          = "internal"
     subnet_id                     = azurerm_subnet.app.id
     private_ip_address_allocation = "Dynamic"
+    public_ip_address_id          = azurerm_public_ip.vm_pip.id 
   }
 
   tags = {

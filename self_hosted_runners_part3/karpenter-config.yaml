@@ -5,8 +5,9 @@ metadata:
   name: ci-runners
 spec:
   amiFamily: AL2023
-  role: "karpenter-node-production"
-  
+  role: "karpenter-node-2026051122103234640000001d"
+  amiSelectorTerms:
+    - alias: al2023@latest
   subnetSelectorTerms:
     - tags:
         "kubernetes.io/role/internal-elb": "1"
@@ -29,13 +30,13 @@ spec:
       requirements:
         - key: karpenter.sh/capacity-type
           operator: In
-          values: ["spot", "on-demand"]
+          values: ["on-demand"]
         - key: karpenter.k8s.aws/instance-family
           operator: In
-          values: ["m5", "c5", "t3"]
+          values: ["t3"]
         - key: karpenter.k8s.aws/instance-size
-          operator: NotIn
-          values: ["nano", "micro", "small"]
+          operator: In
+          values: ["xlarge", "2xlarge"]
       taints:
         - key: ci-workload
           value: "true"

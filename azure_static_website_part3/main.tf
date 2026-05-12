@@ -25,4 +25,10 @@ module "cdn_frontdoor" {
   origin_host_name    = module.storage.web_endpoint_host
   tags                = var.tags
 }
-#
+
+module "monitoring" {
+  source              = "./modules/monitoring"
+  workspace_name      = "law-staticweb-${random_string.suffix.result}"
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+}

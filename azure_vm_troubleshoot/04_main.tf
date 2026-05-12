@@ -146,7 +146,6 @@ resource "azurerm_bastion_host" "bastion" {
 #######################
 # VIRTUAL MACHINE
 #######################
-
 resource "azurerm_public_ip" "vm_pip" {
   name                = "${var.project_name}-vm-pip"
   location            = azurerm_resource_group.rg.location
@@ -168,7 +167,7 @@ resource "azurerm_network_interface" "vm_nic" {
     name                          = "internal"
     subnet_id                     = azurerm_subnet.app.id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.vm_pip.id 
+    public_ip_address_id          = azurerm_public_ip.vm_pip.id
   }
 
   tags = {
@@ -205,6 +204,15 @@ resource "azurerm_linux_virtual_machine" "vm" {
   }
 
   disable_password_authentication = true
+
+  custom_data = base64encode(<<-EOF
+              #!/bin/bash
+              apt-get update
+              apt-get install -y nginx
+              systemctl enable nginx
+              systemctl start nginx
+              EOF
+  )
 
   tags = {
     Project = var.project_name

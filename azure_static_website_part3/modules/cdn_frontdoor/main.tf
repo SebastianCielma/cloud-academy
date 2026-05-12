@@ -60,6 +60,7 @@ resource "azurerm_cdn_frontdoor_firewall_policy" "waf" {
   enabled                           = true
   mode                              = "Prevention"
   custom_block_response_status_code = 403
+  custom_block_response_body        = base64encode("<html><head><title>WAF Lock</title><style>body { font-family: sans-serif; text-align: center; margin-top: 100px; color: #333; }</style></head><body><h1>403-Access Blocked</h1><p>Your traffic was blocked by a firewall.</p></body></html>")
 
   custom_rule {
     name                           = "RateLimitRule"

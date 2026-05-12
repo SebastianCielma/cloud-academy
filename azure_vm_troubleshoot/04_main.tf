@@ -88,6 +88,13 @@ resource "azurerm_nat_gateway" "ngw" {
   }
 }
 
+# --- ZMIANA ETAP 1 ---
+resource "azurerm_subnet_nat_gateway_association" "nat_assoc" {
+  subnet_id      = azurerm_subnet.app.id
+  nat_gateway_id = azurerm_nat_gateway.ngw.id
+}
+# ---------------------
+
 #######################
 # BASTION
 #######################
@@ -174,6 +181,3 @@ resource "azurerm_linux_virtual_machine" "vm" {
     Owner   = var.owner
   }
 }
-
-
-

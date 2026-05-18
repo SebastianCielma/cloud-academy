@@ -1,0 +1,113 @@
+name: Infrastructure CI/CD
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'azure-aci-app-part3/**'
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  TF_WORKING_DIR: 'azure-aci-app-part3'
+  ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+  ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  ARM_USE_OIDC: true
+
+jobs:
+  terraform-plan:
+    name: 'Terraform Init & Plan'
+    runs-on: ubuntu-latest
+    env:
+      ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID_MINIMAL }}
+    
+    defaults:
+      run:
+        working-directory: ${{ env.TF_WORKING_DIR }}
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v3
+        with:
+          tflint_version: latest
+
+      - name: Run TFLint
+        run: tflint --init && tflint
+
+      - name: Terraform Format Check
+        run: terraform fmt -check
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Terraform Plan
+        run: terraform plan -out=tfplan
+
+      - name: Upload TF Plan Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan-artifact
+          path: ${{ env.TF_WORKING_DIR }}/tfplan
+          retention-days: 1
+
+  terraform-apply:
+    name: 'Terraform Apply & Docker Push'
+    needs: terraform-plan
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID_FULL }}
+    
+    defaults:
+      run:
+        working-directory: ${{ env.TF_WORKING_DIR }}
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Download TF Plan Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: tfplan-artifact
+          path: ${{ env.TF_WORKING_DIR }}
+
+      - name: Azure Login via OIDC (For Docker/ACR CLI)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID_FULL }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Build and Push Docker Image
+        run: |
+          ACR_NAME=$(az acr list --resource-group rg-helloapp-prod --query "[0].name" -o tsv)
+          ACR_LOGIN_SERVER=$(az acr list --resource-group rg-helloapp-prod --query "[0].loginServer" -o tsv)
+          
+          echo "Logging into ACR: $ACR_NAME"
+          az acr login --name $ACR_NAME
+          
+          echo "Building and pushing image"
+          docker build -t $ACR_LOGIN_SERVER/helloapp:v1 .
+          docker push $ACR_LOGIN_SERVER/helloapp:v1
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve tfplan

@@ -34,7 +34,7 @@ resource "azurerm_container_app" "app" {
     password_secret_name = "acr-password"
   }
 
-template {
+  template {
     min_replicas = 1
     max_replicas = 3
 
@@ -55,3 +55,4 @@ template {
       #
     }
   }
+}

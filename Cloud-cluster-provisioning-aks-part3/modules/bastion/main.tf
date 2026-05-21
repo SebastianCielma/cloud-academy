@@ -19,10 +19,6 @@ resource "azurerm_linux_virtual_machine" "jumpbox" {
   admin_password        = var.admin_password
   network_interface_ids = [azurerm_network_interface.jumpbox_nic.id]
 
-  admin_ssh_key {
-    username   = "adminuser"
-    public_key = file("~/.ssh/id_rsa.pub")
-  }
 
   os_disk {
     caching              = "ReadWrite"

@@ -19,8 +19,8 @@ module "aks" {
   resource_group_name  = azurerm_resource_group.rg.name
   aks_system_subnet_id = module.network.aks_system_subnet_id
   tags                 = var.project_tags
-  
-  depends_on           = [module.network] 
+
+  depends_on = [module.network]
 }
 
 module "bastion" {

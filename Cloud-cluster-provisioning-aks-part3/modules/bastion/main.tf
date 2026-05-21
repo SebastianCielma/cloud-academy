@@ -11,14 +11,14 @@ resource "azurerm_network_interface" "jumpbox_nic" {
 }
 
 resource "azurerm_linux_virtual_machine" "jumpbox" {
-  name                  = "${var.prefix}-jumpbox-vm"
-  resource_group_name   = var.resource_group_name
-  location              = var.location
-  size                  = "Standard_B1s"
-  admin_username        = "adminuser"
-  admin_password        = var.admin_password
+  name                            = "${var.prefix}-jumpbox-vm"
+  resource_group_name             = var.resource_group_name
+  location                        = var.location
+  size                            = "Standard_B1s"
+  admin_username                  = "adminuser"
+  admin_password                  = var.admin_password
   disable_password_authentication = false
-  network_interface_ids = [azurerm_network_interface.jumpbox_nic.id]
+  network_interface_ids           = [azurerm_network_interface.jumpbox_nic.id]
 
 
   os_disk {

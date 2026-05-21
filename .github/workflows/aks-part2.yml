@@ -1,27 +1,28 @@
-name: Terraform AKS Pipeline (Part 2)
+name: Terraform AKS Pipeline (Part 3)
 
 on:
   pull_request:
     branches: [ main ]
     paths:
-      - 'Cloud-cluster-provisioning-aks-part2/**'
+      - 'Cloud-cluster-provisioning-aks-part3/**'
   push:
     branches: [ main ]
     paths:
-      - 'Cloud-cluster-provisioning-aks-part2/**'
+      - 'Cloud-cluster-provisioning-aks-part3/**'
 
 env:
   ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
   ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
   ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
   ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+  TF_VAR_admin_password: ${{ secrets.BASTION_PASSWORD }}
 
 jobs:
   terraform-plan:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./Cloud-cluster-provisioning-aks-part2
+        working-directory: ./Cloud-cluster-provisioning-aks-part3
 
     steps:
       - name: Checkout code
@@ -45,7 +46,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: tfplan
-          path: Cloud-cluster-provisioning-aks-part2/tfplan
+          path: Cloud-cluster-provisioning-aks-part3/tfplan
 
   terraform-apply:
     runs-on: ubuntu-latest
@@ -53,7 +54,7 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     defaults:
       run:
-        working-directory: ./Cloud-cluster-provisioning-aks-part2
+        working-directory: ./Cloud-cluster-provisioning-aks-part3
 
     steps:
       - name: Checkout code

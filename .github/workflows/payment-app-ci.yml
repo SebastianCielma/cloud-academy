@@ -1,0 +1,56 @@
+name: Payment App
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'azure-payment-app-part1/**'
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - 'azure-payment-app-part1/**'
+
+env:
+  REGISTRY_NAME: acrpaymentplatformprod.azurecr.io
+  WORKING_DIR: ./azure-payment-app-part1
+
+jobs:
+  build-scan-push:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        app: [api, worker]
+
+    steps:
+      - name: Checkout monorepo
+        uses: actions/checkout@v4
+
+      - name: Build Docker Image (${{ matrix.app }})
+        working-directory: ${{ env.WORKING_DIR }}
+        run: |
+          docker build -f Dockerfile.${{ matrix.app }} -t ${{ env.REGISTRY_NAME }}/payment-${{ matrix.app }}:${{ github.sha }} .
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: '${{ env.REGISTRY_NAME }}/payment-${{ matrix.app }}:${{ github.sha }}'
+          format: 'table'
+          exit-code: '1'          
+          ignore-unfixed: true    
+          vuln-type: 'os,library'
+          severity: 'CRITICAL'    
+
+      - name: Login to Azure Container Registry
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ env.REGISTRY_NAME }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+
+      - name: Push Image to Registry
+        run: |
+          docker push ${{ env.REGISTRY_NAME }}/payment-${{ matrix.app }}:${{ github.sha }}
+          
+          docker tag ${{ env.REGISTRY_NAME }}/payment-${{ matrix.app }}:${{ github.sha }} ${{ env.REGISTRY_NAME }}/payment-${{ matrix.app }}:latest
+          docker push ${{ env.REGISTRY_NAME }}/payment-${{ matrix.app }}:latest

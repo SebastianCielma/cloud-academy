@@ -29,7 +29,7 @@ jobs:
       - name: Build Docker Image (${{ matrix.app }})
         working-directory: ${{ env.WORKING_DIR }}
         run: |
-          docker build -f Dockerfile.${{ matrix.app }} -t ${{ env.REGISTRY_NAME }}/payment-${{ matrix.app }}:${{ github.sha }} .
+          docker build -f Dockerfile -t ${{ env.REGISTRY_NAME }}/payment-${{ matrix.app }}:${{ github.sha }} .
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master

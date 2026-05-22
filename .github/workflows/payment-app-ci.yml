@@ -11,7 +11,7 @@ on:
       - 'azure-payment-app-part1/**'
 
 env:
-  REGISTRY_NAME: acrpaymentplatformprod.azurecr.io
+  REGISTRY_NAME: acrpaymentplatform123.azurecr.io
   WORKING_DIR: ./azure-payment-app-part1
 
 jobs:

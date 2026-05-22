@@ -27,7 +27,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build Docker Image (${{ matrix.app }})
-        working-directory: ${{ env.WORKING_DIR }}
+        working-directory: ${{ env.WORKING_DIR }}/payment-${{ matrix.app }}
         run: |
           docker build -f Dockerfile -t ${{ env.REGISTRY_NAME }}/payment-${{ matrix.app }}:${{ github.sha }} .
 

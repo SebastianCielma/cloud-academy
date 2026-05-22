@@ -4,7 +4,7 @@ resource "azurerm_container_registry" "this" {
   location            = var.location
   sku                 = var.sku
 
-  admin_enabled = false
+  admin_enabled = true
 
   tags = var.tags
 }
@@ -14,6 +14,7 @@ resource "azurerm_user_assigned_identity" "cicd_pusher" {
   resource_group_name = var.resource_group_name
   location            = var.location
   tags                = var.tags
+  #
 }
 
 resource "azurerm_role_assignment" "acr_push" {

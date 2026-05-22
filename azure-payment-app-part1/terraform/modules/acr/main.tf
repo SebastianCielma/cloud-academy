@@ -20,5 +20,4 @@ resource "azurerm_role_assignment" "acr_push" {
   scope                = azurerm_container_registry.this.id
   role_definition_name = "AcrPush"
   principal_id         = azurerm_user_assigned_identity.cicd_pusher.principal_id
-  #
 }

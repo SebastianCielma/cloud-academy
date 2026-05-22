@@ -39,7 +39,8 @@ jobs:
           exit-code: '1'          
           ignore-unfixed: true    
           vuln-type: 'os,library'
-          severity: 'CRITICAL'    
+          severity: 'CRITICAL'
+          trivyignores: '${{ env.WORKING_DIR }}/payment-${{ matrix.app }}/.trivyignore'
 
       - name: Login to Azure Container Registry
         uses: azure/docker-login@v1

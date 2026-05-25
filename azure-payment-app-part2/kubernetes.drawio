@@ -1,0 +1,131 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Strona-1" id="I5OhVIBcrdK7Rnm9qZri">
+    <mxGraphModel dx="1348" dy="793" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="XfGSxmle-ae51dxtejtB-1" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="Kubernetes Cluster (AKS)" vertex="1">
+          <mxGeometry height="628" width="2178" x="20" y="133" as="geometry" />
+        </mxCell>
+        <mxCell id="XfGSxmle-ae51dxtejtB-2" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="Namespace: payment-prod" vertex="1">
+          <mxGeometry height="578" width="1828" x="40" y="158" as="geometry" />
+        </mxCell>
+        <mxCell id="XfGSxmle-ae51dxtejtB-3" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="Workload: payment-worker" vertex="1">
+          <mxGeometry height="376" width="546" x="682" y="335" as="geometry" />
+        </mxCell>
+        <mxCell id="XfGSxmle-ae51dxtejtB-4" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="Workload: payment-api" vertex="1">
+          <mxGeometry height="376" width="602" x="60" y="335" as="geometry" />
+        </mxCell>
+        <mxCell id="XfGSxmle-ae51dxtejtB-5" parent="1" style="rounded=1;whiteSpace=wrap;arcSize=50;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="Application Gateway / WAF" vertex="1">
+          <mxGeometry height="39" width="219" x="96" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="XfGSxmle-ae51dxtejtB-6" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="Cluster Autoscaler&#xa;Automatically adds/removes VM Nodes" vertex="1">
+          <mxGeometry height="102" width="260" x="1903" y="584" as="geometry" />
+        </mxCell>
+        <mxCell id="XfGSxmle-ae51dxtejtB-7" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="Ingress Controller&#xa;Azure AGIC" vertex="1">
+          <mxGeometry height="78" width="186" x="113" y="183" as="geometry" />
+        </mxCell>
+        <mxCell id="XfGSxmle-ae51dxtejtB-8" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="HPA - Horizontal Pod Autoscaler&#xa;Scales API based on CPU" vertex="1">
+          <mxGeometry height="102" width="260" x="367" y="372" as="geometry" />
+        </mxCell>
+        <mxCell id="XfGSxmle-ae51dxtejtB-9" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="Service: ClusterIP&#xa;Not publicly accessible" vertex="1">
+          <mxGeometry height="78" width="222" x="95" y="384" as="geometry" />
+        </mxCell>
+        <mxCell id="XfGSxmle-ae51dxtejtB-10" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="API Pods&#xa;Readiness Probes &amp;amp; RollingUpdate" vertex="1">
+          <mxGeometry height="102" width="260" x="344" y="584" as="geometry" />
+        </mxCell>
+        <mxCell id="XfGSxmle-ae51dxtejtB-11" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="HPA - Horizontal Pod Autoscaler&#xa;Scales Worker based on load" vertex="1">
+          <mxGeometry height="126" width="260" x="717" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="XfGSxmle-ae51dxtejtB-12" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="Worker Pods&#xa;No HTTP access, background processing" vertex="1">
+          <mxGeometry height="102" width="260" x="797" y="584" as="geometry" />
+        </mxCell>
+        <mxCell id="XfGSxmle-ae51dxtejtB-13" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="Network Policies&#xa;Restrict intra-cluster traffic (Zero-Trust)" vertex="1">
+          <mxGeometry height="102" width="260" x="1573" y="372" as="geometry" />
+        </mxCell>
+        <mxCell id="XfGSxmle-ae51dxtejtB-14" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="Secrets Store CSI Driver&#xa;Mounts secrets as ENV vars for Pods" vertex="1">
+          <mxGeometry height="102" width="260" x="1263" y="372" as="geometry" />
+        </mxCell>
+        <mxCell id="XfGSxmle-ae51dxtejtB-15" parent="1" style="shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=10;strokeWidth=2;whiteSpace=wrap;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="PostgreSQL Database" vertex="1">
+          <mxGeometry height="83" width="175" x="625" y="835" as="geometry" />
+        </mxCell>
+        <mxCell id="XfGSxmle-ae51dxtejtB-16" parent="1" style="rounded=1;whiteSpace=wrap;arcSize=50;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="Azure Key Vault" vertex="1">
+          <mxGeometry height="39" width="138" x="2233" y="616" as="geometry" />
+        </mxCell>
+        <mxCell id="XfGSxmle-ae51dxtejtB-17" edge="1" parent="1" source="XfGSxmle-ae51dxtejtB-5" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="XfGSxmle-ae51dxtejtB-7" value="Forwards secure traffic">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XfGSxmle-ae51dxtejtB-18" edge="1" parent="1" source="XfGSxmle-ae51dxtejtB-7" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="XfGSxmle-ae51dxtejtB-9" value="Valid traffic only">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XfGSxmle-ae51dxtejtB-19" edge="1" parent="1" source="XfGSxmle-ae51dxtejtB-9" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0;entryY=0.03;rounded=0;" target="XfGSxmle-ae51dxtejtB-10" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="206" y="535" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XfGSxmle-ae51dxtejtB-20" edge="1" parent="1" source="XfGSxmle-ae51dxtejtB-8" style="curved=1;dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.55;entryY=0;rounded=0;" target="XfGSxmle-ae51dxtejtB-10" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="497" y="535" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XfGSxmle-ae51dxtejtB-21" edge="1" parent="1" source="XfGSxmle-ae51dxtejtB-11" style="curved=1;dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.34;entryY=0;rounded=0;" target="XfGSxmle-ae51dxtejtB-12" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="847" y="535" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XfGSxmle-ae51dxtejtB-22" edge="1" parent="1" source="XfGSxmle-ae51dxtejtB-10" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0;entryY=0.15;rounded=0;" target="XfGSxmle-ae51dxtejtB-15" value="Read/Write">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="474" y="798" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XfGSxmle-ae51dxtejtB-23" edge="1" parent="1" source="XfGSxmle-ae51dxtejtB-12" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=1;entryY=0.12;rounded=0;" target="XfGSxmle-ae51dxtejtB-15" value="Background Read/Write">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="927" y="798" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XfGSxmle-ae51dxtejtB-24" edge="1" parent="1" source="XfGSxmle-ae51dxtejtB-14" style="curved=1;dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=0;exitY=0.68;entryX=0.71;entryY=0;rounded=0;" target="XfGSxmle-ae51dxtejtB-10" value="Injects DB secret">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="579" y="535" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XfGSxmle-ae51dxtejtB-25" edge="1" parent="1" source="XfGSxmle-ae51dxtejtB-14" style="curved=1;dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=0;exitY=0.81;entryX=0.5;entryY=0;rounded=0;" target="XfGSxmle-ae51dxtejtB-12" value="Injects DB secret">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="927" y="535" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XfGSxmle-ae51dxtejtB-26" edge="1" parent="1" source="XfGSxmle-ae51dxtejtB-14" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0;entryY=0.29;rounded=0;" target="XfGSxmle-ae51dxtejtB-16" value="Fetches secret">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1393" y="535" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XfGSxmle-ae51dxtejtB-27" edge="1" parent="1" source="XfGSxmle-ae51dxtejtB-13" style="curved=1;dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=0;exitY=0.74;entryX=0.86;entryY=0;rounded=0;" target="XfGSxmle-ae51dxtejtB-12" value="Blocks unauthorized traffic to DB &amp; Worker">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1108" y="535" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

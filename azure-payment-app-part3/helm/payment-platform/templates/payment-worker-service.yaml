@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "payment-platform.fullname" . }}-worker
+  labels:
+    {{- include "payment-platform.workerLabels" . | nindent 4 }}
+spec:
+  type: {{ .Values.worker.service.type }}
+  ports:
+    - port: {{ .Values.worker.service.port }}
+      targetPort: {{ .Values.worker.service.targetPort }}
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "payment-platform.workerSelectorLabels" . | nindent 4 }}

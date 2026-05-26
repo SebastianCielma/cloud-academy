@@ -1,0 +1,95 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Strona-1" id="GVIXzIja7gddk-WAwCsR">
+    <mxGraphModel dx="1586" dy="-236" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="bTLUolrwM-NftwigyXjo-1" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="Azure Cloud (Region: West Europe - EU Compliance)" vertex="1">
+          <mxGeometry height="936" width="1201" x="20" y="1303" as="geometry" />
+        </mxCell>
+        <mxCell id="bTLUolrwM-NftwigyXjo-2" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="Virtual Network (VNet) - Private Network Isolation" vertex="1">
+          <mxGeometry height="710" width="1161" x="40" y="1328" as="geometry" />
+        </mxCell>
+        <mxCell id="bTLUolrwM-NftwigyXjo-3" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="Security Subnet (Private Endpoints)" vertex="1">
+          <mxGeometry height="208" width="639" x="60" y="1805" as="geometry" />
+        </mxCell>
+        <mxCell id="bTLUolrwM-NftwigyXjo-4" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="Database Subnet (Private Delegated)" vertex="1">
+          <mxGeometry height="208" width="285" x="896" y="1805" as="geometry" />
+        </mxCell>
+        <mxCell id="bTLUolrwM-NftwigyXjo-5" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="AKS Subnet (Private)" vertex="1">
+          <mxGeometry height="152" width="885" x="173" y="1579" as="geometry" />
+        </mxCell>
+        <mxCell id="bTLUolrwM-NftwigyXjo-6" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="Public Subnet" vertex="1">
+          <mxGeometry height="152" width="330" x="501" y="1353" as="geometry" />
+        </mxCell>
+        <mxCell id="bTLUolrwM-NftwigyXjo-7" parent="1" style="rounded=1;whiteSpace=wrap;arcSize=50;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="Users / Public Internet" vertex="1">
+          <mxGeometry height="39" width="182" x="575" y="1190" as="geometry" />
+        </mxCell>
+        <mxCell id="bTLUolrwM-NftwigyXjo-8" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="Azure Monitor &amp;amp; Log Analytics&#xa;Centralized Logs and Alerts" vertex="1">
+          <mxGeometry height="102" width="260" x="777" y="2112" as="geometry" />
+        </mxCell>
+        <mxCell id="bTLUolrwM-NftwigyXjo-9" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="Azure Application Gateway + WAF&#xa;Single Public Entry Point" vertex="1">
+          <mxGeometry height="102" width="260" x="536" y="1378" as="geometry" />
+        </mxCell>
+        <mxCell id="bTLUolrwM-NftwigyXjo-10" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="Azure Kubernetes Service (AKS)&#xa;Multi-AZ / Node Autoscaler" vertex="1">
+          <mxGeometry height="102" width="260" x="536" y="1604" as="geometry" />
+        </mxCell>
+        <mxCell id="bTLUolrwM-NftwigyXjo-11" parent="1" style="shape=cylinder3;boundedLbl=1;backgroundOutline=1;size=10;strokeWidth=2;whiteSpace=wrap;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="Azure Database for PostgreSQL&#xa;Flexible Server - High Availability" vertex="1">
+          <mxGeometry height="158" width="215" x="931" y="1830" as="geometry" />
+        </mxCell>
+        <mxCell id="bTLUolrwM-NftwigyXjo-12" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="Azure Key Vault&#xa;Secrets &amp;amp; Key Management" vertex="1">
+          <mxGeometry height="78" width="259" x="95" y="1870" as="geometry" />
+        </mxCell>
+        <mxCell id="bTLUolrwM-NftwigyXjo-13" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="Azure Container Registry&#xa;Private Image Registry from Task 1" vertex="1">
+          <mxGeometry height="102" width="260" x="404" y="1858" as="geometry" />
+        </mxCell>
+        <mxCell id="bTLUolrwM-NftwigyXjo-14" edge="1" parent="1" source="bTLUolrwM-NftwigyXjo-7" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="bTLUolrwM-NftwigyXjo-9" value="External HTTPS Traffic">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="bTLUolrwM-NftwigyXjo-15" edge="1" parent="1" source="bTLUolrwM-NftwigyXjo-9" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="bTLUolrwM-NftwigyXjo-10" value="Filtering + K8s Routing">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="bTLUolrwM-NftwigyXjo-16" edge="1" parent="1" source="bTLUolrwM-NftwigyXjo-10" style="curved=1;startArrow=none;endArrow=block;exitX=1;exitY=0.76;entryX=0.5;entryY=0;rounded=0;" target="bTLUolrwM-NftwigyXjo-11" value="Secure Internal Connection">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1038" y="1731" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="bTLUolrwM-NftwigyXjo-17" edge="1" parent="1" source="bTLUolrwM-NftwigyXjo-10" style="curved=1;startArrow=none;endArrow=block;exitX=0.16;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="bTLUolrwM-NftwigyXjo-13" value="Image Pull via Private Link">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="534" y="1731" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="bTLUolrwM-NftwigyXjo-18" edge="1" parent="1" source="bTLUolrwM-NftwigyXjo-10" style="curved=1;startArrow=none;endArrow=block;exitX=0;exitY=0.72;entryX=0.5;entryY=0;rounded=0;" target="bTLUolrwM-NftwigyXjo-12" value="Credential Fetch (CSI)">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="225" y="1731" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="bTLUolrwM-NftwigyXjo-19" edge="1" parent="1" source="bTLUolrwM-NftwigyXjo-10" style="curved=1;dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=0.84;exitY=1;entryX=0.26;entryY=0;rounded=0;" target="bTLUolrwM-NftwigyXjo-8" value="Metrics &amp; Logs Export">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="797" y="1731" />
+              <mxPoint x="797" y="2075" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="bTLUolrwM-NftwigyXjo-20" edge="1" parent="1" source="bTLUolrwM-NftwigyXjo-11" style="curved=1;dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.79;entryY=0;rounded=0;" target="bTLUolrwM-NftwigyXjo-8" value="Logs Export">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1038" y="2075" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

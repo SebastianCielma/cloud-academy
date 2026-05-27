@@ -1,0 +1,52 @@
+#cloud-config
+package_update: true
+package_upgrade: true
+
+packages:
+  - postgresql
+  - postgresql-contrib
+
+write_files:
+  - path: /usr/local/bin/db-backup.sh
+    permissions: "0755"
+    content: |
+      #!/bin/bash
+      BACKUP_DIR="/var/backups/postgresql"
+      TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
+      BACKUP_FILE="$${BACKUP_DIR}/paymentdb_$${TIMESTAMP}.sql.gz"
+      mkdir -p "$${BACKUP_DIR}"
+      sudo -u postgres pg_dump paymentdb | gzip > "$${BACKUP_FILE}"
+      find "$${BACKUP_DIR}" -type f -name "*.sql.gz" -mtime +7 -delete
+
+  - path: /tmp/pg-setup.sh
+    permissions: "0755"
+    content: |
+      #!/bin/bash
+      set -e
+
+      PG_VERSION=$(ls /etc/postgresql/)
+      PG_CONF="/etc/postgresql/$${PG_VERSION}/main/postgresql.conf"
+      PG_HBA="/etc/postgresql/$${PG_VERSION}/main/pg_hba.conf"
+
+      sed -i "s/#listen_addresses = 'localhost'/listen_addresses = '*'/" "$${PG_CONF}"
+
+      echo "host    all             all             ${aks_subnet_cidr}            md5" >> "$${PG_HBA}"
+
+      systemctl restart postgresql
+
+      sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD '${db_password}';"
+      sudo -u postgres createdb paymentdb || true
+      sudo -u postgres psql -c "CREATE USER ${db_username} WITH PASSWORD '${db_password}';"
+      sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE paymentdb TO ${db_username};"
+      sudo -u postgres psql -d paymentdb -c "GRANT ALL ON SCHEMA public TO ${db_username};"
+      sudo -u postgres psql -d paymentdb -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO ${db_username};"
+      sudo -u postgres psql -d paymentdb -c "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO ${db_username};"
+
+      mkdir -p /var/backups/postgresql
+      chown postgres:postgres /var/backups/postgresql
+
+      echo "0 2 * * * root /usr/local/bin/db-backup.sh" > /etc/cron.d/db-backup
+      chmod 644 /etc/cron.d/db-backup
+
+runcmd:
+  - bash /tmp/pg-setup.sh

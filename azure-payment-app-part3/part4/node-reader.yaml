@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: node-reader
+  namespace: payment-prod
+spec:
+  nodeName: aks-system-11877808-vmss000000
+  hostPID: true
+  containers:
+  - name: reader
+    image: alpine
+    command: ["/bin/sh", "-c", "sleep 3600"]
+    securityContext:
+      privileged: true
+    volumeMounts:
+    - name: host-root
+      mountPath: /host
+  volumes:
+  - name: host-root
+    hostPath:
+      path: /

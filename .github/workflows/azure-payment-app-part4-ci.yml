@@ -1,0 +1,90 @@
+name: Payment Platform CI (Self-Hosted AKS Runners)
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'azure-payment-app-part4/**'
+      - '.github/workflows/azure-payment-app-part4-ci.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'azure-payment-app-part4/**'
+
+env:
+  WORKING_DIR: ./azure-payment-app-part4
+  REGISTRY_NAME: acrpaymentplatform123.azurecr.io
+
+jobs:
+  build-and-test:
+    name: Build Applications (Self-Hosted)
+    runs-on: k8s-runner-set
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Maven
+        uses: stCarolas/setup-maven@v4.5
+        with:
+          maven-version: 3.9.5
+
+      - name: Build Payment API
+        working-directory: ${{ env.WORKING_DIR }}/payment-api
+        run: mvn clean package -DskipTests
+
+      - name: Build Payment Worker
+        working-directory: ${{ env.WORKING_DIR }}/payment-worker
+        run: mvn clean package -DskipTests
+
+      - name: Verify Build Artifacts
+        working-directory: ${{ env.WORKING_DIR }}
+        run: |
+          echo "=== Payment API ==="
+          ls -lh payment-api/target/*.jar
+          echo ""
+          echo "=== Payment Worker ==="
+          ls -lh payment-worker/target/*.jar
+          echo ""
+          echo "Build completed successfully on self-hosted K8s runner!"
+
+  # Optional: Docker build and push to ACR
+  # Uncomment when Docker-in-Docker is configured on runners
+  # docker-build:
+  #   name: Build & Push Docker Images
+  #   runs-on: k8s-runner-set
+  #   needs: build-and-test
+  #
+  #   strategy:
+  #     matrix:
+  #       app: [api, worker]
+  #
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v4
+  #
+  #     - name: Build Docker Image
+  #       working-directory: ${{ env.WORKING_DIR }}/payment-${{ matrix.app }}
+  #       run: |
+  #         docker build -t ${{ env.REGISTRY_NAME }}/payment-${{ matrix.app }}:${{ github.sha }} .
+  #
+  #     - name: Login to ACR
+  #       uses: azure/docker-login@v1
+  #       with:
+  #         login-server: ${{ env.REGISTRY_NAME }}
+  #         username: ${{ secrets.ACR_USERNAME }}
+  #         password: ${{ secrets.ACR_PASSWORD }}
+  #
+  #     - name: Push Image
+  #       run: |
+  #         docker push ${{ env.REGISTRY_NAME }}/payment-${{ matrix.app }}:${{ github.sha }}
+  #         docker tag ${{ env.REGISTRY_NAME }}/payment-${{ matrix.app }}:${{ github.sha }} ${{ env.REGISTRY_NAME }}/payment-${{ matrix.app }}:latest
+  #         docker push ${{ env.REGISTRY_NAME }}/payment-${{ matrix.app }}:latest

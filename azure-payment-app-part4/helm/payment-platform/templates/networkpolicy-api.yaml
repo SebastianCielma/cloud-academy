@@ -1,0 +1,55 @@
+{{- if .Values.networkPolicy.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "payment-platform.fullname" . }}-api
+  labels:
+    {{- include "payment-platform.apiLabels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels:
+      {{- include "payment-platform.apiSelectorLabels" . | nindent 6 }}
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - namespaceSelector: {}
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: ingress-appgw
+      ports:
+        - protocol: TCP
+          port: {{ .Values.api.service.targetPort }}
+    - from:
+        - podSelector:
+            matchLabels:
+              {{- include "payment-platform.workerSelectorLabels" . | nindent 14 }}
+      ports:
+        - protocol: TCP
+          port: {{ .Values.api.service.targetPort }}
+  egress:
+    - to:
+        - podSelector:
+            matchLabels:
+              {{- include "payment-platform.workerSelectorLabels" . | nindent 14 }}
+      ports:
+        - protocol: TCP
+          port: {{ .Values.worker.service.targetPort }}
+    - to:
+        - ipBlock:
+            cidr: 10.0.9.0/24
+      ports:
+        - protocol: TCP
+          port: 5432
+    - to:
+        - namespaceSelector: {}
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+{{- end }}

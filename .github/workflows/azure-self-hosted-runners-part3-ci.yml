@@ -1,0 +1,114 @@
+name: Heavy CI Pipeline (Self-Hosted AKS Runners + Autoscaling)
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'azure-self-hosted-runners-part3/**'
+      - '.github/workflows/azure-self-hosted-runners-part3-ci.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'azure-self-hosted-runners-part3/**'
+
+env:
+  WORKING_DIR: ./azure-self-hosted-runners-part3
+  REGISTRY_NAME: acrpaymentplatform123.azurecr.io
+
+jobs:
+  # -----------------------------------------------------------
+  # Heavy parallel build — 4 matrix jobs running simultaneously
+  # Each job runs on its own runner pod (1500m CPU request).
+  # On Standard_D2s_v3 nodes (~1800m allocatable), only 1 runner
+  # fits per node. With 4 parallel jobs, Cluster Autoscaler must
+  # provision up to 4 CI nodes from the dedicated "cirunners" pool.
+  # -----------------------------------------------------------
+  heavy-build:
+    name: Build & Scan (Partition ${{ matrix.partition }})
+    runs-on: k8s-runner-set
+
+    strategy:
+      matrix:
+        partition: [1, 2, 3, 4]
+      fail-fast: false
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Maven
+        uses: stCarolas/setup-maven@v4.5
+        with:
+          maven-version: 3.9.5
+
+      - name: Build Payment API
+        working-directory: ${{ env.WORKING_DIR }}/payment-api
+        run: mvn clean package -DskipTests
+
+      - name: Build Payment Worker
+        working-directory: ${{ env.WORKING_DIR }}/payment-worker
+        run: mvn clean package -DskipTests
+
+      - name: Simulated Vulnerability Scan & Compression
+        run: |
+          echo "=== Partition ${{ matrix.partition }}: Running resource-intensive vulnerability scan ==="
+          echo "Generating 100MB test data for scan simulation..."
+          dd if=/dev/urandom of=/tmp/scan_data_${{ matrix.partition }} bs=1M count=100 2>/dev/null
+          echo "Compressing scan data..."
+          gzip /tmp/scan_data_${{ matrix.partition }}
+          echo "Computing checksums..."
+          sha256sum /tmp/scan_data_${{ matrix.partition }}.gz
+          echo "Vulnerability scan simulation complete for partition ${{ matrix.partition }}."
+
+      - name: Verify Build Artifacts
+        working-directory: ${{ env.WORKING_DIR }}
+        run: |
+          echo "=== Partition ${{ matrix.partition }}: Build Verification ==="
+          echo ""
+          echo "--- Payment API ---"
+          ls -lh payment-api/target/*.jar
+          echo ""
+          echo "--- Payment Worker ---"
+          ls -lh payment-worker/target/*.jar
+          echo ""
+          echo "Runner hostname: $(hostname)"
+          echo "Runner CPU info: $(nproc) cores"
+          echo "Runner memory: $(free -h | grep Mem | awk '{print $2}')"
+          echo ""
+          echo "Build completed successfully on self-hosted K8s runner (partition ${{ matrix.partition }})!"
+
+  # -----------------------------------------------------------
+  # Summary job — runs after all partitions complete
+  # -----------------------------------------------------------
+  build-summary:
+    name: Pipeline Summary
+    runs-on: k8s-runner-set
+    needs: heavy-build
+
+    steps:
+      - name: Report Results
+        run: |
+          echo "============================================="
+          echo "  Heavy CI Pipeline — All Partitions Complete"
+          echo "============================================="
+          echo ""
+          echo "Platform:     Azure AKS"
+          echo "Runner type:  Self-hosted (ARC k8s-runner-set)"
+          echo "Node pool:    cirunners (dedicated, tainted)"
+          echo "Autoscaler:   AKS Cluster Autoscaler"
+          echo "Partitions:   4 parallel jobs completed"
+          echo ""
+          echo "This pipeline demonstrated:"
+          echo "  - Parallel CI execution on self-hosted runners"
+          echo "  - Scheduling pressure triggering node autoscaling"
+          echo "  - Workload isolation via taints and nodeSelector"
+          echo "  - Automatic scale-out and scale-in of CI nodes"
+          echo "============================================="

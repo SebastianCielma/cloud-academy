@@ -1,0 +1,23 @@
+api:
+  replicaCount: 2
+  hpa:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 6
+
+worker:
+  replicaCount: 2
+  hpa:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 8
+
+config:
+  appEnv: "production"
+  logLevel: "INFO"
+
+ingress:
+  enabled: true
+
+networkPolicy:
+  enabled: true

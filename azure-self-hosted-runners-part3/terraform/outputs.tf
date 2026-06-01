@@ -44,3 +44,7 @@ output "runner_validation_command" {
   description = "Command to validate runner pods in Kubernetes"
   value       = module.self_hosted_runners.kubectl_validation_command
 }
+
+output "preview_managed_identity_client_id" {
+  value = module.preview_foundation.managed_identity_client_id
+}

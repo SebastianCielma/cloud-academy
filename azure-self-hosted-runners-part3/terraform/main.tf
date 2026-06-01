@@ -93,7 +93,6 @@ module "aks" {
   log_analytics_workspace_id = module.monitoring.workspace_id
   tags                       = var.tags
 
-  # Dedicated CI runner node pool with Cluster Autoscaler
   ci_vm_size   = var.ci_vm_size
   ci_min_count = var.ci_min_count
   ci_max_count = var.ci_max_count

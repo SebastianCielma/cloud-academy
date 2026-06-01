@@ -104,7 +104,7 @@ resource "helm_release" "arc_runner_set" {
           command: ["/home/runner/run.sh"]
           resources:
             requests:
-              cpu: "1500m"
+              cpu: "1200m"
               memory: "1Gi"
             limits:
               cpu: "2000m"

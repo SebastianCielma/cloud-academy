@@ -189,13 +189,6 @@ resource "azurerm_monitor_diagnostic_setting" "keyvault" {
   }
 }
 
-# ---------------------------------------------------------
-# Self-Hosted GitHub Actions Runners (ARC)
-# Deployed into a dedicated namespace, isolated from app workloads.
-# Runner pods target the dedicated CI node pool via nodeSelector
-# and tolerations, ensuring complete separation from production.
-# ---------------------------------------------------------
-
 module "self_hosted_runners" {
   source = "./modules/github-runners"
 
@@ -206,3 +199,13 @@ module "self_hosted_runners" {
     module.aks
   ]
 }
+
+module "preview_foundation" {
+  source = "./modules/preview-foundation"
+
+  resource_group_name = "rg-payment-platform"
+  location            = "westeurope"
+  
+  aks_oidc_issuer_url = "https://westeurope.oic.prod-aks.azure.com/cda9a1f6-c3a2-40f6-a425-89316170fa38/eac3eb4a-0940-4e22-b7e6-630d3cfbad96/"
+}
+

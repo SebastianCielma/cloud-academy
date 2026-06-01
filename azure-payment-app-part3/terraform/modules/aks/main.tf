@@ -14,7 +14,7 @@ resource "azurerm_kubernetes_cluster" "this" {
     max_count           = var.max_count
     node_count          = var.node_count
     vnet_subnet_id      = var.aks_subnet_id
-    zones               = ["1", "2", "3"]
+    zones               = ["2"]
 
     node_labels = {
       "environment" = var.environment

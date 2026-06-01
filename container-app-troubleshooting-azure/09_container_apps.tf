@@ -28,18 +28,6 @@ resource "azurerm_container_app" "web" {
   container_app_environment_id = azurerm_container_app_environment.env.id
   revision_mode                = "Single"
 
-  # User-assigned managed identity for ACR pull
-  identity {
-    type         = "UserAssigned"
-    identity_ids = [azurerm_user_assigned_identity.uami.id]
-  }
-
-  # ACR registry authentication via managed identity
-  registry {
-    server   = azurerm_container_registry.acr.login_server
-    identity = azurerm_user_assigned_identity.uami.id
-  }
-
   template {
     container {
       name   = "web"
@@ -58,21 +46,10 @@ resource "azurerm_container_app" "web" {
         failure_count_threshold = 3
       }
     }
-
-    # Scaling rules: HTTP concurrent requests
-    min_replicas = var.web_min_replicas
-    max_replicas = var.web_max_replicas
-
-    http_scale_rule {
-      name                = "http-concurrency"
-      concurrent_requests = tostring(var.http_concurrency)
-    }
   }
 
   ingress {
     allow_insecure_connections = true
-    target_port               = var.container_port
-    external_enabled          = false
 
     traffic_weight {
       latest_revision = true
@@ -84,3 +61,5 @@ resource "azurerm_container_app" "web" {
     app = "${var.name}-web"
   }
 }
+
+

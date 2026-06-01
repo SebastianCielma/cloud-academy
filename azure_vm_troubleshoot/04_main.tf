@@ -189,7 +189,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
     publisher = "Canonical"
     offer     = "0001-com-ubuntu-server-focal"
     sku       = "20_04-lts"
-    version   = "20.04.202502181"
+    version   = "latest"
   }
 
   admin_ssh_key {

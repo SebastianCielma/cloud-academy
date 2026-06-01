@@ -38,7 +38,7 @@ variable "subnet_bastion_cidr" {
 variable "vm_size" {
   description = "VM size"
   type        = string
-  default     = "Standard_B1s"
+  default     = "Standard_A1_v2"
 }
 
 variable "admin_username" {

@@ -8,16 +8,43 @@ resource "azurerm_public_ip" "appgw" {
   tags                = var.tags
 }
 
+resource "azurerm_web_application_firewall_policy" "this" {
+  name                = "wafpol-${var.project_name}-${var.environment}"
+  location            = var.location
+  resource_group_name = var.resource_group_name
+  tags                = var.tags
+
+  managed_rules {
+    managed_rule_set {
+      type    = "OWASP"
+      version = "3.2"
+    }
+  }
+
+  policy_settings {
+    enabled                     = true
+    mode                        = "Prevention"
+    request_body_check          = true
+    max_request_body_size_in_kb = 128
+  }
+}
+
 resource "azurerm_application_gateway" "this" {
   name                = "appgw-${var.project_name}-${var.environment}"
   location            = var.location
   resource_group_name = var.resource_group_name
+  firewall_policy_id  = azurerm_web_application_firewall_policy.this.id
   tags                = var.tags
 
   sku {
     name     = "WAF_v2"
     tier     = "WAF_v2"
     capacity = 2
+  }
+
+  ssl_policy {
+    policy_type = "Predefined"
+    policy_name = "AppGwSslPolicy20220101"
   }
 
   gateway_ip_configuration {
@@ -72,13 +99,6 @@ resource "azurerm_application_gateway" "this" {
     http_listener_name         = "http-listener"
     backend_address_pool_name  = "default-backend-pool"
     backend_http_settings_name = "default-http-settings"
-  }
-
-  waf_configuration {
-    enabled          = true
-    firewall_mode    = "Prevention"
-    rule_set_type    = "OWASP"
-    rule_set_version = "3.2"
   }
 
   lifecycle {

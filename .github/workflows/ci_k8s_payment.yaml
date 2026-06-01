@@ -8,6 +8,7 @@ on:
       - '.github/workflows/ci.yaml'
 
 env:
+  REGISTRY_NAME: acrpaymentplatform123.azurecr.io
   IMAGE_TAG: ${{ github.sha }} 
   WORKING_DIR: ./k8s_payment_app_part_0
 

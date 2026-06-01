@@ -202,36 +202,4 @@ resource "azurerm_monitor_diagnostic_setting" "keyvault" {
   }
 }
 
-resource "helm_release" "payment_platform" {
-  name      = "payment-platform"
-  chart     = "${path.module}/../helm/payment-platform"
-  namespace = "payment-prod"
 
-  create_namespace = true
-
-  values = [
-    templatefile("${path.module}/../helm/payment-platform/values-${var.environment == "production" ? "prod" : "dev"}.yaml", {})
-  ]
-
-  set {
-    name  = "config.dbUrl"
-    value = module.postgresql.jdbc_connection_string
-  }
-
-  set {
-    name  = "secretsStore.keyvaultName"
-    value = module.keyvault.keyvault_name
-  }
-
-  set {
-    name  = "secretsStore.tenantId"
-    value = module.keyvault.tenant_id
-  }
-
-  set {
-    name  = "secretsStore.clientId"
-    value = module.aks.keyvault_secrets_provider_client_id
-  }
-
-  depends_on = [module.aks]
-}

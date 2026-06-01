@@ -28,7 +28,7 @@ terraform {
     resource_group_name  = "rg-terraform-state"
     storage_account_name = "stpaymentplatformtf"
     container_name       = "tfstate"
-    key                  = "payment-platform-runners-part3/terraform.tfstate"
+    key                  = "payment-platform/terraform.tfstate"
   }
 }
 

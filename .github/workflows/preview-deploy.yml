@@ -1,0 +1,118 @@
+name: Preview Environment Lifecycle
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches:
+      - main
+    paths:
+      - 'azure-self-hosted-runners-part3/**'
+
+env:
+  NAMESPACE: "preview-pr-${{ github.event.pull_request.number }}"
+  IMAGE_TAG: "pr-${{ github.event.pull_request.number }}-${{ github.sha }}"
+  
+  AZURE_CLIENT_ID: "09bb5050-1873-4979-862f-b51704e017d2"
+  STORAGE_ACCOUNT: "stfinpayprevseb123"
+  ACR_LOGIN_SERVER: "acrpaymentplatform123.azurecr.io"
+
+jobs:
+  deploy-and-validate:
+    if: github.event.action != 'closed'
+    runs-on: self-hosted
+    defaults:
+      run:
+        working-directory: ./azure-self-hosted-runners-part3
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+
+      - name: Login to Azure Container Registry
+        run: |
+          az acr login --name ${{ env.ACR_LOGIN_SERVER }}
+
+      - name: Build and Push Docker Images
+        run: |
+          docker build -t ${{ env.ACR_LOGIN_SERVER }}/payment-api:${{ env.IMAGE_TAG }} ./payment-api
+          docker push ${{ env.ACR_LOGIN_SERVER }}/payment-api:${{ env.IMAGE_TAG }}
+          
+          docker build -t ${{ env.ACR_LOGIN_SERVER }}/payment-worker:${{ env.IMAGE_TAG }} ./payment-worker
+          docker push ${{ env.ACR_LOGIN_SERVER }}/payment-worker:${{ env.IMAGE_TAG }}
+
+      - name: Create Dynamic Namespace
+        run: |
+          kubectl create namespace ${{ env.NAMESPACE }} --dry-run=client -o yaml | kubectl apply -f -
+          kubectl label namespace ${{ env.NAMESPACE }} azure.workload.identity/use=true --overwrite
+
+      - name: Deploy Payment Platform
+        run: |
+          helm upgrade --install preview-app ./kubernetes/helm \
+            -f ./kubernetes/helm/values-dev.yaml \
+            --namespace ${{ env.NAMESPACE }} \
+            --set namespace.name=${{ env.NAMESPACE }} \
+            --set api.image.tag=${{ env.IMAGE_TAG }} \
+            --set worker.image.tag=${{ env.IMAGE_TAG }} \
+            --atomic \
+            --timeout 3m
+
+      - name: Prepare Identity for Validation
+        run: |
+          cat <<EOF | kubectl apply -n ${{ env.NAMESPACE }} -f -
+          apiVersion: v1
+          kind: ServiceAccount
+          metadata:
+            name: preview-sa
+            annotations:
+              azure.workload.identity/client-id: "${{ env.AZURE_CLIENT_ID }}"
+          EOF
+
+      - name: Run Validation and Upload Artifact
+        run: |
+          cat <<EOF | kubectl apply -n ${{ env.NAMESPACE }} -f -
+          apiVersion: batch/v1
+          kind: Job
+          metadata:
+            name: pr-validation-job
+          spec:
+            template:
+              metadata:
+                labels:
+                  azure.workload.identity/use: "true"
+              spec:
+                serviceAccountName: preview-sa
+                containers:
+                - name: tester
+                  image: mcr.microsoft.com/azure-cli:latest
+                  command:
+                  - /bin/sh
+                  - -c
+                  - |
+                    if curl -s -f http://preview-app-api.${{ env.NAMESPACE }}.svc.cluster.local/actuator/health/readiness; then
+                      echo '{"status": "success", "message": "API is healthy"}' > smoke-test-result.json
+                    else
+                      echo '{"status": "error", "message": "API is down"}' > smoke-test-result.json
+                    fi
+                    
+                    az login --federated-token "\$(cat \$AZURE_FEDERATED_TOKEN_FILE)" --service-principal -u \$AZURE_CLIENT_ID -t \$AZURE_TENANT_ID
+                    
+                    az storage blob upload \\
+                      --account-name ${{ env.STORAGE_ACCOUNT }} \\
+                      --container-name preview-artifacts \\
+                      --name pr-${{ github.event.pull_request.number }}/smoke-test-result.json \\
+                      --file smoke-test-result.json \\
+                      --auth-mode login
+                restartPolicy: Never
+          EOF
+          
+          kubectl wait --for=condition=complete job/pr-validation-job -n ${{ env.NAMESPACE }} --timeout=150s
+          kubectl logs job/pr-validation-job -n ${{ env.NAMESPACE }}
+
+  cleanup-preview:
+    if: github.event.action == 'closed'
+    runs-on: self-hosted
+    steps:
+      - name: Delete Preview Environment Namespace
+        run: |
+          kubectl delete namespace ${{ env.NAMESPACE }} --ignore-not-found=true

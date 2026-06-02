@@ -1,11 +1,3 @@
-# ---------------------------------------------------------
-# GitHub Actions Runner Controller (ARC) for Azure AKS
-# Deploys self-hosted runners into the existing Kubernetes cluster
-# ---------------------------------------------------------
-
-# ---------------------------------------------------------
-# Namespaces — Isolation of CI workloads from app workloads
-# ---------------------------------------------------------
 
 resource "kubernetes_namespace" "arc_systems" {
   metadata {
@@ -29,9 +21,7 @@ resource "kubernetes_namespace" "arc_runners" {
   }
 }
 
-# ---------------------------------------------------------
-# Secret — GitHub PAT for runner authentication
-# ---------------------------------------------------------
+
 
 resource "kubernetes_secret" "github_auth" {
   metadata {
@@ -46,9 +36,7 @@ resource "kubernetes_secret" "github_auth" {
   type = "Opaque"
 }
 
-# ---------------------------------------------------------
-# Helm Release — Actions Runner Controller (ARC)
-# ---------------------------------------------------------
+
 
 resource "helm_release" "arc_controller" {
   name       = "arc"
@@ -60,9 +48,6 @@ resource "helm_release" "arc_controller" {
   wait = true
 }
 
-# ---------------------------------------------------------
-# Helm Release — Runner Scale Set (actual runner pods)
-# ---------------------------------------------------------
 
 resource "helm_release" "arc_runner_set" {
   name       = "k8s-runner-set"

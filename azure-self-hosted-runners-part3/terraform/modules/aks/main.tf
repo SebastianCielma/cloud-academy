@@ -62,13 +62,7 @@ resource "azurerm_role_assignment" "keyvault_secrets_user" {
   principal_id         = azurerm_kubernetes_cluster.this.key_vault_secrets_provider[0].secret_identity[0].object_id
 }
 
-# ---------------------------------------------------------
-# Dedicated CI Runner Node Pool
-# - Cluster Autoscaler manages scale-out/in based on pending pods
-# - Taint prevents application pods from scheduling here
-# - min_count=0 enables scale-to-zero when no CI jobs are running
-# - mode="User" is required for scale-to-zero capability
-# ---------------------------------------------------------
+
 
 resource "azurerm_kubernetes_cluster_node_pool" "ci_runners" {
   name                  = "cirunners"

@@ -19,7 +19,7 @@ env:
 jobs:
   deploy-and-validate:
     if: github.event.action != 'closed'
-    runs-on: self-hosted
+    runs-on: k8s-runner-set
     defaults:
       run:
         working-directory: ./azure-self-hosted-runners-part3
@@ -111,7 +111,7 @@ jobs:
 
   cleanup-preview:
     if: github.event.action == 'closed'
-    runs-on: self-hosted
+    runs-on: k8s-runner-set
     steps:
       - name: Delete Preview Environment Namespace
         run: |

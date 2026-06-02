@@ -18,13 +18,6 @@ env:
   REGISTRY_NAME: acrpaymentplatform123.azurecr.io
 
 jobs:
-  # -----------------------------------------------------------
-  # Heavy parallel build — 4 matrix jobs running simultaneously
-  # Each job runs on its own runner pod (1500m CPU request).
-  # On Standard_D2s_v3 nodes (~1800m allocatable), only 1 runner
-  # fits per node. With 4 parallel jobs, Cluster Autoscaler must
-  # provision up to 4 CI nodes from the dedicated "cirunners" pool.
-  # -----------------------------------------------------------
   heavy-build:
     name: Build & Scan (Partition ${{ matrix.partition }})
     runs-on: k8s-runner-set
@@ -85,9 +78,7 @@ jobs:
           echo ""
           echo "Build completed successfully on self-hosted K8s runner (partition ${{ matrix.partition }})!"
 
-  # -----------------------------------------------------------
-  # Summary job — runs after all partitions complete
-  # -----------------------------------------------------------
+
   build-summary:
     name: Pipeline Summary
     runs-on: k8s-runner-set

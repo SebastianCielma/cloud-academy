@@ -45,7 +45,7 @@ jobs:
             --set namespace.create=false \
             --set namespace.name=${{ env.NAMESPACE }} \
             --rollback-on-failure \
-            --timeout 3m
+            --timeout 10m
 
       - name: Prepare Identity for Validation
         run: |

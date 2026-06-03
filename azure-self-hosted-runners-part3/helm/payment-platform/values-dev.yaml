@@ -35,4 +35,3 @@ networkPolicy:
 secretsStore:
   keyvaultName: "kv-payment-production"
   tenantId: "cda9a1f6-c3a2-40f6-a425-89316170fa38"
-  clientId: "09bb5050-1873-4979-862f-b51704e017d2"

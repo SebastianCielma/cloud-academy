@@ -31,3 +31,6 @@ ingress:
 
 networkPolicy:
   enabled: false
+
+secretsStore:
+  keyvaultName: "kv-payment-production"

@@ -40,7 +40,7 @@ jobs:
       - name: Deploy Payment Platform
         run: |
           helm upgrade --install preview-app ./kubernetes/helm \
-            -f ./kubernetes/helm/values-dev.yaml \
+            -f ./helm/payment-platform/values-dev.yaml \
             --namespace ${{ env.NAMESPACE }} \
             --set namespace.name=${{ env.NAMESPACE }} \
             --atomic \

@@ -13,23 +13,15 @@ resource "google_compute_security_policy" "armor_policy" {
     }
   }
 
+
   rule {
-    action   = "throttle"
+    action   = "deny(403)"
     priority = "1000"
     match {
       versioned_expr = "SRC_IPS_V1"
       config {
-        src_ip_ranges = ["*"]
+        src_ip_ranges = ["192.168.1.1/32"]
       }
-    }
-    rate_limit_options {
-      conform_action = "allow"
-      exceed_action  = "deny(403)"
-      rate_limit_threshold {
-        count        = 100
-        interval_sec = 60
-      }
-      enforce_on_key = "IP"
     }
   }
 }

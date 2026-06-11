@@ -1,30 +1,27 @@
 resource "google_compute_security_policy" "armor_policy" {
-  name        = "${var.prefix}-armor-policy"
-  description = "Cloud Armor Edge policy with 100 req/min rate limit per IP"
-  type        = "CLOUD_ARMOR_EDGE"
+  name = "${var.prefix}-armor-policy"
+  type = "CLOUD_ARMOR_EDGE"
 
   rule {
     action   = "allow"
     priority = "2147483647"
     match {
-      versioned_expr = "SRC_IDS_V1"
+      versioned_expr = "SRC_IPS_V1"
       config {
         src_ip_ranges = ["*"]
       }
     }
-    description = "Default allow rule"
   }
 
   rule {
     action   = "throttle"
     priority = "1000"
     match {
-      versioned_expr = "SRC_IDS_V1"
+      versioned_expr = "SRC_IPS_V1"
       config {
         src_ip_ranges = ["*"]
       }
     }
-    description = "Rate limit rule: 100 req/min per IP"
     rate_limit_options {
       conform_action = "allow"
       exceed_action  = "deny(403)"
@@ -54,7 +51,7 @@ resource "tls_self_signed_cert" "app_cert" {
 
   subject {
     common_name  = "static-website.local"
-    organization = "Cloud Academy Senior Team"
+    organization = "Cloud Academy"
   }
 
   validity_period_hours = 8760
@@ -73,20 +70,23 @@ resource "google_compute_ssl_certificate" "lb_crypto_cert" {
 }
 
 resource "google_compute_url_map" "website_map_https" {
+  provider        = google-beta
   name            = "${var.prefix}-url-map-https"
   default_service = google_compute_backend_bucket.website_backend.id
 
   default_custom_error_response_policy {
     error_service = google_compute_backend_bucket.website_backend.id
-    
+
     error_response_rule {
-      match_response_codes = ["4xx"]
-      path                 = "/4xx.html"
+      match_response_codes   = ["4xx"]
+      path                   = "/4xx.html"
+      override_response_code = 404
     }
 
     error_response_rule {
-      match_response_codes = ["5xx"]
-      path                 = "/5xx.html"
+      match_response_codes   = ["5xx"]
+      path                   = "/5xx.html"
+      override_response_code = 500
     }
   }
 }

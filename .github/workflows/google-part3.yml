@@ -1,0 +1,100 @@
+name: 'Terraform CI/CD (Part 3)'
+
+on:
+  push:
+    branches:
+      - main
+      - 'feature/**'
+    paths:
+      - 'gcp_static_website_part3/**'
+  workflow_dispatch:
+
+env:
+  PROJECT_ID: 'akademiasebastianckuba'
+  WIF_PROVIDER: 'projects/20392227878/locations/global/workloadIdentityPools/github-pool/providers/github-provider'
+  PLAN_SA: 'tf-plan-sa@akademiasebastianckuba.iam.gserviceaccount.com'
+  APPLY_SA: 'tf-apply-sa@akademiasebastianckuba.iam.gserviceaccount.com'
+
+defaults:
+  run:
+    working-directory: ./gcp_static_website_part3
+
+jobs:
+  init_and_plan:
+    name: 'Init & Plan'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+      - name: 'Checkout Repository'
+        uses: actions/checkout@v4
+
+      - name: 'Authenticate to GCP (Plan SA)'
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ env.WIF_PROVIDER }}
+          service_account: ${{ env.PLAN_SA }}
+
+      - name: 'Setup Terraform'
+        uses: hashicorp/setup-terraform@v3
+
+      - name: 'Terraform Format'
+        run: terraform fmt -check
+
+      - name: 'Terraform Init'
+        run: terraform init
+
+      - name: 'Terraform Validate'
+        run: terraform validate
+
+      - name: 'Setup TFLint'
+        uses: terraform-linters/setup-tflint@v4
+        
+      - name: 'Run TFLint'
+        run: tflint --init && tflint
+
+      - name: 'Terraform Plan'
+        run: terraform plan -out=tfplan
+
+      - name: 'Upload Plan Artifact'
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan
+          path: gcp_static_website_part3/tfplan
+          retention-days: 1
+
+  apply:
+    name: 'Apply'
+    needs: init_and_plan
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+      - name: 'Checkout Repository'
+        uses: actions/checkout@v4
+
+      - name: 'Authenticate to GCP (Apply SA)'
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ env.WIF_PROVIDER }}
+          service_account: ${{ env.APPLY_SA }}
+
+      - name: 'Setup Terraform'
+        uses: hashicorp/setup-terraform@v3
+
+      - name: 'Terraform Init'
+        run: terraform init
+
+      - name: 'Download Plan Artifact'
+        uses: actions/download-artifact@v4
+        with:
+          name: tfplan
+          path: gcp_static_website_part3/
+
+      - name: 'Terraform Apply'
+        run: terraform apply -auto-approve tfplan

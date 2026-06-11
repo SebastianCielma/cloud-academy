@@ -65,8 +65,8 @@ resource "google_storage_bucket" "logs_bucket" {
 resource "google_logging_project_sink" "lb_logs_sink" {
   name        = "${var.bucket_name}-lb-logs-sink"
   destination = "storage.googleapis.com/${google_storage_bucket.logs_bucket.name}"
-  
-  filter      = "resource.type=\"http_load_balancer\""
+
+  filter                 = "resource.type=\"http_load_balancer\""
   unique_writer_identity = true
 }
 

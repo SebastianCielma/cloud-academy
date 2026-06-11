@@ -5,7 +5,7 @@ module "storage" {
   region          = var.region
   project_id      = var.project_id
   tags            = var.tags
-  
+
   index_html_path = "./website/index.html"
   error_html_path = "./website/404.html"
   html_4xx_path   = "./website/4xx.html"

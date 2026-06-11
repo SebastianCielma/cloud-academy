@@ -12,9 +12,9 @@ resource "google_monitoring_alert_policy" "armor_blocks" {
   conditions {
     display_name = "Cloud Armor Deny > 10 in 1 min"
     condition_threshold {
-      filter     = "metric.type=\"networksecurity.googleapis.com/edge_security_policy/request_count\" resource.type=\"edge_security_policy\" metric.labels.outcome=\"DENY\""
-      duration   = "60s"
-      comparison = "COMPARISON_GT"
+      filter          = "metric.type=\"networksecurity.googleapis.com/edge_security_policy/request_count\" resource.type=\"edge_security_policy\" metric.labels.outcome=\"DENY\""
+      duration        = "60s"
+      comparison      = "COMPARISON_GT"
       threshold_value = 10
     }
   }
@@ -27,9 +27,9 @@ resource "google_monitoring_alert_policy" "server_errors" {
   conditions {
     display_name = "5xx Errors > 5 in 1 min"
     condition_threshold {
-      filter     = "metric.type=\"loadbalancing.googleapis.com/https/request_count\" resource.type=\"https_lb_rule\" metric.labels.response_code_class=\"500\""
-      duration   = "60s"
-      comparison = "COMPARISON_GT"
+      filter          = "metric.type=\"loadbalancing.googleapis.com/https/request_count\" resource.type=\"https_lb_rule\" metric.labels.response_code_class=\"500\""
+      duration        = "60s"
+      comparison      = "COMPARISON_GT"
       threshold_value = 5
     }
   }

@@ -73,3 +73,35 @@ resource "google_compute_instance" "vm" {
     google_compute_route.default_internet
   ]
 }
+
+###################
+# FIREWALL
+###################
+
+resource "google_compute_firewall" "allow_http" {
+  name    = "${var.name}-allow-http"
+  network = google_compute_network.vpc.id
+
+  allow {
+    protocol = "tcp"
+    ports    = ["80"]
+  }
+
+  direction     = "INGRESS"
+  source_ranges = ["0.0.0.0/0"]
+  target_tags   = ["web"]
+}
+
+resource "google_compute_firewall" "allow_ssh" {
+  name    = "${var.name}-allow-ssh"
+  network = google_compute_network.vpc.id
+
+  allow {
+    protocol = "tcp"
+    ports    = ["22"]
+  }
+
+  direction     = "INGRESS"
+  source_ranges = [var.ssh_source_cidr]
+  target_tags   = ["ssh"]
+}

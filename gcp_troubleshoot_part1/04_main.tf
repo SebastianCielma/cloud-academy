@@ -46,6 +46,15 @@ resource "google_compute_instance" "vm" {
   zone         = var.zone
   tags         = ["web", "ssh"]
 
+  metadata_startup_script = <<-SCRIPT
+#!/bin/bash
+set -e
+apt-get update -y
+apt-get install -y nginx
+systemctl enable nginx
+systemctl start nginx
+SCRIPT
+
   boot_disk {
     initialize_params {
       image = data.google_compute_image.ubuntu_2204.self_link

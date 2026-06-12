@@ -25,6 +25,11 @@ resource "google_compute_route" "default_internet" {
   priority         = 1000
 }
 
+resource "google_compute_address" "static_ip" {
+  name   = "${var.name}-static-ip"
+  region = var.region
+}
+
 ###################
 # INSTANCE
 ###################
@@ -51,6 +56,10 @@ resource "google_compute_instance" "vm" {
 
   network_interface {
     subnetwork = google_compute_subnetwork.subnet.id
+
+    access_config {
+      nat_ip = google_compute_address.static_ip.address
+    }
   }
 
   # Using the project default compute service account (simple for lab)

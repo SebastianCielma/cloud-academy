@@ -1,0 +1,98 @@
+name: GCP Infrastructure Pipeline
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'gcp-cloudrun-part3/**' 
+  workflow_dispatch: 
+
+env:
+  PROJECT_ID: akademiasebastianckuba
+  REGION: europe-west4
+  WIF_PROVIDER: projects/20392227878/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider
+  PLAN_SA: tf-plan-sa@akademiasebastianckuba.iam.gserviceaccount.com
+  APPLY_SA: tf-apply-sa@akademiasebastianckuba.iam.gserviceaccount.com
+  IMAGE_NAME: europe-west4-docker.pkg.dev/akademiasebastianckuba/hello-app-repo/hello-gcp-app:v1
+
+defaults:
+  run:
+    working-directory: ./gcp-cloudrun-part3
+
+jobs:
+  plan:
+    name: Build, Init & Plan
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write 
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Authenticate to GCP (Plan SA)
+        uses: google-github-actions/auth@v1
+        with:
+          workload_identity_provider: ${{ env.WIF_PROVIDER }}
+          service_account: ${{ env.PLAN_SA }}
+
+      - name: Docker Auth & Build/Push
+        run: |
+          gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
+          docker build -t ${{ env.IMAGE_NAME }} .
+          docker push ${{ env.IMAGE_NAME }}
+
+      - name: Install tflint
+        run: curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Terraform Init, Fmt, Validate & TFLint
+        run: |
+          terraform init
+          terraform fmt -check
+          terraform validate
+          tflint
+
+      - name: Terraform Plan
+        run: terraform plan -out=tfplan
+
+      - name: Upload Plan Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: tfplan
+          path: ./gcp-cloudrun-part3/tfplan 
+
+  apply:
+    name: Terraform Apply
+    runs-on: ubuntu-latest
+    needs: plan
+    if: github.event_name == 'workflow_dispatch' 
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Authenticate to GCP (Apply SA)
+        uses: google-github-actions/auth@v1
+        with:
+          workload_identity_provider: ${{ env.WIF_PROVIDER }}
+          service_account: ${{ env.APPLY_SA }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Download Plan Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: tfplan
+          path: ./gcp-cloudrun-part3 
+
+      - name: Terraform Init & Apply
+        run: |
+          terraform init
+          terraform apply -auto-approve tfplan

@@ -18,4 +18,5 @@ resource "google_logging_project_bucket_config" "default" {
   location       = "global"
   retention_days = 14
   bucket_id      = "_Default"
+  #
 }

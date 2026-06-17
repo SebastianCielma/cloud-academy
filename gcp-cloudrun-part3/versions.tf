@@ -2,7 +2,7 @@ terraform {
   required_version = ">= 1.5.0"
 
   backend "gcs" {
-    bucket = "tf-state-sebastianakademiacloudrun" 
+    bucket = "tf-state-sebastianakademiacloudrun"
     prefix = "terraform/state"
   }
 

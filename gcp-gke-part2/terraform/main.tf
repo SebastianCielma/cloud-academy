@@ -9,5 +9,5 @@ module "gke_minimal" {
   region       = var.region
   cluster_name = "gke-tf-test"
   tags         = var.common_tags
-  #
+  #test
 }

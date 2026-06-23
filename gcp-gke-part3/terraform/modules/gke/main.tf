@@ -3,6 +3,7 @@ resource "google_container_cluster" "private_cluster" {
   location                 = "${var.region}-a"
   remove_default_node_pool = true
   initial_node_count       = 1
+  deletion_protection      = false
 
   network    = var.network_id
   subnetwork = var.subnet_id

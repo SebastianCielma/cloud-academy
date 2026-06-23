@@ -23,6 +23,6 @@ module "gke" {
   subnet_id          = module.network.workload_subnet_name
   pod_range_name     = module.network.pod_range_name
   service_range_name = module.network.service_range_name
-  bastion_cidr       = "10.40.0.0/28" 
+  bastion_cidr       = "10.40.0.0/28"
   tags               = var.tags
 }

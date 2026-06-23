@@ -3,7 +3,7 @@ resource "google_compute_instance" "bastion" {
   machine_type = "e2-micro"
   zone         = "${var.region}-a"
   tags         = ["bastion-iap"]
-  labels       = var.tags 
+  labels       = var.tags
 
   boot_disk {
     initialize_params {
@@ -30,6 +30,6 @@ resource "google_compute_firewall" "allow_iap_ssh" {
     ports    = ["22"]
   }
 
-  source_ranges = ["35.235.240.0/20"] 
+  source_ranges = ["35.235.240.0/20"]
   target_tags   = ["bastion-iap"]
 }

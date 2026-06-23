@@ -12,7 +12,7 @@ variable "region" {
 variable "tags" {
   description = "Labels to apply to all resources"
   type        = map(string)
-  default     = {
-    project = "static-website" 
+  default = {
+    project = "static-website"
   }
 }

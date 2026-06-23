@@ -1,2 +1,2 @@
-project_id = "akademiasebastianckuba" 
+project_id = "akademiasebastianckuba"
 region     = "europe-central2"        

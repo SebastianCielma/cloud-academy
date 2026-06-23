@@ -1,6 +1,7 @@
 resource "google_container_cluster" "private_cluster" {
   name                     = "gke-private-cluster"
   location                 = "${var.region}-a"
+  deletion_protection      = false
   remove_default_node_pool = true
   initial_node_count       = 1
 

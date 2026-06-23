@@ -1,0 +1,43 @@
+name: "Terraform Apply Part 3 (Main Stage)"
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'gcp-gke-part3/**' 
+
+concurrency:
+  group: production-gke-part3
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  terraform-apply:
+    name: "Terraform Apply"
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: gcp-gke-part3/terraform
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ">= 1.3.0"
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve

@@ -1,0 +1,62 @@
+name: Payment App GCP
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'gcp_payment_app_part1/**'
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - 'gcp_payment_app_part1/**'
+
+env:
+  PROJECT_ID: 'akademiasebastianckuba'
+  REGION: 'europe-central2'
+  REGISTRY_NAME: 'europe-central2-docker.pkg.dev/akademiasebastianckuba/payment-registry'
+  WORKING_DIR: './gcp_payment_app_part1'
+
+jobs:
+  build-scan-push:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        app: [api, worker]
+
+    steps:
+      - name: Checkout monorepo
+        uses: actions/checkout@v4
+
+      - name: Build Docker Image (${{ matrix.app }})
+        working-directory: ${{ env.WORKING_DIR }}/payment-${{ matrix.app }}
+        run: |
+          docker build -f Dockerfile -t ${{ env.REGISTRY_NAME }}/payment-${{ matrix.app }}:${{ github.sha }} .
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: '${{ env.REGISTRY_NAME }}/payment-${{ matrix.app }}:${{ github.sha }}'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL'
+          trivyignores: '${{ env.WORKING_DIR }}/payment-${{ matrix.app }}/.trivyignore'
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+
+      - name: Configure Docker for GCP Artifact Registry
+        run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
+
+      - name: Push Image to Registry
+        run: |
+          FULL_IMAGE_NAME="${{ env.REGISTRY_NAME }}/payment-${{ matrix.app }}"
+          
+          docker push $FULL_IMAGE_NAME:${{ github.sha }}
+          
+          docker tag $FULL_IMAGE_NAME:${{ github.sha }} $FULL_IMAGE_NAME:latest
+          docker push $FULL_IMAGE_NAME:latest

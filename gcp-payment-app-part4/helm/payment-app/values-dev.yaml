@@ -1,0 +1,11 @@
+api:
+  replicaCount: 1
+worker:
+  replicaCount: 1
+ingress:
+  enabled: true
+  hosts:
+    - host: dev-api.finpay.local
+      paths:
+        - path: /
+          pathType: Prefix

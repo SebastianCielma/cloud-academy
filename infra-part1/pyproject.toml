@@ -1,0 +1,10 @@
+[project]
+name = "terraops-academy"
+version = "0.1.0"
+description = "Internal infrastructure orchestrator academy project"
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+

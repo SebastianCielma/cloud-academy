@@ -54,10 +54,11 @@ def load_config(cloud: str, env: str) -> dict[str, Any]:
     config["cloud"] = cloud
     config["environment"] = env
 
-    dev_defaults = _load_yaml(CONFIGS / f"{cloud}.dev.yaml")
-    if "database" not in config:
-        config["database"] = dev_defaults.get("database", {})
-    if "runtime" not in config:
-        config["runtime"] = dev_defaults.get("runtime", {})
+    required_sections = ["runtime", "database", "network", "application"]
+    for section in required_sections:
+        if section not in config:
+            raise ValueError(
+                f"Missing required '{section}' section in configs/{cloud}.{env}.yaml"
+            )
 
     return config

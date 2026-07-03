@@ -1,13 +1,16 @@
 network:
   vpc_cidr: "10.20.0.0/16"
-  public_subnet_cidr: "10.20.1.0/24"
+  public_subnets:
+    - "10.20.1.0/24"
 
 application:
-  name: academy-control-api
+  name: "academy-control-api"
   version: "1.3.0"
-  service_path: services/academy-control-api
 
-notifications:
-  enabled: false
-  queue_name: academy-staging-notifications
+runtime:
+  app_port: 8080
+  database_url: "sqlite:////opt/academy-control-api/app/staging.db"
 
+database:
+  engine: "sqlite"
+  storage_size: "5GB"

@@ -11,7 +11,6 @@ from pydantic import BaseModel
 
 from app import db
 
-# Inicjalizacja loggera dla obserwowalności (Observability)
 logger = logging.getLogger("academy-api")
 logger.setLevel(logging.INFO)
 
@@ -23,13 +22,8 @@ class StatusUpdate(BaseModel):
 
 
 def publish_status_changed_event(assignment_id: int, student: str, old_status: str, new_status: str) -> None:
-    """
-    Funkcja pomocnicza realizująca wzorzec Event Publishing.
-    Buduje i publikuje zdarzenie dla architektury asynchronicznej.
-    """
     environment = os.getenv("ENVIRONMENT", "dev")
     
-    # 1. Budowa payloadu zgodnie z wymaganiami biznesowymi
     event_payload = {
         "event_type": "AssignmentStatusChanged",
         "assignment_id": str(assignment_id),
@@ -39,15 +33,9 @@ def publish_status_changed_event(assignment_id: int, student: str, old_status: s
         "student": student
     }
     
-    # 2. Logowanie zdarzenia (Runtime Observability)
     logger.info(f"Publishing event: {json.dumps(event_payload)}")
 
-    # 3. Wysłanie zdarzenia (Event Routing)
-    # W chmurze AWS użylibyśmy tutaj np. boto3.client('events').put_events(...) do EventBridge.
-    # Na potrzeby naszego lokalnego środowiska/TerraOps, symulujemy wrzucenie na kolejkę
-    # poprzez zapis do pliku JSONL, z którego czyta komenda "notifications read".
     try:
-        # Próba zaimportowania boto3 dla prawdziwego wdrożenia AWS
         import boto3
         event_bus = os.getenv("EVENT_BUS_NAME")
         if event_bus:
@@ -63,11 +51,10 @@ def publish_status_changed_event(assignment_id: int, student: str, old_status: s
             logger.info("Event successfully sent to AWS EventBridge.")
             return
     except ImportError:
-        pass # Boto3 niedostępne, przechodzimy do fallbacku lokalnego
+        pass 
     except Exception as e:
         logger.error(f"Failed to publish to AWS EventBridge: {e}")
 
-    # Fallback lokalny dla komendy "terraops notifications read"
     try:
         queue_path = f"generated/notifications.{environment}.jsonl"
         with open(queue_path, "a", encoding="utf-8") as f:
@@ -124,11 +111,9 @@ def update_assignment_status(assignment_id: int, payload: StatusUpdate) -> dict[
         old_status = row[2]
         new_status = payload.status
 
-        # Aktualizacja w bazie danych
         conn.execute("update assignments set status = ? where id = ?", (new_status, assignment_id))
         conn.commit()
 
-    # Wywołanie nowej logiki Event Publishing zgodnie z biznesowym wymogiem
     publish_status_changed_event(
         assignment_id=assignment_id, 
         student=student, 
@@ -170,12 +155,8 @@ def metrics() -> str:
     return f"academy_assignments_total {assignments_count}\n"
 
 
-# ==========================================
-# SERVERLESS RUNTIME ADAPTER (MANGUM)
-# ==========================================
 try:
     from mangum import Mangum
-    # Adapter ten pozwala API Gateway na wywoływanie aplikacji FastAPI wewnątrz AWS Lambda
     handler = Mangum(app)
 except ImportError:
     logger.warning("Mangum not installed. Serverless handler will not be available.")

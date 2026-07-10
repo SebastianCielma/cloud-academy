@@ -1,0 +1,29 @@
+name: Local Runner Validation
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  validate-minikube:
+    runs-on: [self-hosted, minikube-runner]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Print system info (Validation step)
+        run: |
+          echo "System Information:"
+          uname -a
+          
+      - name: Kubernetes-related environment info
+        run: |
+          echo "K8s Environment Variables:"
+          env | grep -i kubernetes
+          
+      - name: Runner execution check
+        run: |
+          echo "Executing on runner: $RUNNER_NAME"
+          echo "Working directory: $PWD"
+          echo "This proves the job was executed on the Kubernetes-based runner."

@@ -1,0 +1,44 @@
+database:
+  host: "127.0.0.1"
+  user: "paymentuser"
+  password: "REPLACE_ME_DURING_DEPLOYMENT"
+
+api:
+  replicaCount: 1
+  image:
+    repository: europe-central2-docker.pkg.dev/akademiasebastianckuba/payment-registry/payment-api
+    tag: "latest"
+    pullPolicy: Always
+  service:
+    type: ClusterIP
+    port: 8080
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+worker:
+  replicaCount: 1
+  image:
+    repository: europe-central2-docker.pkg.dev/akademiasebastianckuba/payment-registry/payment-worker
+    tag: "latest"
+    pullPolicy: Always
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 250m
+      memory: 256Mi
+
+ingress:
+  enabled: false
+  className: "nginx"
+  hosts:
+    - host: api.finpay.local
+      paths:
+        - path: /
+          pathType: Prefix

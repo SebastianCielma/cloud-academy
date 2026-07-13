@@ -33,28 +33,28 @@ resource "helm_release" "runner_scale_set" {
     value = var.github_pat
   }
 
-  set {
-    name  = "template.spec.containers[0].name"
-    value = "runner"
-  }
 
-  set {
-    name  = "template.spec.containers[0].resources.requests.cpu"
-    value = "500m"
-  }
-  
-  set {
-    name  = "template.spec.containers[0].resources.requests.memory"
-    value = "512Mi"
-  }
-  
-  set {
-    name  = "template.spec.containers[0].resources.limits.cpu"
-    value = "1000m"
-  }
-  
-  set {
-    name  = "template.spec.containers[0].resources.limits.memory"
-    value = "1Gi"
-  }
+  values = [
+    yamlencode({
+      template = {
+        spec = {
+          containers = [{
+            name    = "runner"
+            image   = "ghcr.io/actions/actions-runner:latest"
+            command = ["/home/runner/run.sh"]
+            resources = {
+              requests = {
+                cpu    = "500m"
+                memory = "512Mi"
+              }
+              limits = {
+                cpu    = "1000m"
+                memory = "1Gi"
+              }
+            }
+          }]
+        }
+      }
+    })
+  ]
 }

@@ -3,7 +3,7 @@ resource "kubernetes_namespace" "arc_namespace" {
     name = var.runner_namespace
   }
 }
-#
+
 resource "helm_release" "arc_controller" {
   name       = "arc"
   repository = "oci://ghcr.io/actions/actions-runner-controller-charts"

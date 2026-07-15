@@ -1,0 +1,22 @@
+network:
+  vpc_cidr: "10.10.0.0/16"
+  public_subnet_cidr: "10.10.1.0/24"
+
+application:
+  name: academy-control-api
+  version: "1.3.0"
+  service_path: services/academy-control-api
+
+runtime:
+  environment: dev
+  port: 8000
+  host: "0.0.0.0"
+
+database:
+  engine: sqlite
+  path: /opt/academy-control-api/dev.sqlite
+
+notifications:
+  enabled: false
+  queue_name: academy-dev-notifications
+

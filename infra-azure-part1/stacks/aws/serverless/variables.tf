@@ -1,0 +1,3 @@
+variable "cloud" {}
+variable "environment" {}
+

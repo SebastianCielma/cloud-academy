@@ -1,0 +1,7 @@
+academy-control-api.service: Main process exited with status=1
+academy-control-api.service: Scheduled restart job, restart counter is at 4
+sqlite3.OperationalError: unable to open database file
+readiness check failed: database connection failed
+nginx: connect() failed (111: Connection refused) while connecting to upstream
+502 Bad Gateway
+

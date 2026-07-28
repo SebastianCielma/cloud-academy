@@ -1,0 +1,99 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: publisher-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: publisher
+  template:
+    metadata:
+      labels:
+        app: publisher
+    spec:
+      containers:
+      - name: publisher-service
+        image: app-publisher:v1
+        imagePullPolicy: IfNotPresent 
+        command: ["node", "publisher.js"]
+        env:
+        - name: ELASTIC_URL
+          value: "https://local-cluster-es-http.default.svc:9200" 
+        - name: ELASTIC_USERNAME
+          value: "elastic"
+        - name: ELASTIC_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: local-cluster-es-elastic-user 
+              key: elastic
+        - name: ELASTIC_CA_CERT
+          value: "/usr/src/app/certs/ca.crt"
+        volumeMounts:
+        - name: elastic-certs
+          mountPath: /usr/src/app/certs
+          readOnly: true
+        livenessProbe: 
+          exec:
+            command: ["node", "-v"]
+          initialDelaySeconds: 5
+          periodSeconds: 15
+        readinessProbe:
+          exec:
+            command: ["node", "-v"]
+          initialDelaySeconds: 5
+          periodSeconds: 10
+      volumes:
+      - name: elastic-certs
+        secret:
+          secretName: local-cluster-es-http-certs-public 
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: search-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: search
+  template:
+    metadata:
+      labels:
+        app: search
+    spec:
+      containers:
+      - name: search-service
+        image: app-search:v1
+        imagePullPolicy: IfNotPresent
+        command: ["node", "search.js"]
+        env:
+        - name: ELASTIC_URL
+          value: "https://local-cluster-es-http.default.svc:9200"
+        - name: ELASTIC_USERNAME
+          value: "elastic"
+        - name: ELASTIC_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: local-cluster-es-elastic-user
+              key: elastic
+        - name: ELASTIC_CA_CERT
+          value: "/usr/src/app/certs/ca.crt"
+        volumeMounts:
+        - name: elastic-certs
+          mountPath: /usr/src/app/certs
+          readOnly: true
+        livenessProbe:
+          exec:
+            command: ["node", "-v"]
+          initialDelaySeconds: 5
+          periodSeconds: 15
+        readinessProbe:
+          exec:
+            command: ["node", "-v"]
+          initialDelaySeconds: 5
+          periodSeconds: 10
+      volumes:
+      - name: elastic-certs
+        secret:
+          secretName: local-cluster-es-http-certs-public

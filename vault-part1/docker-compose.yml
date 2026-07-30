@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  vault:
+    image: hashicorp/vault:1.13.3
+    container_name: local-vault
+    ports:
+      - "8200:8200"
+    environment:
+      VAULT_ADDR: "http://127.0.0.1:8200"
+      VAULT_API_ADDR: "http://127.0.0.1:8200"
+    volumes:
+      - vault-data:/vault/file
+    cap_add:
+      - IPC_LOCK
+    command: server
+    entrypoint: >
+      sh -c '
+      echo "
+      storage \"file\" {
+        path = \"/vault/file\"
+      }
+      listener \"tcp\" {
+        address     = \"0.0.0.0:8200\"
+        tls_disable = 1
+      }
+      ui = true
+      " > /vault/config/local.hcl && vault server -config=/vault/config/local.hcl'
+
+  app-service:
+    image: node:20-alpine
+    container_name: payment-app
+    working_dir: /usr/src/app
+    volumes:
+      - .:/usr/src/app
+    environment:
+      - VAULT_ADDR=http://vault:8200
+      - VAULT_TOKEN
+    command: ["sh", "-c", "npm install axios && node app.js"]
+    depends_on:
+      - vault
+
+volumes:
+  vault-data:

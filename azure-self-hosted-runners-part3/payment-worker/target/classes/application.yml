@@ -1,0 +1,23 @@
+server:
+  port: ${PAYMENT_WORKER_PORT:8090}
+
+spring:
+  application:
+    name: payment-worker
+
+payment:
+  api:
+    base-url: ${PAYMENT_API_BASE_URL:http://localhost:8080}
+
+worker:
+  cpu-load-ms: ${WORKER_CPU_LOAD_MS:300}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health,info"
+  endpoint:
+    health:
+      probes:
+        enabled: true

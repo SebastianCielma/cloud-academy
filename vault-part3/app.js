@@ -29,7 +29,7 @@ async function getDynamicCredentials() {
 
     const { username, password } = res.data.data;
     currentLeaseId = res.data.lease_id;
-    const leaseDuration = res.data.lease_duration; // e.g., 120s
+    const leaseDuration = res.data.lease_duration; 
 
     console.log(`[SUCCESS] Credentials acquired. Username: ${username}, Lease: ${currentLeaseId}, TTL: ${leaseDuration}s`);
     
@@ -39,7 +39,6 @@ async function getDynamicCredentials() {
 
 function startLeaseRenewalLoop(leaseId, duration) {
     if (renewalInterval) clearInterval(renewalInterval);
-    // Renew at 80% of lease duration to be safe
     const renewTimeMs = (duration * 0.8) * 1000;
     
     renewalInterval = setInterval(async () => {
@@ -51,7 +50,6 @@ function startLeaseRenewalLoop(leaseId, duration) {
             console.log(`[RENEWAL SUCCESS] Lease extended. New TTL: ${res.data.lease_duration}s`);
         } catch (err) {
             console.error(`[RENEWAL ERROR] Failed to renew lease: ${err.message}. Connection might drop soon!`);
-            // Graceful degradation: If renewal fails (e.g., reached max_ttl), app should fetch new credentials and recreate pool.
         }
     }, renewTimeMs);
 }

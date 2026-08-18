@@ -5,10 +5,6 @@ MODEL_ID = "us.anthropic.claude-haiku-4-5-20251001-v1:0"
 KNOWLEDGE_BASE_ID = "CIGUQSVFHM"  
 
 def run_part3_experiments():
-    if KNOWLEDGE_BASE_ID == "WPISZ_SWOJE_KB_ID":
-        print("Please update KNOWLEDGE_BASE_ID in the code first.")
-        sys.exit(1)
-
     rag = RagAssistant(MODEL_ID, KNOWLEDGE_BASE_ID)
 
     print("\n--- 1. RETRIEVE ONLY (No Generation) ---")

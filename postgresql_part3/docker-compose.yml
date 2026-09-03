@@ -1,0 +1,26 @@
+services:
+  primary:
+    image: postgres:15
+    container_name: pg_primary
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: repl_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - primary_data:/var/lib/postgresql/data
+
+  standby1:
+    image: postgres:15
+    container_name: pg_standby1
+    ports:
+      - "5433:5432"
+    volumes:
+      - standby1_data:/var/lib/postgresql/data
+
+volumes:
+  primary_data:
+  standby1_data:
+    name: postgresql_part3_standby1_data
+    external: true

@@ -1,0 +1,42 @@
+version: '3.8'
+services:
+  redis-primary:
+    image: redis:7
+    command: redis-server --appendonly yes
+    ports: ["6379:6379"]
+
+  redis-replica-1:
+    image: redis:7
+    command: redis-server --replicaof redis-primary 6379 --appendonly yes
+    ports: ["6380:6379"]
+    depends_on: [redis-primary]
+
+  redis-replica-2:
+    image: redis:7
+    command: redis-server --replicaof redis-primary 6379 --appendonly yes
+    ports: ["6381:6379"]
+    depends_on: [redis-primary]
+
+  redis-sentinel-1:
+    image: redis:7
+    command: >
+      bash -c "echo 'sentinel monitor mymaster redis-primary 6379 2' > /tmp/sentinel.conf &&
+      echo 'sentinel down-after-milliseconds mymaster 2000' >> /tmp/sentinel.conf &&
+      redis-sentinel /tmp/sentinel.conf"
+    depends_on: [redis-primary, redis-replica-1, redis-replica-2]
+
+  redis-sentinel-2:
+    image: redis:7
+    command: >
+      bash -c "echo 'sentinel monitor mymaster redis-primary 6379 2' > /tmp/sentinel.conf &&
+      echo 'sentinel down-after-milliseconds mymaster 2000' >> /tmp/sentinel.conf &&
+      redis-sentinel /tmp/sentinel.conf"
+    depends_on: [redis-primary]
+
+  redis-sentinel-3:
+    image: redis:7
+    command: >
+      bash -c "echo 'sentinel monitor mymaster redis-primary 6379 2' > /tmp/sentinel.conf &&
+      echo 'sentinel down-after-milliseconds mymaster 2000' >> /tmp/sentinel.conf &&
+      redis-sentinel /tmp/sentinel.conf"
+    depends_on: [redis-primary]

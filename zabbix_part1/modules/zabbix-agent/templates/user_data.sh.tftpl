@@ -1,0 +1,18 @@
+#!/bin/bash
+export DEBIAN_FRONTEND=noninteractive
+# 0. Czekamy na zwolnienie blokad apt
+while fuser /var/lib/apt/lists/lock >/dev/null 2>&1 || fuser /var/lib/dpkg/lock >/dev/null 2>&1 || fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1; do
+  sleep 3
+done
+
+wget https://repo.zabbix.com/zabbix/7.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_7.0-2+ubuntu22.04_all.deb
+dpkg -i zabbix-release_7.0-2+ubuntu22.04_all.deb
+apt-get update
+apt-get install -y zabbix-agent
+
+sed -i "s/^Server=127.0.0.1/Server=${zabbix_server_ip}/" /etc/zabbix/zabbix_agentd.conf
+sed -i "s/^ServerActive=127.0.0.1/ServerActive=${zabbix_server_ip}/" /etc/zabbix/zabbix_agentd.conf
+sed -i "s/^Hostname=Zabbix server/Hostname=${agent_hostname}/" /etc/zabbix/zabbix_agentd.conf
+
+systemctl restart zabbix-agent
+systemctl enable zabbix-agent

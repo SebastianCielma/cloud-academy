@@ -25,9 +25,15 @@ worker:
 config:
   appEnv: "development"
   logLevel: "DEBUG"
+  dbUrl: "jdbc:postgresql://10.0.9.4:5432/paymentdb"
 
 ingress:
   enabled: false
 
 networkPolicy:
   enabled: false
+
+secretsStore:
+  keyvaultName: "kv-payment-production"
+  tenantId: "cda9a1f6-c3a2-40f6-a425-89316170fa38"
+  clientId: "60c11d26-b1c1-42f6-ad19-cdebb111ca04"

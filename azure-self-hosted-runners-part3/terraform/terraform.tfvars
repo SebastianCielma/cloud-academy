@@ -23,7 +23,7 @@ aks_vm_size    = "Standard_D2s_v3"
 # max=3: allow up to 3 CI nodes for parallel pipeline execution
 ci_vm_size   = "Standard_D2s_v3"
 ci_min_count = 0
-ci_max_count = 3
+ci_max_count = 2
 
 db_admin_username = "pgadmin"
 

@@ -1,0 +1,12 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: lab-shared-configmap-global-binding
+subjects:
+  - kind: ServiceAccount
+    name: payment-api-sa
+    namespace: payments
+roleRef:
+  kind: ClusterRole
+  name: lab-shared-configmap-reader
+  apiGroup: rbac.authorization.k8s.io

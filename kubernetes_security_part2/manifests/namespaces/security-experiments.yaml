@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: security-experiments
+  labels:
+    app.kubernetes.io/part-of: kubernetes-security-part2
+    security-lab/purpose: controlled-experiments

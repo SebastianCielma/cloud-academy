@@ -1,0 +1,29 @@
+# Local credentials and environment files
+.env
+.env.*
+!.env.example
+
+# Private keys and certificates
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Kubernetes local configuration
+kubeconfig
+kubeconfig.*
+
+# Local logs and temporary files
+*.log
+*.tmp
+*.swp
+*~
+
+# Editor and OS files
+.DS_Store
+.vscode/
+.idea/
+
+# Local backups
+*.bak
+*.backup

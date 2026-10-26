@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: psa-baseline-only
+  namespace: psa-lab
+  labels:
+    app: psa-baseline-only
+spec:
+  automountServiceAccountToken: false
+  restartPolicy: Never
+
+  containers:
+    - name: test
+      image: busybox:1.36
+      command:
+        - sh
+        - -c
+        - sleep 3600
+
+      securityContext:
+        privileged: false
+
+      resources:
+        requests:
+          cpu: 10m
+          memory: 16Mi
+        limits:
+          cpu: 100m
+          memory: 64Mi

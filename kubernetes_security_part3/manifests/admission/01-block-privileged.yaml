@@ -1,0 +1,31 @@
+apiVersion: policies.kyverno.io/v1
+kind: ValidatingPolicy
+metadata:
+  name: part3-block-privileged
+spec:
+  evaluation:
+    mode: Kubernetes
+  validationActions:
+    - Deny
+  matchConstraints:
+    resourceRules:
+      - apiGroups: [""]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["pods"]
+    namespaceSelector:
+      matchLabels:
+        kubernetes.io/metadata.name: part3-admission
+  validations:
+    - expression: >-
+        !object.spec.containers.exists(c,
+          has(c.securityContext) &&
+          has(c.securityContext.privileged) &&
+          c.securityContext.privileged == true)
+        &&
+        (!has(object.spec.initContainers) ||
+          !object.spec.initContainers.exists(c,
+            has(c.securityContext) &&
+            has(c.securityContext.privileged) &&
+            c.securityContext.privileged == true))
+      message: "Privileged containers are forbidden"

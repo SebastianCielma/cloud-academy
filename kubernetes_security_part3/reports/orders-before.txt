@@ -1,0 +1,5 @@
+NAME                         READY   UP-TO-DATE   AVAILABLE   AGE     CONTAINERS   IMAGES                                    SELECTOR
+deployment.apps/orders-api   1/1     1            1           7d22h   nginx        nginxinc/nginx-unprivileged:1.27-alpine   app=orders-api
+
+NAME                              READY   STATUS    RESTARTS       AGE     IP            NODE       NOMINATED NODE   READINESS GATES
+pod/orders-api-54866b54b6-hbm8p   1/1     Running   3 (2d4h ago)   7d22h   10.244.0.23   minikube   <none>           <none>

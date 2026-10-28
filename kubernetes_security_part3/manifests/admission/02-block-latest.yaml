@@ -1,0 +1,25 @@
+apiVersion: policies.kyverno.io/v1
+kind: ValidatingPolicy
+metadata:
+  name: part3-block-latest
+spec:
+  evaluation:
+    mode: Kubernetes
+  validationActions:
+    - Deny
+  matchConstraints:
+    resourceRules:
+      - apiGroups: [""]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["pods"]
+    namespaceSelector:
+      matchLabels:
+        kubernetes.io/metadata.name: part3-admission
+  validations:
+    - expression: >-
+        object.spec.containers.all(c,
+          !c.image.endsWith(':latest') &&
+          (c.image.contains('@sha256:') ||
+           c.image.matches('.*:[^/:@]+$')))
+      message: "Images must use an explicit non-latest tag or digest"

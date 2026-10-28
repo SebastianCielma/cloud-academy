@@ -1,0 +1,5 @@
+NAME                          READY   UP-TO-DATE   AVAILABLE   AGE     CONTAINERS   IMAGES                                    SELECTOR
+deployment.apps/payment-api   1/1     1            1           7d22h   nginx        nginxinc/nginx-unprivileged:1.27-alpine   app=payment-api
+
+NAME                               READY   STATUS    RESTARTS       AGE     IP            NODE       NOMINATED NODE   READINESS GATES
+pod/payment-api-6f7cc46fc9-fb5wm   1/1     Running   3 (2d4h ago)   7d22h   10.244.0.21   minikube   <none>           <none>

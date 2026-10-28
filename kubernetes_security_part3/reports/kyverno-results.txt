@@ -1,0 +1,8 @@
+PASS | privileged container | DENY
+PASS | latest image | DENY
+PASS | untrusted registry | DENY
+
+=== AUDIT MODE: DEPLOYMENT WITHOUT LABELS ===
+PASS | missing labels | AUDIT (request allowed)
+
+RESULT: ALL KYVERNO TESTS PASSED

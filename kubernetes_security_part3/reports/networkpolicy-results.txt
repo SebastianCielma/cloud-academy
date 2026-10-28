@@ -1,0 +1,9 @@
+Payment API: 10.244.176.132
+Postgres:   10.244.176.134
+PASS | frontend -> payment-api | ALLOW
+PASS | payment-api -> postgres | ALLOW
+PASS | frontend -> postgres | DENY
+PASS | orders -> postgres | DENY
+PASS | untrusted -> postgres | DENY
+
+RESULT: ALL NETWORK TESTS PASSED

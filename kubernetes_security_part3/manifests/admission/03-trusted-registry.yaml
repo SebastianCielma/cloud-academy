@@ -1,0 +1,24 @@
+apiVersion: policies.kyverno.io/v1
+kind: ValidatingPolicy
+metadata:
+  name: part3-trusted-registry
+spec:
+  evaluation:
+    mode: Kubernetes
+  validationActions:
+    - Deny
+  matchConstraints:
+    resourceRules:
+      - apiGroups: [""]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["pods"]
+    namespaceSelector:
+      matchLabels:
+        kubernetes.io/metadata.name: part3-admission
+  validations:
+    - expression: >-
+        object.spec.containers.all(c,
+          c.image.startsWith('docker.io/library/') ||
+          c.image.startsWith('registry.k8s.io/'))
+      message: "Image must come from an approved registry"

@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: part3-untrusted-image
+  namespace: part3-untrusted
+spec:
+  containers:
+    - name: nginx
+      image: quay.io/example/untrusted:1.0

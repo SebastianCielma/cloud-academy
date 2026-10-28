@@ -1,0 +1,200 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: part3-payment-api
+  namespace: payments
+  labels:
+    owner: security-team
+    environment: lab
+    application: part3-payment-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: part3-payment-api
+  template:
+    metadata:
+      labels:
+        app: part3-payment-api
+        owner: security-team
+        environment: lab
+        application: part3-payment-api
+    spec:
+      containers:
+        - name: web
+          image: nginxinc/nginx-unprivileged:1.27-alpine
+          ports:
+            - containerPort: 8080
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            runAsNonRoot: true
+            runAsUser: 101
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            requests:
+              cpu: 20m
+              memory: 32Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
+        - name: network-client
+          image: busybox:1.36
+          command: ["sh", "-c", "sleep 36000"]
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            runAsNonRoot: true
+            runAsUser: 10001
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              cpu: 100m
+              memory: 64Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: part3-payment-api
+  namespace: payments
+spec:
+  selector:
+    app: part3-payment-api
+  ports:
+    - port: 8080
+      targetPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: part3-postgres
+  namespace: payments
+  labels:
+    owner: security-team
+    environment: lab
+    application: part3-postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: part3-postgres
+  template:
+    metadata:
+      labels:
+        app: part3-postgres
+        owner: security-team
+        environment: lab
+        application: part3-postgres
+    spec:
+      containers:
+        - name: tcp-listener
+          image: busybox:1.36
+          command: ["sh", "-c", "while true; do nc -l -p 5432; done"]
+          ports:
+            - containerPort: 5432
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            runAsNonRoot: true
+            runAsUser: 10001
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              cpu: 100m
+              memory: 64Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: part3-postgres
+  namespace: payments
+spec:
+  selector:
+    app: part3-postgres
+  ports:
+    - port: 5432
+      targetPort: 5432
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: part3-frontend
+  namespace: part3-frontend
+  labels:
+    app: part3-frontend
+    owner: security-team
+    environment: lab
+    application: part3-frontend
+spec:
+  restartPolicy: Never
+  containers:
+    - name: client
+      image: busybox:1.36
+      command: ["sh", "-c", "sleep 36000"]
+      resources:
+        requests:
+          cpu: 10m
+          memory: 16Mi
+        limits:
+          cpu: 100m
+          memory: 64Mi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: part3-orders-client
+  namespace: orders
+  labels:
+    app: part3-orders-client
+    owner: security-team
+    environment: lab
+    application: part3-orders-client
+spec:
+  restartPolicy: Never
+  containers:
+    - name: client
+      image: busybox:1.36
+      command: ["sh", "-c", "sleep 36000"]
+      resources:
+        requests:
+          cpu: 10m
+          memory: 16Mi
+        limits:
+          cpu: 100m
+          memory: 64Mi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: part3-untrusted-client
+  namespace: part3-untrusted
+  labels:
+    app: part3-untrusted-client
+    owner: security-team
+    environment: lab
+    application: part3-untrusted-client
+spec:
+  restartPolicy: Never
+  containers:
+    - name: client
+      image: busybox:1.36
+      command: ["sh", "-c", "sleep 36000"]
+      resources:
+        requests:
+          cpu: 10m
+          memory: 16Mi
+        limits:
+          cpu: 100m
+          memory: 64Mi

@@ -1,0 +1,25 @@
+apiVersion: policies.kyverno.io/v1
+kind: ValidatingPolicy
+metadata:
+  name: part3-required-labels
+spec:
+  evaluation:
+    mode: Kubernetes
+  validationActions:
+    - Deny
+  matchConstraints:
+    resourceRules:
+      - apiGroups: ["apps"]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["deployments"]
+    namespaceSelector:
+      matchLabels:
+        kubernetes.io/metadata.name: part3-admission
+  validations:
+    - expression: >-
+        has(object.metadata.labels) &&
+        'owner' in object.metadata.labels &&
+        'environment' in object.metadata.labels &&
+        'application' in object.metadata.labels
+      message: "Deployment requires owner, environment and application labels"

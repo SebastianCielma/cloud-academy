@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: part3-missing-labels
+  namespace: part3-untrusted
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      app: missing-labels
+  template:
+    metadata:
+      labels:
+        app: missing-labels
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:1.27

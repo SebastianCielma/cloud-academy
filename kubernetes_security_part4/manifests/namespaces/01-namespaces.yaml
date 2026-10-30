@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: part4-runtime
+  labels:
+    application: runtime-security-lab
+    environment: lab
+    owner: security-team
+    pod-security.kubernetes.io/enforce: baseline
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: part4-incident
+  labels:
+    application: incident-response-lab
+    environment: lab
+    owner: security-team
+    pod-security.kubernetes.io/enforce: baseline

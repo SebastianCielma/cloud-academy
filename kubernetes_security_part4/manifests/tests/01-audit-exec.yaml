@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: runtime-test-instructions
+  namespace: part4-runtime
+data:
+  test: "kubectl exec -n part4-runtime deploy/runtime-test -- /bin/sh -c 'id; cat /etc/passwd | head -n 2'"

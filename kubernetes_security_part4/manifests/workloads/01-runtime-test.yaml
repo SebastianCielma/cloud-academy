@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: runtime-client
+  namespace: part4-runtime
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: runtime-test
+  namespace: part4-runtime
+  labels:
+    application: runtime-test
+    owner: security-team
+    environment: lab
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: runtime-test
+  template:
+    metadata:
+      labels:
+        app: runtime-test
+        application: runtime-test
+        owner: security-team
+        environment: lab
+    spec:
+      serviceAccountName: runtime-client
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: app
+          image: docker.io/library/busybox:1.36.1
+          command: ["/bin/sh", "-c", "sleep 360000"]
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              cpu: 100m
+              memory: 64Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            runAsNonRoot: true
+            runAsUser: 10001
+            readOnlyRootFilesystem: true

@@ -1,0 +1,23 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: incident-pod-reader
+  namespace: part4-incident
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: payment-api-pod-reader
+  namespace: part4-incident
+subjects:
+  - kind: ServiceAccount
+    name: payment-api
+    namespace: part4-incident
+roleRef:
+  kind: Role
+  name: incident-pod-reader
+  apiGroup: rbac.authorization.k8s.io

@@ -1,0 +1,26 @@
+=== ISTIO AMBIENT VERIFICATION ===
+NAME                     READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/istiod   1/1     1            1           108s
+
+NAME                            DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR            AGE
+daemonset.apps/istio-cni-node   1         1         1       1            1           kubernetes.io/os=linux   108s
+daemonset.apps/ztunnel          1         1         1       1            1           kubernetes.io/os=linux   100s
+
+NAME                          READY   STATUS    RESTARTS   AGE
+pod/istio-cni-node-nmvct      1/1     Running   0          108s
+pod/istiod-6d786897cc-t45lr   1/1     Running   0          108s
+pod/ztunnel-9ntj4             1/1     Running   0          100s
+client version: 1.31.3
+control plane version: 1.31.3
+data plane version: 1.31.3 (1 proxies)
+NAME                                READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/api-gateway         1/1     1            1           54m
+deployment.apps/inventory-service   1/1     1            1           54m
+deployment.apps/order-service       1/1     1            1           54m
+deployment.apps/payment-service     1/1     1            1           54m
+
+NAME                                     READY   STATUS    RESTARTS   AGE
+pod/api-gateway-544499f9d4-pkbx4         1/1     Running   0          54m
+pod/inventory-service-7b59467c6d-rnnqc   1/1     Running   0          54m
+pod/order-service-57fd7bcb7b-j5pjf       1/1     Running   0          54m
+pod/payment-service-f85d7c96d-gt9vw      1/1     Running   0          54m

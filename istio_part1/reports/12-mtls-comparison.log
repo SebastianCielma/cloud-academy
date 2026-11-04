@@ -1,0 +1,18 @@
+=== TEMPORARILY SET PERMISSIVE ===
+peerauthentication.security.istio.io/default patched
+
+=== WAIT FOR POLICY PROPAGATION ===
+
+=== CREATE OUTSIDE-MESH CLIENT ===
+pod/outside-mesh-client created
+error: timed out waiting for the condition on pods/outside-mesh-client
+
+=== PERMISSIVE TEST RESULT ===
+Testing HTTP from outside ambient mesh...
+UNEXPECTED_SUCCESS: {"service": "payment-service", "payment_status": "approved"}
+
+=== DELETE TEST POD ===
+pod "outside-mesh-client" deleted from default namespace
+
+=== RESTORE STRICT MTLS ===
+peerauthentication.security.istio.io/default configured

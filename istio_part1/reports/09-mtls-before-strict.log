@@ -1,0 +1,23 @@
+=== NAMESPACE ENROLLMENT ===
+istio-demo ambient=ambient
+
+=== WORKLOADS IN ZTUNNEL ===
+NAMESPACE    POD NAME                            ADDRESS      NODE        WAYPOINT PROTOCOL
+istio-demo   api-gateway-59676d86cd-ccqdc        10.244.0.85  istio-part1 None     HBONE
+istio-demo   inventory-service-7b59467c6d-rnnqc  10.244.0.6   istio-part1 None     HBONE
+istio-demo   order-service-57fd7bcb7b-j5pjf      10.244.0.4   istio-part1 None     HBONE
+istio-demo   payment-service-f85d7c96d-gt9vw     10.244.0.5   istio-part1 None     HBONE
+
+=== PEER AUTHENTICATION BEFORE STRICT ===
+No resources found
+
+=== ORDER TO PAYMENT REQUEST ===
+{"service": "payment-service", "payment_status": "approved"}
+
+=== FULL APPLICATION FLOW ===
+{"service": "order-service", "payment": {"service": "payment-service", "payment_status": "approved"}, "inventory": {"service": "inventory-service", "stock_status": "available"}}
+
+=== ZTUNNEL METRICS ===
+error: Internal error occurred: Internal error occurred: error executing command in container: failed to exec in container: failed to start exec "ec60f42fe12b44f19771f8a1d99bed61b86f358ba920cbf26ad808bf86e0ffb6": OCI runtime exec failed: exec failed: unable to start container process: exec: "curl": executable file not found in $PATH: unknown
+
+=== TEST COMPLETED ===

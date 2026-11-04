@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: istio-demo
+  labels:
+    app.kubernetes.io/part-of: istio-part1
+    istio.io/dataplane-mode: ambient

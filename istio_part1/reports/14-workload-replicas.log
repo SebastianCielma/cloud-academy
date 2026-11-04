@@ -1,0 +1,19 @@
+=== ORDER SERVICE REPLICAS ===
+POD                              SERVICE_ACCOUNT   READY
+order-service-57fd7bcb7b-j5pjf   order-service     true
+order-service-57fd7bcb7b-z9zfw   order-service     true
+
+=== TEST EACH REPLICA ===
+
+Testing pod: order-service-57fd7bcb7b-j5pjf
+ALLOW: {"service": "payment-service", "payment_status": "approved"}
+
+Testing pod: order-service-57fd7bcb7b-z9zfw
+ALLOW: {"service": "payment-service", "payment_status": "approved"}
+
+=== ZTUNNEL WORKLOADS ===
+NAMESPACE    POD NAME                            ADDRESS      NODE        WAYPOINT PROTOCOL
+istio-demo   order-service-57fd7bcb7b-j5pjf      10.244.0.4   istio-part1 None     HBONE
+istio-demo   order-service-57fd7bcb7b-z9zfw      10.244.0.88  istio-part1 None     HBONE
+
+=== BOTH REPLICAS VERIFIED ===

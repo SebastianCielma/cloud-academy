@@ -1,0 +1,42 @@
+=== KUBERNETES BASELINE - NO ISTIO ===
+NAME                                READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/api-gateway         1/1     1            1           16s
+deployment.apps/inventory-service   1/1     1            1           16s
+deployment.apps/order-service       1/1     1            1           16s
+deployment.apps/payment-service     1/1     1            1           16s
+
+NAME                                     READY   STATUS    RESTARTS   AGE
+pod/api-gateway-544499f9d4-pkbx4         1/1     Running   0          16s
+pod/inventory-service-7b59467c6d-rnnqc   1/1     Running   0          16s
+pod/order-service-57fd7bcb7b-j5pjf       1/1     Running   0          16s
+pod/payment-service-f85d7c96d-gt9vw      1/1     Running   0          16s
+
+NAME                        TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)    AGE
+service/api-gateway         ClusterIP   10.111.242.209   <none>        8080/TCP   16s
+service/inventory-service   ClusterIP   10.96.57.14      <none>        8080/TCP   16s
+service/order-service       ClusterIP   10.100.149.13    <none>        8080/TCP   16s
+service/payment-service     ClusterIP   10.108.180.229   <none>        8080/TCP   16s
+{
+    "service": "order-service",
+    "payment": {
+        "service": "payment-service",
+        "payment_status": "approved"
+    },
+    "inventory": {
+        "service": "inventory-service",
+        "stock_status": "available"
+    }
+}
+START service=order-service port=8080
+REQUEST service=order-service path=/health
+HTTP service=order-service client=10.244.0.1 message="GET /health HTTP/1.1" 200 -
+REQUEST service=order-service path=/health
+HTTP service=order-service client=10.244.0.1 message="GET /health HTTP/1.1" 200 -
+REQUEST service=order-service path=/health
+HTTP service=order-service client=10.244.0.1 message="GET /health HTTP/1.1" 200 -
+REQUEST service=order-service path=/health
+HTTP service=order-service client=10.244.0.1 message="GET /health HTTP/1.1" 200 -
+REQUEST service=order-service path=/health
+HTTP service=order-service client=10.244.0.1 message="GET /health HTTP/1.1" 200 -
+REQUEST service=order-service path=/order
+HTTP service=order-service client=10.244.0.3 message="GET /order HTTP/1.1" 200 -

@@ -1,0 +1,48 @@
+=== VERIFY KUBERNETES CONTEXT ===
+NAME          STATUS   ROLES           AGE   VERSION
+istio-part1   Ready    control-plane   54m   v1.34.0
+
+=== INSTALL ISTIO AMBIENT 1.31.3 ===
+        |\          
+        | \         
+        |  \        
+        |   \       
+      /||    \      
+     / ||     \     
+    /  ||      \    
+   /   ||       \   
+  /    ||        \  
+ /     ||         \ 
+/______||__________\
+____________________
+  \__       _____/  
+     \_____/        
+
+
+- Processing resources for Istio core.
+✔ Istio core installed ⛵️
+- Processing resources for CNI, Istiod.
+- Processing resources for CNI, Istiod. Waiting for DaemonSet/istio-system/is...
+✔ CNI installed 🪢
+- Processing resources for Istiod, Ztunnel. Waiting for Deployment/istio-syst...
+- Processing resources for Istiod, Ztunnel. Waiting for DaemonSet/istio-syste...
+✔ Istiod installed 🧠
+- Processing resources for Ztunnel. Waiting for DaemonSet/istio-system/ztunnel
+✔ Ztunnel installed 🔒
+- Pruning removed resources
+✔ Installation completeThe ambient profile has been installed successfully, enjoy Istio without sidecars!
+
+=== ISTIO COMPONENTS ===
+NAME                     READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/istiod   1/1     1            1           23s
+
+NAME                            DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR            AGE
+daemonset.apps/istio-cni-node   1         1         1       1            1           kubernetes.io/os=linux   23s
+daemonset.apps/ztunnel          1         1         1       1            1           kubernetes.io/os=linux   15s
+
+NAME                          READY   STATUS    RESTARTS   AGE
+pod/istio-cni-node-nmvct      1/1     Running   0          23s
+pod/istiod-6d786897cc-t45lr   1/1     Running   0          23s
+pod/ztunnel-9ntj4             1/1     Running   0          15s
+
+=== INSTALLATION FINISHED ===

@@ -1,0 +1,5 @@
+START service=inventory-service port=18083
+REQUEST service=inventory-service path=/health
+HTTP service=inventory-service client=127.0.0.1 message="GET /health HTTP/1.1" 200 -
+REQUEST service=inventory-service path=/inventory
+HTTP service=inventory-service client=127.0.0.1 message="GET /inventory HTTP/1.1" 200 -

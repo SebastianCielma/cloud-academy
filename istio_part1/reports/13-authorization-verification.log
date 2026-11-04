@@ -1,0 +1,13 @@
+=== AUTHORIZATION POLICY STATUS ===
+ZtunnelAccepted=True attached to ztunnel
+
+=== ALLOWED: ORDER TO PAYMENT ===
+ALLOW: {"service": "payment-service", "payment_status": "approved"}
+
+=== DENIED: INVENTORY TO PAYMENT ===
+DENY: ConnectionResetError [Errno 104] Connection reset by peer
+
+=== FULL APPLICATION FLOW ===
+FLOW: {"service": "order-service", "payment": {"service": "payment-service", "payment_status": "approved"}, "inventory": {"service": "inventory-service", "stock_status": "available"}}
+
+=== TEST COMPLETED ===

@@ -1,0 +1,17 @@
+NAMESPACE    POD NAME                            ADDRESS      NODE        WAYPOINT PROTOCOL
+default      kubernetes                          192.168.76.2             None     TCP
+istio-demo   api-gateway-59676d86cd-ccqdc        10.244.0.85  istio-part1 None     HBONE
+istio-demo   inventory-service-7b59467c6d-rnnqc  10.244.0.6   istio-part1 None     HBONE
+istio-demo   order-service-57fd7bcb7b-j5pjf      10.244.0.4   istio-part1 None     HBONE
+istio-demo   payment-service-f85d7c96d-gt9vw     10.244.0.5   istio-part1 None     HBONE
+istio-system istio-cni-node-kbtm2                10.244.0.84  istio-part1 None     TCP
+istio-system istiod-6d786897cc-t45lr             10.244.0.8   istio-part1 None     TCP
+istio-system ztunnel-9ntj4                       10.244.0.9   istio-part1 None     TCP
+kube-system  coredns-66bc5c9577-fr5xx            10.244.0.2   istio-part1 None     TCP
+kube-system  etcd-istio-part1                    192.168.76.2 istio-part1 None     TCP
+kube-system  kindnet-fthv7                       192.168.76.2 istio-part1 None     TCP
+kube-system  kube-apiserver-istio-part1          192.168.76.2 istio-part1 None     TCP
+kube-system  kube-controller-manager-istio-part1 192.168.76.2 istio-part1 None     TCP
+kube-system  kube-proxy-fsbg7                    192.168.76.2 istio-part1 None     TCP
+kube-system  kube-scheduler-istio-part1          192.168.76.2 istio-part1 None     TCP
+kube-system  storage-provisioner                 192.168.76.2 istio-part1 None     TCP

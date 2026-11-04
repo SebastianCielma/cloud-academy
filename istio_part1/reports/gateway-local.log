@@ -1,0 +1,5 @@
+START service=api-gateway port=18080
+REQUEST service=api-gateway path=/health
+HTTP service=api-gateway client=127.0.0.1 message="GET /health HTTP/1.1" 200 -
+REQUEST service=api-gateway path=/order
+HTTP service=api-gateway client=127.0.0.1 message="GET /order HTTP/1.1" 200 -

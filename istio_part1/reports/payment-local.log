@@ -1,0 +1,5 @@
+START service=payment-service port=18082
+REQUEST service=payment-service path=/health
+HTTP service=payment-service client=127.0.0.1 message="GET /health HTTP/1.1" 200 -
+REQUEST service=payment-service path=/payment
+HTTP service=payment-service client=127.0.0.1 message="GET /payment HTTP/1.1" 200 -

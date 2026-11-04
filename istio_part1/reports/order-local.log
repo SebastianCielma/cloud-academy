@@ -1,0 +1,5 @@
+START service=order-service port=18081
+REQUEST service=order-service path=/health
+HTTP service=order-service client=127.0.0.1 message="GET /health HTTP/1.1" 200 -
+REQUEST service=order-service path=/order
+HTTP service=order-service client=127.0.0.1 message="GET /order HTTP/1.1" 200 -

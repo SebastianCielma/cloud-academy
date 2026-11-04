@@ -1,0 +1,10 @@
+=== AMBIENT NAMESPACE ENROLLMENT ===
+namespace/istio-demo configured
+
+=== NAMESPACE LABELS ===
+istio-demo ambient=ambient
+
+=== RECREATE APPLICATION PODS FOR CNI ENROLLMENT ===
+deployment.apps/api-gateway restarted
+Waiting for deployment "api-gateway" rollout to finish: 1 old replicas are pending termination...
+error: timed out waiting for the condition

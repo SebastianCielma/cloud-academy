@@ -1,0 +1,9 @@
+=== STRICT MTLS POLICY ===
+default mode=STRICT
+
+=== AMBIENT WORKLOADS ===
+NAMESPACE    POD NAME                            ADDRESS      NODE        WAYPOINT PROTOCOL
+istio-demo   api-gateway-59676d86cd-ccqdc        10.244.0.85  istio-part1 None     HBONE
+istio-demo   inventory-service-7b59467c6d-rnnqc  10.244.0.6   istio-part1 None     HBONE
+istio-demo   order-service-57fd7bcb7b-j5pjf      10.244.0.4   istio-part1 None     HBONE
+istio-demo   payment-service-f85d7c96d-gt9vw     10.244.0.5   istio-part1 None     HBONE

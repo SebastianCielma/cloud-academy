@@ -1,0 +1,153 @@
+NAME          STATUS   AGE     LABELS
+istio-part2   Active   6m34s   app.kubernetes.io/part-of=istio-part2,istio.io/dataplane-mode=ambient,kubernetes.io/metadata.name=istio-part2
+NAME              TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE     LABELS
+payment-service   ClusterIP   10.96.54.196   <none>        8080/TCP   6m34s   istio.io/use-waypoint=payment-waypoint
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"gateway.networking.k8s.io/v1","kind":"Gateway","metadata":{"annotations":{},"labels":{"istio.io/waypoint-for":"service"},"name":"payment-waypoint","namespace":"istio-part2"},"spec":{"gatewayClassName":"istio-waypoint","listeners":[{"name":"mesh","port":15008,"protocol":"HBONE"}]}}
+  creationTimestamp: "2026-11-09T14:45:12Z"
+  generation: 1
+  labels:
+    istio.io/waypoint-for: service
+  name: payment-waypoint
+  namespace: istio-part2
+  resourceVersion: "1797"
+  uid: 39190851-f1cd-4272-8795-a44477e0ba1e
+spec:
+  gatewayClassName: istio-waypoint
+  listeners:
+  - allowedRoutes:
+      namespaces:
+        from: Same
+    name: mesh
+    port: 15008
+    protocol: HBONE
+status:
+  addresses:
+  - type: IPAddress
+    value: 10.96.81.60
+  - type: Hostname
+    value: payment-waypoint.istio-part2.svc.cluster.local
+  conditions:
+  - lastTransitionTime: "2026-11-09T14:45:12Z"
+    message: Resource accepted
+    observedGeneration: 1
+    reason: Accepted
+    status: "True"
+    type: Accepted
+  - lastTransitionTime: "2026-11-09T14:45:16Z"
+    message: Resource programmed, assigned to service(s) payment-waypoint.istio-part2.svc.cluster.local:15008
+    observedGeneration: 1
+    reason: Programmed
+    status: "True"
+    type: Programmed
+  - lastTransitionTime: "2026-11-09T14:45:12Z"
+    message: All references resolved
+    observedGeneration: 1
+    reason: ResolvedRefs
+    status: "True"
+    type: ResolvedRefs
+  listeners:
+  - attachedRoutes: 0
+    conditions:
+    - lastTransitionTime: "2026-11-09T14:45:12Z"
+      message: No errors found
+      observedGeneration: 1
+      reason: Accepted
+      status: "True"
+      type: Accepted
+    - lastTransitionTime: "2026-11-09T14:45:12Z"
+      message: No errors found
+      observedGeneration: 1
+      reason: NoConflicts
+      status: "False"
+      type: Conflicted
+    - lastTransitionTime: "2026-11-09T14:45:12Z"
+      message: No errors found
+      observedGeneration: 1
+      reason: Programmed
+      status: "True"
+      type: Programmed
+    - lastTransitionTime: "2026-11-09T14:45:12Z"
+      message: No errors found
+      observedGeneration: 1
+      reason: ResolvedRefs
+      status: "True"
+      type: ResolvedRefs
+    name: mesh
+    supportedKinds: []
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"gateway.networking.k8s.io/v1","kind":"HTTPRoute","metadata":{"annotations":{},"name":"payment-routing","namespace":"istio-part2"},"spec":{"parentRefs":[{"group":"","kind":"Service","name":"payment-service","port":8080}],"rules":[{"backendRefs":[{"name":"payment-service-v1","port":8080,"weight":100}]}]}}
+  creationTimestamp: "2026-11-09T14:45:12Z"
+  generation: 1
+  name: payment-routing
+  namespace: istio-part2
+  resourceVersion: "1769"
+  uid: 09f722aa-d691-45b7-8fe5-b1e776445c52
+spec:
+  parentRefs:
+  - group: ""
+    kind: Service
+    name: payment-service
+    port: 8080
+  rules:
+  - backendRefs:
+    - group: ""
+      kind: Service
+      name: payment-service-v1
+      port: 8080
+      weight: 100
+    matches:
+    - path:
+        type: PathPrefix
+        value: /
+status:
+  parents:
+  - conditions:
+    - lastTransitionTime: "2026-11-09T14:45:12Z"
+      message: Route was valid
+      observedGeneration: 1
+      reason: Accepted
+      status: "True"
+      type: Accepted
+    - lastTransitionTime: "2026-11-09T14:45:12Z"
+      message: All references resolved
+      observedGeneration: 1
+      reason: ResolvedRefs
+      status: "True"
+      type: ResolvedRefs
+    - lastTransitionTime: "2026-11-09T14:45:12Z"
+      message: All waypoints resolved
+      observedGeneration: 1
+      reason: ResolvedWaypoints
+      status: "True"
+      type: ResolvedWaypoints
+    controllerName: istio.io/gateway-controller
+    parentRef:
+      group: ""
+      kind: Service
+      name: payment-service
+      port: 8080
+NAME                                  READY   STATUS    RESTARTS   AGE     IP            NODE                        NOMINATED NODE   READINESS GATES
+api-gateway-df5558fb6-hzngc           1/1     Running   0          2m26s   10.244.0.15   istio-part2-control-plane   <none>           <none>
+inventory-service-ddcd8c8db-jw8bh     1/1     Running   0          2m26s   10.244.0.16   istio-part2-control-plane   <none>           <none>
+order-service-857b5dfdf6-7b2q7        1/1     Running   0          2m26s   10.244.0.14   istio-part2-control-plane   <none>           <none>
+payment-service-v1-7885d996fc-jvcnx   1/1     Running   0          2m26s   10.244.0.17   istio-part2-control-plane   <none>           <none>
+payment-service-v2-7ccc795bd7-jvmzd   1/1     Running   0          2m25s   10.244.0.18   istio-part2-control-plane   <none>           <none>
+payment-waypoint-5977b9b875-hkflh     1/1     Running   0          4m23s   10.244.0.13   istio-part2-control-plane   <none>           <none>
+NAME                 READY   UP-TO-DATE   AVAILABLE   AGE
+api-gateway          1/1     1            1           6m34s
+inventory-service    1/1     1            1           6m34s
+order-service        1/1     1            1           6m34s
+payment-service-v1   1/1     1            1           6m34s
+payment-service-v2   1/1     1            1           6m34s
+payment-waypoint     1/1     1            1           4m23s
+HTTPRoute conditions: {'Accepted': 'True', 'ResolvedRefs': 'True', 'ResolvedWaypoints': 'True'}
+Waypoint conditions: {'Accepted': 'True', 'Programmed': 'True', 'ResolvedRefs': 'True'}

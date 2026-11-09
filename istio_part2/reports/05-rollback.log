@@ -1,0 +1,14 @@
+Scenario: rollback-to-v1
+Requests: 1000
+Duration: 4.792 s
+Throughput: 208.685 requests/s
+Mean latency: 47.725 ms
+p50 latency: 47.889 ms
+p95 latency: 51.791 ms
+p99 latency: 53.734 ms
+Errors: 0 (0.00%)
+Version v1: 1000 (100.00%)
+Version v2: 0 (0.00%)
+Unknown versions: 0
+HTTP statuses: {"200": 1000}
+Assertions: PASS

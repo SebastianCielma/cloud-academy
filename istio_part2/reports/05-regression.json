@@ -1,0 +1,33 @@
+{
+  "assertion_failures": [],
+  "assertions_passed": true,
+  "duration_seconds": 4.159,
+  "error_count": 278,
+  "error_rate": 0.278,
+  "expected_v2_count": 250.0,
+  "expected_v2_percent": 25,
+  "headers": {
+    "X-Lab-V2-Regression": "true"
+  },
+  "max_latency_ms": 69.423,
+  "mean_latency_ms": 41.304,
+  "p50_latency_ms": 46.002,
+  "p95_latency_ms": 50.339,
+  "p99_latency_ms": 52.56,
+  "requests": 1000,
+  "route_manifest": "/Users/sebastian/akademia/cloud-academy/istio_part2/manifests/routes/12-traffic-75-25.yaml",
+  "scenario": "simulated-v2-regression",
+  "statuses": {
+    "200": 722,
+    "500": 278
+  },
+  "throughput_rps": 240.441,
+  "v1_percent": 72.2,
+  "v2_four_sigma_tolerance_count": 54.77,
+  "v2_percent": 27.8,
+  "versions": {
+    "v1": 722,
+    "v2": 278
+  },
+  "workers": 10
+}

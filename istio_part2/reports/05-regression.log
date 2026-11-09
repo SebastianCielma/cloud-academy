@@ -1,0 +1,14 @@
+Scenario: simulated-v2-regression
+Requests: 1000
+Duration: 4.159 s
+Throughput: 240.441 requests/s
+Mean latency: 41.304 ms
+p50 latency: 46.002 ms
+p95 latency: 50.339 ms
+p99 latency: 52.56 ms
+Errors: 278 (27.80%)
+Version v1: 722 (72.20%)
+Version v2: 278 (27.80%)
+Unknown versions: 0
+HTTP statuses: {"200": 722, "500": 278}
+Assertions: PASS

@@ -1,0 +1,28 @@
+{
+  "assertion_failures": [],
+  "assertions_passed": true,
+  "duration_seconds": 1.025,
+  "error_count": 0,
+  "error_rate": 0.0,
+  "headers": {
+    "X-Release-Channel": "stable"
+  },
+  "max_latency_ms": 1021.864,
+  "mean_latency_ms": 54.203,
+  "p50_latency_ms": 49.943,
+  "p95_latency_ms": 54.521,
+  "p99_latency_ms": 57.003,
+  "requests": 150,
+  "route_manifest": "/Users/sebastian/akademia/cloud-academy/istio_part2/manifests/routes/15-header-based.yaml",
+  "scenario": "stable-release-header",
+  "statuses": {
+    "200": 150
+  },
+  "throughput_rps": 146.355,
+  "v1_percent": 100.0,
+  "v2_percent": 0.0,
+  "versions": {
+    "v1": 150
+  },
+  "workers": 10
+}

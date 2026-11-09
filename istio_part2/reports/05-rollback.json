@@ -1,0 +1,28 @@
+{
+  "assertion_failures": [],
+  "assertions_passed": true,
+  "duration_seconds": 4.792,
+  "error_count": 0,
+  "error_rate": 0.0,
+  "headers": {
+    "X-Lab-V2-Regression": "true"
+  },
+  "max_latency_ms": 60.503,
+  "mean_latency_ms": 47.725,
+  "p50_latency_ms": 47.889,
+  "p95_latency_ms": 51.791,
+  "p99_latency_ms": 53.734,
+  "requests": 1000,
+  "route_manifest": "/Users/sebastian/akademia/cloud-academy/istio_part2/manifests/routes/16-traffic-100-v1-rollback.yaml",
+  "scenario": "rollback-to-v1",
+  "statuses": {
+    "200": 1000
+  },
+  "throughput_rps": 208.685,
+  "v1_percent": 100.0,
+  "v2_percent": 0.0,
+  "versions": {
+    "v1": 1000
+  },
+  "workers": 10
+}

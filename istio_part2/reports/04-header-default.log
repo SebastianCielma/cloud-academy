@@ -1,0 +1,14 @@
+Scenario: no-release-header
+Requests: 150
+Duration: 1.628 s
+Throughput: 92.123 requests/s
+Mean latency: 107.115 ms
+p50 latency: 46.88 ms
+p95 latency: 927.347 ms
+p99 latency: 1057.45 ms
+Errors: 0 (0.00%)
+Version v1: 150 (100.00%)
+Version v2: 0 (0.00%)
+Unknown versions: 0
+HTTP statuses: {"200": 150}
+Assertions: PASS

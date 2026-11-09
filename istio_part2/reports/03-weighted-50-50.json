@@ -1,0 +1,30 @@
+{
+  "assertion_failures": [],
+  "assertions_passed": true,
+  "duration_seconds": 5.977,
+  "error_count": 0,
+  "error_rate": 0.0,
+  "expected_v2_count": 500.0,
+  "expected_v2_percent": 50,
+  "headers": {},
+  "max_latency_ms": 1982.807,
+  "mean_latency_ms": 59.512,
+  "p50_latency_ms": 45.629,
+  "p95_latency_ms": 50.133,
+  "p99_latency_ms": 1045.836,
+  "requests": 1000,
+  "route_manifest": "/Users/sebastian/akademia/cloud-academy/istio_part2/manifests/routes/13-traffic-50-50.yaml",
+  "scenario": "weighted-50-50",
+  "statuses": {
+    "200": 1000
+  },
+  "throughput_rps": 167.301,
+  "v1_percent": 49.0,
+  "v2_four_sigma_tolerance_count": 63.25,
+  "v2_percent": 51.0,
+  "versions": {
+    "v1": 490,
+    "v2": 510
+  },
+  "workers": 10
+}

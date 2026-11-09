@@ -1,0 +1,23 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: payment-routing
+  namespace: istio-part2
+spec:
+  parentRefs:
+    - group: ""
+      kind: Service
+      name: payment-service
+      port: 8080
+  rules:
+    - matches:
+        - headers:
+            - name: x-release-channel
+              type: Exact
+              value: beta
+      backendRefs:
+        - name: payment-service-v2
+          port: 8080
+    - backendRefs:
+        - name: payment-service-v1
+          port: 8080

@@ -1,0 +1,75 @@
+Sidecar without limits
+{
+  "average_latency_ms": 800.496,
+  "concurrency": 15,
+  "elapsed_seconds": 3.922,
+  "error_rate_percent": 0.0,
+  "failure_count": 0,
+  "http_status_counts": {
+    "200": 70
+  },
+  "max_latency_ms": 2045.207,
+  "method": "GET",
+  "p50_latency_ms": 466.525,
+  "p95_latency_ms": 1811.278,
+  "p99_latency_ms": 2039.816,
+  "requests": 70,
+  "sample_failures": [],
+  "success_count": 70,
+  "throughput_rps": 17.847,
+  "url": "http://127.0.0.1:61900/order/payment-only"
+}
+
+Sidecar with limits
+{
+  "average_latency_ms": 911.708,
+  "concurrency": 15,
+  "elapsed_seconds": 5.366,
+  "error_rate_percent": 65.714,
+  "failure_count": 46,
+  "http_status_counts": {
+    "200": 24,
+    "502": 46
+  },
+  "max_latency_ms": 2892.798,
+  "method": "GET",
+  "p50_latency_ms": 1020.506,
+  "p95_latency_ms": 2282.115,
+  "p99_latency_ms": 2864.724,
+  "requests": 70,
+  "sample_failures": [
+    {
+      "error": "",
+      "index": 15,
+      "latency_ms": 21.258,
+      "response": "{\"service\":\"order-service\",\"dependency\":\"payment\",\"downstream_status\":503}",
+      "status": 502,
+      "success": false
+    },
+    {
+      "error": "",
+      "index": 17,
+      "latency_ms": 20.338,
+      "response": "{\"service\":\"order-service\",\"dependency\":\"payment\",\"downstream_status\":503}",
+      "status": 502,
+      "success": false
+    },
+    {
+      "error": "",
+      "index": 18,
+      "latency_ms": 18.2,
+      "response": "{\"service\":\"order-service\",\"dependency\":\"payment\",\"downstream_status\":503}",
+      "status": 502,
+      "success": false
+    }
+  ],
+  "success_count": 24,
+  "throughput_rps": 13.046,
+  "url": "http://127.0.0.1:61900/order/payment-only"
+}
+
+Execution status
+{
+  "status": "completed"
+}
+

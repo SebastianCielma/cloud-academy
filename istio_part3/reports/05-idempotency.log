@@ -1,0 +1,73 @@
+Without idempotency key
+{
+  "payment_attempts_delta": 2,
+  "payments_created_delta": 2,
+  "payments_replayed_delta": 0,
+  "response": {
+    "order": {
+      "payment": {
+        "payment_id": "79047df0-9633-461a-b116-5a6a97b8097c",
+        "payment_status": "approved",
+        "replayed": false,
+        "service": "payment-service"
+      },
+      "service": "order-service"
+    },
+    "service": "api-gateway"
+  },
+  "status": 201
+}
+
+With idempotency key
+{
+  "payment_attempts_delta": 2,
+  "payments_created_delta": 1,
+  "payments_replayed_delta": 1,
+  "response": {
+    "order": {
+      "payment": {
+        "payment_id": "588ebd82-8aa5-4629-aff8-81b0e96e21d7",
+        "payment_status": "approved",
+        "replayed": true,
+        "service": "payment-service"
+      },
+      "service": "order-service"
+    },
+    "service": "api-gateway"
+  },
+  "status": 200
+}
+
+Same key with different payload
+{
+  "first": {
+    "order": {
+      "payment": {
+        "payment_id": "3cb0069f-b7cf-4e43-95cf-e8973929eab3",
+        "payment_status": "approved",
+        "replayed": false,
+        "service": "payment-service"
+      },
+      "service": "order-service"
+    },
+    "service": "api-gateway"
+  },
+  "first_status": 201,
+  "second": {
+    "order": {
+      "payment": {
+        "error": "idempotency_key_conflict",
+        "service": "payment-service"
+      },
+      "service": "order-service"
+    },
+    "service": "api-gateway"
+  },
+  "second_status": 409
+}
+
+Execution status
+{
+  "status": "completed"
+}
+

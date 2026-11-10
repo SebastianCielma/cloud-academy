@@ -1,0 +1,99 @@
+Environment
+{
+  "context": "kind-istio-part3",
+  "mode": "ambient_without_l7_rules",
+  "namespace": "istio-part3"
+}
+
+Healthy baseline
+{
+  "average_latency_ms": 36.432,
+  "concurrency": 5,
+  "elapsed_seconds": 0.446,
+  "error_rate_percent": 0.0,
+  "failure_count": 0,
+  "http_status_counts": {
+    "200": 60
+  },
+  "max_latency_ms": 346.127,
+  "method": "GET",
+  "p50_latency_ms": 6.304,
+  "p95_latency_ms": 341.792,
+  "p99_latency_ms": 345.71,
+  "requests": 60,
+  "sample_failures": [],
+  "success_count": 60,
+  "throughput_rps": 134.549,
+  "url": "http://127.0.0.1:60967/order"
+}
+
+Inventory periodic 503 without retries
+{
+  "average_latency_ms": 4.469,
+  "concurrency": 5,
+  "elapsed_seconds": 0.058,
+  "error_rate_percent": 33.333,
+  "failure_count": 20,
+  "http_status_counts": {
+    "200": 40,
+    "502": 20
+  },
+  "max_latency_ms": 6.423,
+  "method": "GET",
+  "p50_latency_ms": 4.441,
+  "p95_latency_ms": 6.091,
+  "p99_latency_ms": 6.324,
+  "requests": 60,
+  "sample_failures": [
+    {
+      "error": "",
+      "index": 1,
+      "latency_ms": 6.118,
+      "response": "{\"service\":\"api-gateway\",\"order\":{\"service\":\"order-service\",\"dependency\":\"inventory\",\"downstream_status\":503}}",
+      "status": 502,
+      "success": false
+    },
+    {
+      "error": "",
+      "index": 5,
+      "latency_ms": 4.384,
+      "response": "{\"service\":\"api-gateway\",\"order\":{\"service\":\"order-service\",\"dependency\":\"inventory\",\"downstream_status\":503}}",
+      "status": 502,
+      "success": false
+    },
+    {
+      "error": "",
+      "index": 8,
+      "latency_ms": 4.833,
+      "response": "{\"service\":\"api-gateway\",\"order\":{\"service\":\"order-service\",\"dependency\":\"inventory\",\"downstream_status\":503}}",
+      "status": 502,
+      "success": false
+    }
+  ],
+  "success_count": 40,
+  "throughput_rps": 1043.223,
+  "url": "http://127.0.0.1:60967/order"
+}
+
+Inventory counters
+{
+  "active_requests": 1,
+  "inventory_requests": 120,
+  "overload_rejections": 0,
+  "payment_attempts": 0,
+  "payment_conflicts": 0,
+  "payments_created": 0,
+  "payments_replayed": 0,
+  "peak_active_requests": 2,
+  "probe_attempts_for_request": 0,
+  "probe_requests_received": 0,
+  "requests_completed": 161,
+  "requests_received": 162,
+  "service": "inventory-service"
+}
+
+Execution status
+{
+  "status": "completed"
+}
+

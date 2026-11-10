@@ -1,0 +1,85 @@
+Delayed payment with 2s mesh timeout
+{
+  "average_latency_ms": 2036.62,
+  "concurrency": 1,
+  "elapsed_seconds": 2.044,
+  "error_rate_percent": 100.0,
+  "failure_count": 1,
+  "http_status_counts": {
+    "502": 1
+  },
+  "max_latency_ms": 2036.62,
+  "method": "GET",
+  "p50_latency_ms": 2036.62,
+  "p95_latency_ms": 2036.62,
+  "p99_latency_ms": 2036.62,
+  "requests": 1,
+  "sample_failures": [
+    {
+      "error": "",
+      "index": 0,
+      "latency_ms": 2036.62,
+      "response": "{\"service\":\"api-gateway\",\"order\":{\"service\":\"order-service\",\"dependency\":\"payment\",\"downstream_status\":504}}",
+      "status": 502,
+      "success": false
+    }
+  ],
+  "success_count": 0,
+  "throughput_rps": 0.489,
+  "url": "http://127.0.0.1:61118/order/payment-only"
+}
+
+Payment continues after client timeout
+{
+  "after_wait": {
+    "active_requests": 1,
+    "inventory_requests": 0,
+    "overload_rejections": 0,
+    "payment_attempts": 0,
+    "payment_conflicts": 0,
+    "payments_created": 0,
+    "payments_replayed": 0,
+    "peak_active_requests": 3,
+    "probe_attempts_for_request": 0,
+    "probe_requests_received": 121,
+    "requests_completed": 274,
+    "requests_received": 275,
+    "service": "payment-service"
+  },
+  "before": {
+    "active_requests": 1,
+    "inventory_requests": 0,
+    "overload_rejections": 0,
+    "payment_attempts": 0,
+    "payment_conflicts": 0,
+    "payments_created": 0,
+    "payments_replayed": 0,
+    "peak_active_requests": 3,
+    "probe_attempts_for_request": 0,
+    "probe_requests_received": 120,
+    "requests_completed": 269,
+    "requests_received": 270,
+    "service": "payment-service"
+  },
+  "immediately_after": {
+    "active_requests": 2,
+    "inventory_requests": 0,
+    "overload_rejections": 0,
+    "payment_attempts": 0,
+    "payment_conflicts": 0,
+    "payments_created": 0,
+    "payments_replayed": 0,
+    "peak_active_requests": 3,
+    "probe_attempts_for_request": 0,
+    "probe_requests_received": 121,
+    "requests_completed": 271,
+    "requests_received": 273,
+    "service": "payment-service"
+  }
+}
+
+Execution status
+{
+  "status": "completed"
+}
+

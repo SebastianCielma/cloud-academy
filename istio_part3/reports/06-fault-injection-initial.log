@@ -1,0 +1,115 @@
+Injected 3s delay
+{
+  "average_latency_ms": 20.362,
+  "concurrency": 3,
+  "elapsed_seconds": 0.023,
+  "error_rate_percent": 0.0,
+  "failure_count": 0,
+  "http_status_counts": {
+    "200": 3
+  },
+  "max_latency_ms": 20.722,
+  "method": "GET",
+  "p50_latency_ms": 20.188,
+  "p95_latency_ms": 20.669,
+  "p99_latency_ms": 20.711,
+  "requests": 3,
+  "sample_failures": [],
+  "success_count": 3,
+  "throughput_rps": 131.643,
+  "url": "http://127.0.0.1:61472/order/payment-only"
+}
+
+Injected 3s delay backend observations
+{
+  "payment_active": 1,
+  "payment_requests_delta": 3
+}
+
+Injected 503 abort
+{
+  "average_latency_ms": 23.795,
+  "concurrency": 5,
+  "elapsed_seconds": 0.058,
+  "error_rate_percent": 0.0,
+  "failure_count": 0,
+  "http_status_counts": {
+    "200": 10
+  },
+  "max_latency_ms": 51.728,
+  "method": "GET",
+  "p50_latency_ms": 10.611,
+  "p95_latency_ms": 51.581,
+  "p99_latency_ms": 51.699,
+  "requests": 10,
+  "sample_failures": [],
+  "success_count": 10,
+  "throughput_rps": 172.946,
+  "url": "http://127.0.0.1:61472/order/payment-only"
+}
+
+Injected 503 abort backend observations
+{
+  "payment_active": 1,
+  "payment_requests_delta": 10
+}
+
+Injected 25 percent abort
+{
+  "average_latency_ms": 32.497,
+  "concurrency": 5,
+  "elapsed_seconds": 0.542,
+  "error_rate_percent": 20.0,
+  "failure_count": 16,
+  "http_status_counts": {
+    "200": 64,
+    "502": 16
+  },
+  "max_latency_ms": 55.381,
+  "method": "GET",
+  "p50_latency_ms": 45.293,
+  "p95_latency_ms": 49.552,
+  "p99_latency_ms": 53.829,
+  "requests": 80,
+  "sample_failures": [
+    {
+      "error": "",
+      "index": 19,
+      "latency_ms": 5.83,
+      "response": "{\"service\":\"order-service\",\"dependency\":\"payment\",\"downstream_status\":503}",
+      "status": 502,
+      "success": false
+    },
+    {
+      "error": "",
+      "index": 24,
+      "latency_ms": 3.657,
+      "response": "{\"service\":\"order-service\",\"dependency\":\"payment\",\"downstream_status\":503}",
+      "status": 502,
+      "success": false
+    },
+    {
+      "error": "",
+      "index": 30,
+      "latency_ms": 2.927,
+      "response": "{\"service\":\"order-service\",\"dependency\":\"payment\",\"downstream_status\":503}",
+      "status": 502,
+      "success": false
+    }
+  ],
+  "success_count": 64,
+  "throughput_rps": 147.629,
+  "url": "http://127.0.0.1:61472/order/payment-only"
+}
+
+Injected 25 percent abort backend observations
+{
+  "payment_active": 1,
+  "payment_requests_delta": 64
+}
+
+Execution status
+{
+  "status": "completed"
+}
+

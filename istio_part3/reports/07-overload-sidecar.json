@@ -1,0 +1,80 @@
+[
+  {
+    "step": "Sidecar without limits",
+    "data": {
+      "url": "http://127.0.0.1:61900/order/payment-only",
+      "method": "GET",
+      "requests": 70,
+      "concurrency": 15,
+      "success_count": 70,
+      "failure_count": 0,
+      "error_rate_percent": 0.0,
+      "elapsed_seconds": 3.922,
+      "throughput_rps": 17.847,
+      "average_latency_ms": 800.496,
+      "p50_latency_ms": 466.525,
+      "p95_latency_ms": 1811.278,
+      "p99_latency_ms": 2039.816,
+      "max_latency_ms": 2045.207,
+      "http_status_counts": {
+        "200": 70
+      },
+      "sample_failures": []
+    }
+  },
+  {
+    "step": "Sidecar with limits",
+    "data": {
+      "url": "http://127.0.0.1:61900/order/payment-only",
+      "method": "GET",
+      "requests": 70,
+      "concurrency": 15,
+      "success_count": 24,
+      "failure_count": 46,
+      "error_rate_percent": 65.714,
+      "elapsed_seconds": 5.366,
+      "throughput_rps": 13.046,
+      "average_latency_ms": 911.708,
+      "p50_latency_ms": 1020.506,
+      "p95_latency_ms": 2282.115,
+      "p99_latency_ms": 2864.724,
+      "max_latency_ms": 2892.798,
+      "http_status_counts": {
+        "200": 24,
+        "502": 46
+      },
+      "sample_failures": [
+        {
+          "index": 15,
+          "status": 502,
+          "success": false,
+          "latency_ms": 21.258,
+          "error": "",
+          "response": "{\"service\":\"order-service\",\"dependency\":\"payment\",\"downstream_status\":503}"
+        },
+        {
+          "index": 17,
+          "status": 502,
+          "success": false,
+          "latency_ms": 20.338,
+          "error": "",
+          "response": "{\"service\":\"order-service\",\"dependency\":\"payment\",\"downstream_status\":503}"
+        },
+        {
+          "index": 18,
+          "status": 502,
+          "success": false,
+          "latency_ms": 18.2,
+          "error": "",
+          "response": "{\"service\":\"order-service\",\"dependency\":\"payment\",\"downstream_status\":503}"
+        }
+      ]
+    }
+  },
+  {
+    "step": "Execution status",
+    "data": {
+      "status": "completed"
+    }
+  }
+]

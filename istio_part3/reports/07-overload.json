@@ -1,0 +1,126 @@
+[
+  {
+    "step": "High concurrency without circuit breaking",
+    "data": {
+      "url": "http://127.0.0.1:61727/order/payment-only",
+      "method": "GET",
+      "requests": 70,
+      "concurrency": 15,
+      "success_count": 70,
+      "failure_count": 0,
+      "error_rate_percent": 0.0,
+      "elapsed_seconds": 6.603,
+      "throughput_rps": 10.601,
+      "average_latency_ms": 1150.979,
+      "p50_latency_ms": 1029.925,
+      "p95_latency_ms": 2054.786,
+      "p99_latency_ms": 2121.743,
+      "max_latency_ms": 2242.61,
+      "http_status_counts": {
+        "200": 70
+      },
+      "sample_failures": []
+    }
+  },
+  {
+    "step": "High concurrency with waypoint circuit breaking",
+    "data": {
+      "url": "http://127.0.0.1:61810/order/payment-only",
+      "method": "GET",
+      "requests": 70,
+      "concurrency": 15,
+      "success_count": 13,
+      "failure_count": 57,
+      "error_rate_percent": 81.429,
+      "elapsed_seconds": 6.583,
+      "throughput_rps": 10.633,
+      "average_latency_ms": 1171.666,
+      "p50_latency_ms": 1028.819,
+      "p95_latency_ms": 2470.424,
+      "p99_latency_ms": 2862.3,
+      "max_latency_ms": 2865.834,
+      "http_status_counts": {
+        "200": 13,
+        "502": 57
+      },
+      "sample_failures": [
+        {
+          "index": 0,
+          "status": 502,
+          "success": false,
+          "latency_ms": 29.212,
+          "error": "",
+          "response": "{\"service\":\"api-gateway\",\"order\":{\"service\":\"order-service\",\"dependency\":\"payment\",\"downstream_status\":503}}"
+        },
+        {
+          "index": 1,
+          "status": 502,
+          "success": false,
+          "latency_ms": 28.891,
+          "error": "",
+          "response": "{\"service\":\"api-gateway\",\"order\":{\"service\":\"order-service\",\"dependency\":\"payment\",\"downstream_status\":503}}"
+        },
+        {
+          "index": 2,
+          "status": 502,
+          "success": false,
+          "latency_ms": 29.832,
+          "error": "",
+          "response": "{\"service\":\"api-gateway\",\"order\":{\"service\":\"order-service\",\"dependency\":\"payment\",\"downstream_status\":503}}"
+        }
+      ]
+    }
+  },
+  {
+    "step": "Backend received count under limits",
+    "data": {
+      "received_delta": 13,
+      "peak_active": 11
+    }
+  },
+  {
+    "step": "DestinationRule status",
+    "data": {
+      "apiVersion": "networking.istio.io/v1",
+      "kind": "DestinationRule",
+      "metadata": {
+        "annotations": {
+          "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"networking.istio.io/v1\",\"kind\":\"DestinationRule\",\"metadata\":{\"annotations\":{},\"name\":\"payment-circuit-breaker\",\"namespace\":\"istio-part3\"},\"spec\":{\"host\":\"payment-service.istio-part3.svc.cluster.local\",\"trafficPolicy\":{\"connectionPool\":{\"http\":{\"http1MaxPendingRequests\":1,\"http2MaxRequests\":1,\"maxRequestsPerConnection\":1},\"tcp\":{\"maxConnections\":1}},\"outlierDetection\":{\"baseEjectionTime\":\"10s\",\"consecutive5xxErrors\":5,\"interval\":\"5s\",\"maxEjectionPercent\":100}}}}\n"
+        },
+        "creationTimestamp": "2026-11-10T12:02:01Z",
+        "generation": 1,
+        "name": "payment-circuit-breaker",
+        "namespace": "istio-part3",
+        "resourceVersion": "5675",
+        "uid": "088e9bc1-124a-433e-9812-bf13fba943a2"
+      },
+      "spec": {
+        "host": "payment-service.istio-part3.svc.cluster.local",
+        "trafficPolicy": {
+          "connectionPool": {
+            "http": {
+              "http1MaxPendingRequests": 1,
+              "http2MaxRequests": 1,
+              "maxRequestsPerConnection": 1
+            },
+            "tcp": {
+              "maxConnections": 1
+            }
+          },
+          "outlierDetection": {
+            "baseEjectionTime": "10s",
+            "consecutive5xxErrors": 5,
+            "interval": "5s",
+            "maxEjectionPercent": 100
+          }
+        }
+      }
+    }
+  },
+  {
+    "step": "Execution status",
+    "data": {
+      "status": "completed"
+    }
+  }
+]

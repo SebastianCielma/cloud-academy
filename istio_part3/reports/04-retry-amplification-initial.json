@@ -1,0 +1,60 @@
+[
+  {
+    "step": "No retries",
+    "data": {
+      "status": 502,
+      "response": {
+        "service": "order-service",
+        "dependency": "payment",
+        "downstream_status": 503
+      },
+      "payment_requests_received": 1,
+      "request_id": "b078b03c-2b86-40aa-a011-8851b9d85260"
+    }
+  },
+  {
+    "step": "Application retries only",
+    "data": {
+      "status": 502,
+      "response": {
+        "service": "order-service",
+        "dependency": "payment",
+        "downstream_status": 503
+      },
+      "payment_requests_received": 3,
+      "request_id": "b4fa2d17-8d3a-4397-a98e-39db4cb44623"
+    }
+  },
+  {
+    "step": "Mesh retries only",
+    "data": {
+      "status": 502,
+      "response": {
+        "service": "order-service",
+        "dependency": "payment",
+        "downstream_status": 503
+      },
+      "payment_requests_received": 1,
+      "request_id": "215648e0-e849-45cb-91ab-1bb69115249f"
+    }
+  },
+  {
+    "step": "Application and mesh retries",
+    "data": {
+      "status": 502,
+      "response": {
+        "service": "order-service",
+        "dependency": "payment",
+        "downstream_status": 503
+      },
+      "payment_requests_received": 5,
+      "request_id": "bd6da0df-f85f-4e56-b91f-c3ca5b832e13"
+    }
+  },
+  {
+    "step": "Execution status",
+    "data": {
+      "status": "completed"
+    }
+  }
+]

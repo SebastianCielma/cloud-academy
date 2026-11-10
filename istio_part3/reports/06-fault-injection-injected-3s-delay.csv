@@ -1,0 +1,4 @@
+index,status,success,latency_ms,error,response
+0,200,True,3024.434,,"{""service"":""order-service"",""payment"":{""service"":""payment-service"",""payment_status"":""available"",""attempt"":1}}"
+1,200,True,3024.553,,"{""service"":""order-service"",""payment"":{""service"":""payment-service"",""payment_status"":""available"",""attempt"":1}}"
+2,200,True,3023.982,,"{""service"":""order-service"",""payment"":{""service"":""payment-service"",""payment_status"":""available"",""attempt"":1}}"

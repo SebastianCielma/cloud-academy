@@ -1,0 +1,106 @@
+[
+  {
+    "step": "Environment",
+    "data": {
+      "namespace": "istio-part3",
+      "context": "kind-istio-part3",
+      "mode": "ambient_without_l7_rules"
+    }
+  },
+  {
+    "step": "Healthy baseline",
+    "data": {
+      "url": "http://127.0.0.1:60967/order",
+      "method": "GET",
+      "requests": 60,
+      "concurrency": 5,
+      "success_count": 60,
+      "failure_count": 0,
+      "error_rate_percent": 0.0,
+      "elapsed_seconds": 0.446,
+      "throughput_rps": 134.549,
+      "average_latency_ms": 36.432,
+      "p50_latency_ms": 6.304,
+      "p95_latency_ms": 341.792,
+      "p99_latency_ms": 345.71,
+      "max_latency_ms": 346.127,
+      "http_status_counts": {
+        "200": 60
+      },
+      "sample_failures": []
+    }
+  },
+  {
+    "step": "Inventory periodic 503 without retries",
+    "data": {
+      "url": "http://127.0.0.1:60967/order",
+      "method": "GET",
+      "requests": 60,
+      "concurrency": 5,
+      "success_count": 40,
+      "failure_count": 20,
+      "error_rate_percent": 33.333,
+      "elapsed_seconds": 0.058,
+      "throughput_rps": 1043.223,
+      "average_latency_ms": 4.469,
+      "p50_latency_ms": 4.441,
+      "p95_latency_ms": 6.091,
+      "p99_latency_ms": 6.324,
+      "max_latency_ms": 6.423,
+      "http_status_counts": {
+        "200": 40,
+        "502": 20
+      },
+      "sample_failures": [
+        {
+          "index": 1,
+          "status": 502,
+          "success": false,
+          "latency_ms": 6.118,
+          "error": "",
+          "response": "{\"service\":\"api-gateway\",\"order\":{\"service\":\"order-service\",\"dependency\":\"inventory\",\"downstream_status\":503}}"
+        },
+        {
+          "index": 5,
+          "status": 502,
+          "success": false,
+          "latency_ms": 4.384,
+          "error": "",
+          "response": "{\"service\":\"api-gateway\",\"order\":{\"service\":\"order-service\",\"dependency\":\"inventory\",\"downstream_status\":503}}"
+        },
+        {
+          "index": 8,
+          "status": 502,
+          "success": false,
+          "latency_ms": 4.833,
+          "error": "",
+          "response": "{\"service\":\"api-gateway\",\"order\":{\"service\":\"order-service\",\"dependency\":\"inventory\",\"downstream_status\":503}}"
+        }
+      ]
+    }
+  },
+  {
+    "step": "Inventory counters",
+    "data": {
+      "service": "inventory-service",
+      "requests_received": 162,
+      "requests_completed": 161,
+      "active_requests": 1,
+      "peak_active_requests": 2,
+      "overload_rejections": 0,
+      "payment_attempts": 0,
+      "payments_created": 0,
+      "payments_replayed": 0,
+      "payment_conflicts": 0,
+      "inventory_requests": 120,
+      "probe_requests_received": 0,
+      "probe_attempts_for_request": 0
+    }
+  },
+  {
+    "step": "Execution status",
+    "data": {
+      "status": "completed"
+    }
+  }
+]

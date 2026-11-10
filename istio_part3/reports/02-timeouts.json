@@ -1,0 +1,90 @@
+[
+  {
+    "step": "Delayed payment with 2s mesh timeout",
+    "data": {
+      "url": "http://127.0.0.1:61118/order/payment-only",
+      "method": "GET",
+      "requests": 1,
+      "concurrency": 1,
+      "success_count": 0,
+      "failure_count": 1,
+      "error_rate_percent": 100.0,
+      "elapsed_seconds": 2.044,
+      "throughput_rps": 0.489,
+      "average_latency_ms": 2036.62,
+      "p50_latency_ms": 2036.62,
+      "p95_latency_ms": 2036.62,
+      "p99_latency_ms": 2036.62,
+      "max_latency_ms": 2036.62,
+      "http_status_counts": {
+        "502": 1
+      },
+      "sample_failures": [
+        {
+          "index": 0,
+          "status": 502,
+          "success": false,
+          "latency_ms": 2036.62,
+          "error": "",
+          "response": "{\"service\":\"api-gateway\",\"order\":{\"service\":\"order-service\",\"dependency\":\"payment\",\"downstream_status\":504}}"
+        }
+      ]
+    }
+  },
+  {
+    "step": "Payment continues after client timeout",
+    "data": {
+      "before": {
+        "service": "payment-service",
+        "requests_received": 270,
+        "requests_completed": 269,
+        "active_requests": 1,
+        "peak_active_requests": 3,
+        "overload_rejections": 0,
+        "payment_attempts": 0,
+        "payments_created": 0,
+        "payments_replayed": 0,
+        "payment_conflicts": 0,
+        "inventory_requests": 0,
+        "probe_requests_received": 120,
+        "probe_attempts_for_request": 0
+      },
+      "immediately_after": {
+        "service": "payment-service",
+        "requests_received": 273,
+        "requests_completed": 271,
+        "active_requests": 2,
+        "peak_active_requests": 3,
+        "overload_rejections": 0,
+        "payment_attempts": 0,
+        "payments_created": 0,
+        "payments_replayed": 0,
+        "payment_conflicts": 0,
+        "inventory_requests": 0,
+        "probe_requests_received": 121,
+        "probe_attempts_for_request": 0
+      },
+      "after_wait": {
+        "service": "payment-service",
+        "requests_received": 275,
+        "requests_completed": 274,
+        "active_requests": 1,
+        "peak_active_requests": 3,
+        "overload_rejections": 0,
+        "payment_attempts": 0,
+        "payments_created": 0,
+        "payments_replayed": 0,
+        "payment_conflicts": 0,
+        "inventory_requests": 0,
+        "probe_requests_received": 121,
+        "probe_attempts_for_request": 0
+      }
+    }
+  },
+  {
+    "step": "Execution status",
+    "data": {
+      "status": "completed"
+    }
+  }
+]

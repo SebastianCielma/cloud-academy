@@ -1,0 +1,133 @@
+[
+  {
+    "step": "Slow payment cascading baseline",
+    "data": {
+      "url": "http://127.0.0.1:62059/order/payment-only",
+      "method": "GET",
+      "requests": 24,
+      "concurrency": 6,
+      "success_count": 24,
+      "failure_count": 0,
+      "error_rate_percent": 0.0,
+      "elapsed_seconds": 20.091,
+      "throughput_rps": 1.195,
+      "average_latency_ms": 5020.171,
+      "p50_latency_ms": 5020.015,
+      "p95_latency_ms": 5023.095,
+      "p99_latency_ms": 5024.685,
+      "max_latency_ms": 5025.124,
+      "http_status_counts": {
+        "200": 24
+      },
+      "sample_failures": []
+    }
+  },
+  {
+    "step": "Order baseline counters",
+    "data": {
+      "service": "order-service",
+      "requests_received": 1032,
+      "requests_completed": 1031,
+      "active_requests": 1,
+      "peak_active_requests": 11,
+      "overload_rejections": 0,
+      "payment_attempts": 0,
+      "payments_created": 0,
+      "payments_replayed": 0,
+      "payment_conflicts": 0,
+      "inventory_requests": 0,
+      "probe_requests_received": 0,
+      "probe_attempts_for_request": 0
+    }
+  },
+  {
+    "step": "Slow payment with downstream timeout",
+    "data": {
+      "url": "http://127.0.0.1:62103/order/payment-only",
+      "method": "GET",
+      "requests": 24,
+      "concurrency": 6,
+      "success_count": 0,
+      "failure_count": 24,
+      "error_rate_percent": 100.0,
+      "elapsed_seconds": 8.079,
+      "throughput_rps": 2.971,
+      "average_latency_ms": 2018.783,
+      "p50_latency_ms": 2019.293,
+      "p95_latency_ms": 2024.619,
+      "p99_latency_ms": 2025.479,
+      "max_latency_ms": 2025.732,
+      "http_status_counts": {
+        "502": 24
+      },
+      "sample_failures": [
+        {
+          "index": 0,
+          "status": 502,
+          "success": false,
+          "latency_ms": 2022.856,
+          "error": "",
+          "response": "{\"service\":\"api-gateway\",\"order\":{\"service\":\"order-service\",\"dependency\":\"payment\",\"downstream_status\":504}}"
+        },
+        {
+          "index": 1,
+          "status": 502,
+          "success": false,
+          "latency_ms": 2018.93,
+          "error": "",
+          "response": "{\"service\":\"api-gateway\",\"order\":{\"service\":\"order-service\",\"dependency\":\"payment\",\"downstream_status\":504}}"
+        },
+        {
+          "index": 2,
+          "status": 502,
+          "success": false,
+          "latency_ms": 2016.227,
+          "error": "",
+          "response": "{\"service\":\"api-gateway\",\"order\":{\"service\":\"order-service\",\"dependency\":\"payment\",\"downstream_status\":504}}"
+        }
+      ]
+    }
+  },
+  {
+    "step": "Order after timeout counters",
+    "data": {
+      "service": "order-service",
+      "requests_received": 1061,
+      "requests_completed": 1060,
+      "active_requests": 1,
+      "peak_active_requests": 11,
+      "overload_rejections": 0,
+      "payment_attempts": 0,
+      "payments_created": 0,
+      "payments_replayed": 0,
+      "payment_conflicts": 0,
+      "inventory_requests": 0,
+      "probe_requests_received": 0,
+      "probe_attempts_for_request": 0
+    }
+  },
+  {
+    "step": "Payment after timeout counters",
+    "data": {
+      "service": "payment-service",
+      "requests_received": 1020,
+      "requests_completed": 1007,
+      "active_requests": 13,
+      "peak_active_requests": 18,
+      "overload_rejections": 0,
+      "payment_attempts": 6,
+      "payments_created": 4,
+      "payments_replayed": 1,
+      "payment_conflicts": 1,
+      "inventory_requests": 0,
+      "probe_requests_received": 372,
+      "probe_attempts_for_request": 0
+    }
+  },
+  {
+    "step": "Execution status",
+    "data": {
+      "status": "completed"
+    }
+  }
+]

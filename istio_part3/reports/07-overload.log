@@ -1,0 +1,119 @@
+High concurrency without circuit breaking
+{
+  "average_latency_ms": 1150.979,
+  "concurrency": 15,
+  "elapsed_seconds": 6.603,
+  "error_rate_percent": 0.0,
+  "failure_count": 0,
+  "http_status_counts": {
+    "200": 70
+  },
+  "max_latency_ms": 2242.61,
+  "method": "GET",
+  "p50_latency_ms": 1029.925,
+  "p95_latency_ms": 2054.786,
+  "p99_latency_ms": 2121.743,
+  "requests": 70,
+  "sample_failures": [],
+  "success_count": 70,
+  "throughput_rps": 10.601,
+  "url": "http://127.0.0.1:61727/order/payment-only"
+}
+
+High concurrency with waypoint circuit breaking
+{
+  "average_latency_ms": 1171.666,
+  "concurrency": 15,
+  "elapsed_seconds": 6.583,
+  "error_rate_percent": 81.429,
+  "failure_count": 57,
+  "http_status_counts": {
+    "200": 13,
+    "502": 57
+  },
+  "max_latency_ms": 2865.834,
+  "method": "GET",
+  "p50_latency_ms": 1028.819,
+  "p95_latency_ms": 2470.424,
+  "p99_latency_ms": 2862.3,
+  "requests": 70,
+  "sample_failures": [
+    {
+      "error": "",
+      "index": 0,
+      "latency_ms": 29.212,
+      "response": "{\"service\":\"api-gateway\",\"order\":{\"service\":\"order-service\",\"dependency\":\"payment\",\"downstream_status\":503}}",
+      "status": 502,
+      "success": false
+    },
+    {
+      "error": "",
+      "index": 1,
+      "latency_ms": 28.891,
+      "response": "{\"service\":\"api-gateway\",\"order\":{\"service\":\"order-service\",\"dependency\":\"payment\",\"downstream_status\":503}}",
+      "status": 502,
+      "success": false
+    },
+    {
+      "error": "",
+      "index": 2,
+      "latency_ms": 29.832,
+      "response": "{\"service\":\"api-gateway\",\"order\":{\"service\":\"order-service\",\"dependency\":\"payment\",\"downstream_status\":503}}",
+      "status": 502,
+      "success": false
+    }
+  ],
+  "success_count": 13,
+  "throughput_rps": 10.633,
+  "url": "http://127.0.0.1:61810/order/payment-only"
+}
+
+Backend received count under limits
+{
+  "peak_active": 11,
+  "received_delta": 13
+}
+
+DestinationRule status
+{
+  "apiVersion": "networking.istio.io/v1",
+  "kind": "DestinationRule",
+  "metadata": {
+    "annotations": {
+      "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"networking.istio.io/v1\",\"kind\":\"DestinationRule\",\"metadata\":{\"annotations\":{},\"name\":\"payment-circuit-breaker\",\"namespace\":\"istio-part3\"},\"spec\":{\"host\":\"payment-service.istio-part3.svc.cluster.local\",\"trafficPolicy\":{\"connectionPool\":{\"http\":{\"http1MaxPendingRequests\":1,\"http2MaxRequests\":1,\"maxRequestsPerConnection\":1},\"tcp\":{\"maxConnections\":1}},\"outlierDetection\":{\"baseEjectionTime\":\"10s\",\"consecutive5xxErrors\":5,\"interval\":\"5s\",\"maxEjectionPercent\":100}}}}\n"
+    },
+    "creationTimestamp": "2026-11-10T12:02:01Z",
+    "generation": 1,
+    "name": "payment-circuit-breaker",
+    "namespace": "istio-part3",
+    "resourceVersion": "5675",
+    "uid": "088e9bc1-124a-433e-9812-bf13fba943a2"
+  },
+  "spec": {
+    "host": "payment-service.istio-part3.svc.cluster.local",
+    "trafficPolicy": {
+      "connectionPool": {
+        "http": {
+          "http1MaxPendingRequests": 1,
+          "http2MaxRequests": 1,
+          "maxRequestsPerConnection": 1
+        },
+        "tcp": {
+          "maxConnections": 1
+        }
+      },
+      "outlierDetection": {
+        "baseEjectionTime": "10s",
+        "consecutive5xxErrors": 5,
+        "interval": "5s",
+        "maxEjectionPercent": 100
+      }
+    }
+  }
+}
+
+Execution status
+{
+  "status": "completed"
+}
+

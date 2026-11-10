@@ -1,0 +1,149 @@
+[
+  {
+    "step": "Injected 3s delay",
+    "data": {
+      "url": "http://127.0.0.1:61594/order/payment-only",
+      "method": "GET",
+      "requests": 3,
+      "concurrency": 3,
+      "success_count": 3,
+      "failure_count": 0,
+      "error_rate_percent": 0.0,
+      "elapsed_seconds": 3.031,
+      "throughput_rps": 0.99,
+      "average_latency_ms": 3024.323,
+      "p50_latency_ms": 3024.434,
+      "p95_latency_ms": 3024.541,
+      "p99_latency_ms": 3024.551,
+      "max_latency_ms": 3024.553,
+      "http_status_counts": {
+        "200": 3
+      },
+      "sample_failures": []
+    }
+  },
+  {
+    "step": "Injected 3s delay backend observations",
+    "data": {
+      "payment_requests_delta": 3,
+      "payment_active": 1
+    }
+  },
+  {
+    "step": "Injected 503 abort",
+    "data": {
+      "url": "http://127.0.0.1:61594/order/payment-only",
+      "method": "GET",
+      "requests": 10,
+      "concurrency": 5,
+      "success_count": 0,
+      "failure_count": 10,
+      "error_rate_percent": 100.0,
+      "elapsed_seconds": 0.027,
+      "throughput_rps": 371.161,
+      "average_latency_ms": 11.95,
+      "p50_latency_ms": 11.689,
+      "p95_latency_ms": 16.633,
+      "p99_latency_ms": 16.77,
+      "max_latency_ms": 16.804,
+      "http_status_counts": {
+        "502": 10
+      },
+      "sample_failures": [
+        {
+          "index": 0,
+          "status": 502,
+          "success": false,
+          "latency_ms": 16.424,
+          "error": "",
+          "response": "{\"service\":\"order-service\",\"dependency\":\"payment\",\"downstream_status\":503}"
+        },
+        {
+          "index": 1,
+          "status": 502,
+          "success": false,
+          "latency_ms": 14.04,
+          "error": "",
+          "response": "{\"service\":\"order-service\",\"dependency\":\"payment\",\"downstream_status\":503}"
+        },
+        {
+          "index": 2,
+          "status": 502,
+          "success": false,
+          "latency_ms": 13.976,
+          "error": "",
+          "response": "{\"service\":\"order-service\",\"dependency\":\"payment\",\"downstream_status\":503}"
+        }
+      ]
+    }
+  },
+  {
+    "step": "Injected 503 abort backend observations",
+    "data": {
+      "payment_requests_delta": 0,
+      "payment_active": 1
+    }
+  },
+  {
+    "step": "Injected 25 percent abort",
+    "data": {
+      "url": "http://127.0.0.1:61594/order/payment-only",
+      "method": "GET",
+      "requests": 80,
+      "concurrency": 5,
+      "success_count": 65,
+      "failure_count": 15,
+      "error_rate_percent": 18.75,
+      "elapsed_seconds": 0.596,
+      "throughput_rps": 134.227,
+      "average_latency_ms": 34.922,
+      "p50_latency_ms": 45.13,
+      "p95_latency_ms": 50.393,
+      "p99_latency_ms": 52.352,
+      "max_latency_ms": 53.667,
+      "http_status_counts": {
+        "200": 65,
+        "502": 15
+      },
+      "sample_failures": [
+        {
+          "index": 0,
+          "status": 502,
+          "success": false,
+          "latency_ms": 10.506,
+          "error": "",
+          "response": "{\"service\":\"order-service\",\"dependency\":\"payment\",\"downstream_status\":503}"
+        },
+        {
+          "index": 5,
+          "status": 502,
+          "success": false,
+          "latency_ms": 9.881,
+          "error": "",
+          "response": "{\"service\":\"order-service\",\"dependency\":\"payment\",\"downstream_status\":503}"
+        },
+        {
+          "index": 6,
+          "status": 502,
+          "success": false,
+          "latency_ms": 8.705,
+          "error": "",
+          "response": "{\"service\":\"order-service\",\"dependency\":\"payment\",\"downstream_status\":503}"
+        }
+      ]
+    }
+  },
+  {
+    "step": "Injected 25 percent abort backend observations",
+    "data": {
+      "payment_requests_delta": 65,
+      "payment_active": 1
+    }
+  },
+  {
+    "step": "Execution status",
+    "data": {
+      "status": "completed"
+    }
+  }
+]

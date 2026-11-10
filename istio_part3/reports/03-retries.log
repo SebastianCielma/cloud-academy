@@ -1,0 +1,104 @@
+Ambient baseline intermittent inventory 503
+{
+  "average_latency_ms": 6.563,
+  "concurrency": 4,
+  "elapsed_seconds": 0.108,
+  "error_rate_percent": 33.333,
+  "failure_count": 20,
+  "http_status_counts": {
+    "200": 40,
+    "502": 20
+  },
+  "max_latency_ms": 23.299,
+  "method": "GET",
+  "p50_latency_ms": 4.746,
+  "p95_latency_ms": 20.901,
+  "p99_latency_ms": 23.163,
+  "requests": 60,
+  "sample_failures": [
+    {
+      "error": "",
+      "index": 3,
+      "latency_ms": 23.299,
+      "response": "{\"service\":\"api-gateway\",\"order\":{\"service\":\"order-service\",\"dependency\":\"inventory\",\"downstream_status\":503}}",
+      "status": 502,
+      "success": false
+    },
+    {
+      "error": "",
+      "index": 5,
+      "latency_ms": 12.563,
+      "response": "{\"service\":\"api-gateway\",\"order\":{\"service\":\"order-service\",\"dependency\":\"inventory\",\"downstream_status\":503}}",
+      "status": 502,
+      "success": false
+    },
+    {
+      "error": "",
+      "index": 8,
+      "latency_ms": 10.936,
+      "response": "{\"service\":\"api-gateway\",\"order\":{\"service\":\"order-service\",\"dependency\":\"inventory\",\"downstream_status\":503}}",
+      "status": 502,
+      "success": false
+    }
+  ],
+  "success_count": 40,
+  "throughput_rps": 553.94,
+  "url": "http://127.0.0.1:61195/order"
+}
+
+Gateway API retry schema availability
+{
+  "retry_field_present": true
+}
+
+Ambient inventory with bounded retry
+{
+  "average_latency_ms": 42.847,
+  "concurrency": 4,
+  "elapsed_seconds": 0.687,
+  "error_rate_percent": 0.0,
+  "failure_count": 0,
+  "http_status_counts": {
+    "200": 60
+  },
+  "max_latency_ms": 142.476,
+  "method": "GET",
+  "p50_latency_ms": 45.578,
+  "p95_latency_ms": 90.662,
+  "p99_latency_ms": 114.144,
+  "requests": 60,
+  "sample_failures": [],
+  "success_count": 60,
+  "throughput_rps": 87.28,
+  "url": "http://127.0.0.1:61270/order"
+}
+
+Inventory counters
+{
+  "active_requests": 1,
+  "inventory_requests": 269,
+  "overload_rejections": 0,
+  "payment_attempts": 0,
+  "payment_conflicts": 0,
+  "payments_created": 0,
+  "payments_replayed": 0,
+  "peak_active_requests": 3,
+  "probe_attempts_for_request": 0,
+  "probe_requests_received": 0,
+  "requests_completed": 500,
+  "requests_received": 501,
+  "service": "inventory-service"
+}
+
+Observed retry effectiveness
+{
+  "baseline_error_rate_percent": 33.333,
+  "error_rate_improved": true,
+  "retry_error_rate_percent": 0.0
+}
+
+Execution status
+{
+  "status": "completed"
+}
+

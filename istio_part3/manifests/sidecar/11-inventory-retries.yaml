@@ -1,0 +1,27 @@
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: inventory-retries
+  namespace: istio-part3-sidecar
+spec:
+  hosts:
+    - inventory-service.istio-part3-sidecar.svc.cluster.local
+  http:
+    - match:
+        - uri:
+            prefix: /inventory
+      retries:
+        attempts: 2
+        perTryTimeout: 1s
+        retryOn: 5xx,connect-failure,refused-stream
+      timeout: 4s
+      route:
+        - destination:
+            host: inventory-service.istio-part3-sidecar.svc.cluster.local
+            port:
+              number: 8080
+    - route:
+        - destination:
+            host: inventory-service.istio-part3-sidecar.svc.cluster.local
+            port:
+              number: 8080

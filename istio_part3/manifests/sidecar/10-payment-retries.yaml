@@ -1,0 +1,27 @@
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: payment-retries
+  namespace: istio-part3-sidecar
+spec:
+  hosts:
+    - payment-service.istio-part3-sidecar.svc.cluster.local
+  http:
+    - match:
+        - uri:
+            prefix: /payment/probe
+      retries:
+        attempts: 2
+        perTryTimeout: 1s
+        retryOn: 5xx,connect-failure,refused-stream
+      timeout: 4s
+      route:
+        - destination:
+            host: payment-service.istio-part3-sidecar.svc.cluster.local
+            port:
+              number: 8080
+    - route:
+        - destination:
+            host: payment-service.istio-part3-sidecar.svc.cluster.local
+            port:
+              number: 8080

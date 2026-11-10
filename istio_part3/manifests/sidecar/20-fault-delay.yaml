@@ -1,0 +1,27 @@
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: payment-fault
+  namespace: istio-part3-sidecar
+spec:
+  hosts:
+    - payment-service.istio-part3-sidecar.svc.cluster.local
+  http:
+    - match:
+        - uri:
+            prefix: /payment/probe
+      fault:
+        delay:
+          fixedDelay: 3s
+          percentage:
+            value: 100
+      route:
+        - destination:
+            host: payment-service.istio-part3-sidecar.svc.cluster.local
+            port:
+              number: 8080
+    - route:
+        - destination:
+            host: payment-service.istio-part3-sidecar.svc.cluster.local
+            port:
+              number: 8080

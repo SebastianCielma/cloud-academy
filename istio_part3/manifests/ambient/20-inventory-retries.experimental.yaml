@@ -1,0 +1,29 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: inventory-retries
+  namespace: istio-part3
+spec:
+  parentRefs:
+    - group: ""
+      kind: Service
+      name: inventory-service
+      port: 8080
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /inventory
+      timeouts:
+        request: 4s
+        backendRequest: 1s
+      retry:
+        codes: [503]
+        attempts: 2
+        backoff: 50ms
+      backendRefs:
+        - name: inventory-service
+          port: 8080
+    - backendRefs:
+        - name: inventory-service
+          port: 8080

@@ -5,15 +5,15 @@ docker run --rm --network infra_edge_net -v "/Users/sebastian/akademia/cloud-aca
 		echo '=== [ERR 2] Incomplete Chain (missing Intermediate on port 8443) ==='; \
 		curl -sS --cacert pki/out/root/root-ca.crt https://api.internal.test:8443/api || true; \
 		echo ''; \
-		echo '=== [ERR 3] SAN / Hostname Mismatch (connecting as payments.internal.test) ==='; \
-		curl -sS --cacert pki/out/root/root-ca.crt https://payments.internal.test/api || true; \
+		echo '=== [ERR 3] SAN / Hostname Mismatch (inventory.internal.test hits default api cert) ==='; \
+		curl -sS --cacert pki/out/root/root-ca.crt https://inventory.internal.test/api || true; \
 		echo ''; \
-		echo '=== [ERR 4] Legacy TLS 1.1 Rejected ==='; \
-		openssl s_client -connect api.internal.test:443 -servername api.internal.test -tls1_1 </dev/null 2>&1 | grep -E 'error|alert' || true; \
+		echo '=== [ERR 4] Legacy TLS 1.1 Rejected by Server (@SECLEVEL=0 forces ClientHello) ==='; \
+		openssl s_client -connect api.internal.test:443 -servername api.internal.test -tls1_1 -cipher 'DEFAULT@SECLEVEL=0' </dev/null 2>&1 | grep -E 'error|alert|Protocol' || true; \
 		echo ''; \
-		echo '=== [ERR 5] Wrong Chain Order (Intermediate before Leaf) ==='; \
+		echo '=== [ERR 5] Wrong Chain Order (Intermediate before Leaf in TLS server) ==='; \
 		cat pki/out/intermediate/intermediate-ca.crt pki/out/servers/api.internal.test/server.crt > /tmp/bad-order.pem; \
-		openssl verify -CAfile pki/out/root/root-ca.crt /tmp/bad-order.pem || true"
+		openssl s_server -accept 9443 -cert /tmp/bad-order.pem -key pki/out/servers/api.internal.test/server.key 2>&1 || true"
 === [ERR 1] Unknown CA (no --cacert provided) ===
 curl: (60) SSL certificate problem: unable to get local issuer certificate
 More details here: https://curl.se/docs/sslcerts.html
@@ -30,16 +30,19 @@ curl failed to verify the legitimacy of the server and therefore could not
 establish a secure connection to it. To learn more about this situation and
 how to fix it, please visit the webpage mentioned above.
 
-=== [ERR 3] SAN / Hostname Mismatch (connecting as payments.internal.test) ===
-curl: (60) SSL: no alternative certificate subject name matches target hostname 'payments.internal.test'
+=== [ERR 3] SAN / Hostname Mismatch (inventory.internal.test hits default api cert) ===
+curl: (60) SSL: no alternative certificate subject name matches target hostname 'inventory.internal.test'
 More details here: https://curl.se/docs/sslcerts.html
 
 curl failed to verify the legitimacy of the server and therefore could not
 establish a secure connection to it. To learn more about this situation and
 how to fix it, please visit the webpage mentioned above.
 
-=== [ERR 4] Legacy TLS 1.1 Rejected ===
-204D948CFFFF0000:error:0A0000BF:SSL routines:tls_setup_handshake:no protocols available:ssl/statem/statem_lib.c:154:
+=== [ERR 4] Legacy TLS 1.1 Rejected by Server (@SECLEVEL=0 forces ClientHello) ===
+20DDF1B5FFFF0000:error:0A00042E:SSL routines:ssl3_read_bytes:tlsv1 alert protocol version:ssl/record/rec_layer_s3.c:914:SSL alert number 70
+    Protocol  : TLSv1.1
 
-=== [ERR 5] Wrong Chain Order (Intermediate before Leaf) ===
-/tmp/bad-order.pem: OK
+=== [ERR 5] Wrong Chain Order (Intermediate before Leaf in TLS server) ===
+Using default temp DH parameters
+error setting private key
+20FDEDA3FFFF0000:error:05800074:x509 certificate routines:ossl_x509_check_private_key:key values mismatch:crypto/x509/x509_cmp.c:411:

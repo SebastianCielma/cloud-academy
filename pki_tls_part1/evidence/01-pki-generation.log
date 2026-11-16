@@ -1,9 +1,9 @@
 chmod +x pki/scripts/generate-pki.sh
 docker run --rm -v "/Users/sebastian/akademia/cloud-academy/pki_tls_part1:/work" -w /work alpine:3.20 sh -c "apk add --no-cache openssl bash >/dev/null && ./pki/scripts/generate-pki.sh"
-[1/4] Generating Root CA (ECDSA P-384)...
-[2/4] Generating Intermediate CA (ECDSA P-384)...
-[3/4] Generating Server Certificates (ECDSA P-256)...
-[4/4] Verifying Certificate Chains...
+[1/4] Generating Root CA (ECDSA P-384)
+[2/4] Generating Intermediate CA (ECDSA P-384)
+[3/4] Generating Server Certificates (ECDSA P-256)
+[4/4] Verifying Certificate Chains
 /work/pki/out/intermediate/intermediate-ca.crt: OK
 /work/pki/out/servers/api.internal.test/server.crt: OK
 /work/pki/out/servers/payments.internal.test/server.crt: OK

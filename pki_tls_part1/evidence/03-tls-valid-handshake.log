@@ -1,10 +1,10 @@
-=== CURL VERBOSE (VALID ROOT CA) ===
+=== CURL VERBOSE (VALID ROOT CA - api.internal.test) ===
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0* Host api.internal.test:443 was resolved.
 * IPv6: (none)
-* IPv4: 192.168.107.2
-*   Trying 192.168.107.2:443...
+* IPv4: 192.168.97.2
+*   Trying 192.168.97.2:443...
 * ALPN: curl offers h2,http/1.1
 } [5 bytes data]
 * TLSv1.3 (OUT), TLS handshake, Client hello (1):
@@ -17,9 +17,9 @@
 * TLSv1.3 (IN), TLS handshake, Encrypted Extensions (8):
 { [25 bytes data]
 * TLSv1.3 (IN), TLS handshake, Certificate (11):
-{ [1329 bytes data]
+{ [1328 bytes data]
 * TLSv1.3 (IN), TLS handshake, CERT verify (15):
-{ [78 bytes data]
+{ [79 bytes data]
 * TLSv1.3 (IN), TLS handshake, Finished (20):
 { [52 bytes data]
 * TLSv1.3 (OUT), TLS change cipher, Change cipher spec (1):
@@ -30,15 +30,15 @@
 * ALPN: server accepted http/1.1
 * Server certificate:
 *  subject: C=PL; O=Internal Cloud Platform; OU=Core Engineering; CN=api.internal.test
-*  start date: Nov 16 14:14:58 2026 GMT
-*  expire date: Feb 14 14:14:58 2027 GMT
+*  start date: Nov 16 15:56:28 2026 GMT
+*  expire date: Feb 14 15:56:28 2027 GMT
 *  subjectAltName: host "api.internal.test" matched cert's "api.internal.test"
 *  issuer: C=PL; O=Internal Cloud Platform; OU=Platform Security; CN=Internal Services Intermediate CA
 *  SSL certificate verify ok.
 *   Certificate level 0: Public key type EC/prime256v1 (256/128 Bits/secBits), signed using ecdsa-with-SHA256
 *   Certificate level 1: Public key type EC/secp384r1 (384/192 Bits/secBits), signed using ecdsa-with-SHA384
 *   Certificate level 2: Public key type EC/secp384r1 (384/192 Bits/secBits), signed using ecdsa-with-SHA384
-* Connected to api.internal.test (192.168.107.2) port 443
+* Connected to api.internal.test (192.168.97.2) port 443
 * using HTTP/1.x
 } [5 bytes data]
 > GET /api HTTP/1.1
@@ -55,7 +55,7 @@
 { [5 bytes data]
 < HTTP/1.1 200 OK
 < Server: nginx
-< Date: Mon, 16 Nov 2026 14:15:00 GMT
+< Date: Mon, 16 Nov 2026 15:56:31 GMT
 < Content-Type: text/plain; charset=utf-8
 < Content-Length: 65
 < Connection: keep-alive
@@ -66,10 +66,79 @@
 < 
 { [65 bytes data]
 {"service":"api","environment":"internal","tls_terminated":true}
-100    65  100    65    0     0  10386      0 --:--:-- --:--:-- --:--:-- 10833
+100    65  100    65    0     0  12454      0 --:--:-- --:--:-- --:--:-- 16250
 * Connection #0 to host api.internal.test left intact
+=== CURL VERBOSE (SNI ROUTED - payments.internal.test) ===
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0* Host payments.internal.test:443 was resolved.
+* IPv6: (none)
+* IPv4: 192.168.97.2
+*   Trying 192.168.97.2:443...
+* ALPN: curl offers h2,http/1.1
+} [5 bytes data]
+* TLSv1.3 (OUT), TLS handshake, Client hello (1):
+} [512 bytes data]
+*  CAfile: pki/out/root/root-ca.crt
+*  CApath: /etc/ssl/certs
+{ [5 bytes data]
+* TLSv1.3 (IN), TLS handshake, Server hello (2):
+{ [122 bytes data]
+* TLSv1.3 (IN), TLS handshake, Encrypted Extensions (8):
+{ [25 bytes data]
+* TLSv1.3 (IN), TLS handshake, Certificate (11):
+{ [1339 bytes data]
+* TLSv1.3 (IN), TLS handshake, CERT verify (15):
+{ [80 bytes data]
+* TLSv1.3 (IN), TLS handshake, Finished (20):
+{ [52 bytes data]
+* TLSv1.3 (OUT), TLS change cipher, Change cipher spec (1):
+} [1 bytes data]
+* TLSv1.3 (OUT), TLS handshake, Finished (20):
+} [52 bytes data]
+* SSL connection using TLSv1.3 / TLS_AES_256_GCM_SHA384 / x25519 / id-ecPublicKey
+* ALPN: server accepted http/1.1
+* Server certificate:
+*  subject: C=PL; O=Internal Cloud Platform; OU=Core Engineering; CN=payments.internal.test
+*  start date: Nov 16 15:56:29 2026 GMT
+*  expire date: Feb 14 15:56:29 2027 GMT
+*  subjectAltName: host "payments.internal.test" matched cert's "payments.internal.test"
+*  issuer: C=PL; O=Internal Cloud Platform; OU=Platform Security; CN=Internal Services Intermediate CA
+*  SSL certificate verify ok.
+*   Certificate level 0: Public key type EC/prime256v1 (256/128 Bits/secBits), signed using ecdsa-with-SHA256
+*   Certificate level 1: Public key type EC/secp384r1 (384/192 Bits/secBits), signed using ecdsa-with-SHA384
+*   Certificate level 2: Public key type EC/secp384r1 (384/192 Bits/secBits), signed using ecdsa-with-SHA384
+* Connected to payments.internal.test (192.168.97.2) port 443
+* using HTTP/1.x
+} [5 bytes data]
+> GET /payments HTTP/1.1
+> Host: payments.internal.test
+> User-Agent: curl/8.14.1
+> Accept: */*
+> 
+* Request completely sent off
+{ [5 bytes data]
+* TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
+{ [57 bytes data]
+* TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
+{ [57 bytes data]
+< HTTP/1.1 200 OK
+< Server: nginx
+< Date: Mon, 16 Nov 2026 15:56:31 GMT
+< Content-Type: text/plain; charset=utf-8
+< Content-Length: 70
+< Connection: keep-alive
+< X-App-Name: http-echo
+< X-App-Version: 1.0.0
+< Strict-Transport-Security: max-age=63072000; includeSubDomains
+< X-Content-Type-Options: nosniff
+< 
+{ [70 bytes data]
+{"service":"payments","environment":"internal","tls_terminated":true}
+100    70  100    70    0     0  18083      0 --:--:-- --:--:-- --:--:-- 23333
+* Connection #0 to host payments.internal.test left intact
 === OPENSSL S_CLIENT TLS 1.3 ===
-Connecting to 192.168.107.2
+Connecting to 192.168.97.2
 CONNECTED(00000003)
 depth=2 C=PL, O=Internal Cloud Platform, OU=Platform Security, CN=Internal Root CA
 verify return:1
@@ -82,28 +151,28 @@ Certificate chain
  0 s:C=PL, O=Internal Cloud Platform, OU=Core Engineering, CN=api.internal.test
    i:C=PL, O=Internal Cloud Platform, OU=Platform Security, CN=Internal Services Intermediate CA
    a:PKEY: id-ecPublicKey, 256 (bit); sigalg: ecdsa-with-SHA256
-   v:NotBefore: Nov 16 14:14:58 2026 GMT; NotAfter: Feb 14 14:14:58 2027 GMT
+   v:NotBefore: Nov 16 15:56:28 2026 GMT; NotAfter: Feb 14 15:56:28 2027 GMT
  1 s:C=PL, O=Internal Cloud Platform, OU=Platform Security, CN=Internal Services Intermediate CA
    i:C=PL, O=Internal Cloud Platform, OU=Platform Security, CN=Internal Root CA
    a:PKEY: id-ecPublicKey, 384 (bit); sigalg: ecdsa-with-SHA384
-   v:NotBefore: Nov 16 14:14:58 2026 GMT; NotAfter: Nov 15 14:14:58 2029 GMT
+   v:NotBefore: Nov 16 15:56:28 2026 GMT; NotAfter: Nov 15 15:56:28 2029 GMT
 ---
 Server certificate
 -----BEGIN CERTIFICATE-----
-MIIClDCCAhqgAwIBAgIUfsMqrriU/ftogpTIQjENi7ouBMEwCgYIKoZIzj0EAwIw
+MIIClDCCAhqgAwIBAgIUfsMqrriU/ftogpTIQjENi7ouBMQwCgYIKoZIzj0EAwIw
 dzELMAkGA1UEBhMCUEwxIDAeBgNVBAoMF0ludGVybmFsIENsb3VkIFBsYXRmb3Jt
 MRowGAYDVQQLDBFQbGF0Zm9ybSBTZWN1cml0eTEqMCgGA1UEAwwhSW50ZXJuYWwg
-U2VydmljZXMgSW50ZXJtZWRpYXRlIENBMB4XDTI2MTExNjE0MTQ1OFoXDTI3MDIx
-NDE0MTQ1OFowZjELMAkGA1UEBhMCUEwxIDAeBgNVBAoMF0ludGVybmFsIENsb3Vk
+U2VydmljZXMgSW50ZXJtZWRpYXRlIENBMB4XDTI2MTExNjE1NTYyOFoXDTI3MDIx
+NDE1NTYyOFowZjELMAkGA1UEBhMCUEwxIDAeBgNVBAoMF0ludGVybmFsIENsb3Vk
 IFBsYXRmb3JtMRkwFwYDVQQLDBBDb3JlIEVuZ2luZWVyaW5nMRowGAYDVQQDDBFh
-cGkuaW50ZXJuYWwudGVzdDBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABFQj/9P4
-fMiEOo8q2JMzh7r47YWBLbYSdrC5m3vKEgkhL1U+UM0i6QMjkW/EsJy4p50m58XP
-Di+2rgKWfoqxNhWjgZQwgZEwHQYDVR0OBBYEFNu1RCI37+pPqPCWWuAzc0BSHp8U
-MB8GA1UdIwQYMBaAFGd+q56Efw2TQOFwvVij2LSuYfwMMAwGA1UdEwEB/wQCMAAw
+cGkuaW50ZXJuYWwudGVzdDBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABN329LpR
+mfznX8vlisQRYQWwopzodHay0zsv4rooMxPQSZSeU6JXTY0xJYRiDfu35tpUnaGm
+1E2SIPJVkwZUIRSjgZQwgZEwHQYDVR0OBBYEFKUlNj88WWYa7lWjd1M+bcbmdgR4
+MB8GA1UdIwQYMBaAFFy2hIhhsZVYwH9Lwab0Tunp8PM8MAwGA1UdEwEB/wQCMAAw
 DgYDVR0PAQH/BAQDAgeAMBMGA1UdJQQMMAoGCCsGAQUFBwMBMBwGA1UdEQQVMBOC
-EWFwaS5pbnRlcm5hbC50ZXN0MAoGCCqGSM49BAMCA2gAMGUCMExN4ywsylzpvzTV
-eBPhMLAJKIETjkZ6k6lGzAdsmgqPSULBXRvnzJlafP+uFj2XuAIxAKoIS1zcwhFd
-9SVahI0bVjeI8h+mGDVutfRiEX3djnVHc8/3XSfrdTMnhXd1mBhfIw==
+EWFwaS5pbnRlcm5hbC50ZXN0MAoGCCqGSM49BAMCA2gAMGUCMG/VH7g4wUQNdmu0
+KRwLGegZiQ9Oy8OFs6mD9cxHtZJZukvSTN9OTVrFKFAsNM6quAIxAMgiWcgy//7k
+XF0E3Ng4BLlU05Loyqy+Jm4hnJNe2gNgc7KqgDGSWeZrYGlUa+R8ig==
 -----END CERTIFICATE-----
 subject=C=PL, O=Internal Cloud Platform, OU=Core Engineering, CN=api.internal.test
 issuer=C=PL, O=Internal Cloud Platform, OU=Platform Security, CN=Internal Services Intermediate CA
@@ -113,7 +182,7 @@ Peer signing digest: SHA256
 Peer signature type: ECDSA
 Server Temp Key: X25519, 253 bits
 ---
-SSL handshake has read 1691 bytes and written 335 bytes
+SSL handshake has read 1690 bytes and written 335 bytes
 Verification: OK
 ---
 New, TLSv1.3, Cipher is TLS_AES_256_GCM_SHA384
@@ -123,55 +192,9 @@ No ALPN negotiated
 Early data was not sent
 Verify return code: 0 (ok)
 ---
----
-Post-Handshake New Session Ticket arrived:
-SSL-Session:
-    Protocol  : TLSv1.3
-    Cipher    : TLS_AES_256_GCM_SHA384
-    Session-ID: 6C5CDEF518E94AD110794EED6C7153F83B5DB80F0A2E3CDD4286E88A9A273CD1
-    Session-ID-ctx: 
-    Resumption PSK: 79A95BA5B7A26BAC5104E1936C420F14D577F20B6E2BFF92CEE50C0EF725533425B711404CEFF76895093BF9317DA9FF
-    PSK identity: None
-    PSK identity hint: None
-    SRP username: None
-    TLS session ticket lifetime hint: 86400 (seconds)
-    TLS session ticket:
-    0000 - 4e c4 92 90 f1 fc 10 4e-47 d3 bf 2d f4 06 ab e0   N......NG..-....
-    0010 - 3c 97 f2 3c 0c 27 ee bd-ca 73 02 a4 a4 d7 e9 42   <..<.'...s.....B
-
-    Start Time: 1794838500
-    Timeout   : 7200 (sec)
-    Verify return code: 0 (ok)
-    Extended master secret: no
-    Max Early Data: 0
----
-read R BLOCK
----
-Post-Handshake New Session Ticket arrived:
-SSL-Session:
-    Protocol  : TLSv1.3
-    Cipher    : TLS_AES_256_GCM_SHA384
-    Session-ID: 5AA647B23A527D662F34CD9D4DF3E2C0326F5719D92AF106CCDAA5A2A95322A1
-    Session-ID-ctx: DONE
-
-    Resumption PSK: 1546541EC8405B07BE42A4F8B6357A6AA1F23A4CD665277F9DCEC1A73B742BB0ED1FC450068EEF4310E4FE4EE484060E
-    PSK identity: None
-    PSK identity hint: None
-    SRP username: None
-    TLS session ticket lifetime hint: 86400 (seconds)
-    TLS session ticket:
-    0000 - a4 0b 9d c3 78 88 27 72-11 8c 4c a7 75 68 76 aa   ....x.'r..L.uhv.
-    0010 - 9e fd 83 37 02 ba bc 3a-e3 cb bc 3a b6 61 2b 55   ...7...:...:.a+U
-
-    Start Time: 1794838500
-    Timeout   : 7200 (sec)
-    Verify return code: 0 (ok)
-    Extended master secret: no
-    Max Early Data: 0
----
-read R BLOCK
+DONE
 === OPENSSL S_CLIENT TLS 1.2 ===
-Connecting to 192.168.107.2
+Connecting to 192.168.97.2
 CONNECTED(00000003)
 depth=2 C=PL, O=Internal Cloud Platform, OU=Platform Security, CN=Internal Root CA
 verify return:1
@@ -184,28 +207,28 @@ Certificate chain
  0 s:C=PL, O=Internal Cloud Platform, OU=Core Engineering, CN=api.internal.test
    i:C=PL, O=Internal Cloud Platform, OU=Platform Security, CN=Internal Services Intermediate CA
    a:PKEY: id-ecPublicKey, 256 (bit); sigalg: ecdsa-with-SHA256
-   v:NotBefore: Nov 16 14:14:58 2026 GMT; NotAfter: Feb 14 14:14:58 2027 GMT
+   v:NotBefore: Nov 16 15:56:28 2026 GMT; NotAfter: Feb 14 15:56:28 2027 GMT
  1 s:C=PL, O=Internal Cloud Platform, OU=Platform Security, CN=Internal Services Intermediate CA
    i:C=PL, O=Internal Cloud Platform, OU=Platform Security, CN=Internal Root CA
    a:PKEY: id-ecPublicKey, 384 (bit); sigalg: ecdsa-with-SHA384
-   v:NotBefore: Nov 16 14:14:58 2026 GMT; NotAfter: Nov 15 14:14:58 2029 GMT
+   v:NotBefore: Nov 16 15:56:28 2026 GMT; NotAfter: Nov 15 15:56:28 2029 GMT
 ---
 Server certificate
 -----BEGIN CERTIFICATE-----
-MIIClDCCAhqgAwIBAgIUfsMqrriU/ftogpTIQjENi7ouBMEwCgYIKoZIzj0EAwIw
+MIIClDCCAhqgAwIBAgIUfsMqrriU/ftogpTIQjENi7ouBMQwCgYIKoZIzj0EAwIw
 dzELMAkGA1UEBhMCUEwxIDAeBgNVBAoMF0ludGVybmFsIENsb3VkIFBsYXRmb3Jt
 MRowGAYDVQQLDBFQbGF0Zm9ybSBTZWN1cml0eTEqMCgGA1UEAwwhSW50ZXJuYWwg
-U2VydmljZXMgSW50ZXJtZWRpYXRlIENBMB4XDTI2MTExNjE0MTQ1OFoXDTI3MDIx
-NDE0MTQ1OFowZjELMAkGA1UEBhMCUEwxIDAeBgNVBAoMF0ludGVybmFsIENsb3Vk
+U2VydmljZXMgSW50ZXJtZWRpYXRlIENBMB4XDTI2MTExNjE1NTYyOFoXDTI3MDIx
+NDE1NTYyOFowZjELMAkGA1UEBhMCUEwxIDAeBgNVBAoMF0ludGVybmFsIENsb3Vk
 IFBsYXRmb3JtMRkwFwYDVQQLDBBDb3JlIEVuZ2luZWVyaW5nMRowGAYDVQQDDBFh
-cGkuaW50ZXJuYWwudGVzdDBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABFQj/9P4
-fMiEOo8q2JMzh7r47YWBLbYSdrC5m3vKEgkhL1U+UM0i6QMjkW/EsJy4p50m58XP
-Di+2rgKWfoqxNhWjgZQwgZEwHQYDVR0OBBYEFNu1RCI37+pPqPCWWuAzc0BSHp8U
-MB8GA1UdIwQYMBaAFGd+q56Efw2TQOFwvVij2LSuYfwMMAwGA1UdEwEB/wQCMAAw
+cGkuaW50ZXJuYWwudGVzdDBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABN329LpR
+mfznX8vlisQRYQWwopzodHay0zsv4rooMxPQSZSeU6JXTY0xJYRiDfu35tpUnaGm
+1E2SIPJVkwZUIRSjgZQwgZEwHQYDVR0OBBYEFKUlNj88WWYa7lWjd1M+bcbmdgR4
+MB8GA1UdIwQYMBaAFFy2hIhhsZVYwH9Lwab0Tunp8PM8MAwGA1UdEwEB/wQCMAAw
 DgYDVR0PAQH/BAQDAgeAMBMGA1UdJQQMMAoGCCsGAQUFBwMBMBwGA1UdEQQVMBOC
-EWFwaS5pbnRlcm5hbC50ZXN0MAoGCCqGSM49BAMCA2gAMGUCMExN4ywsylzpvzTV
-eBPhMLAJKIETjkZ6k6lGzAdsmgqPSULBXRvnzJlafP+uFj2XuAIxAKoIS1zcwhFd
-9SVahI0bVjeI8h+mGDVutfRiEX3djnVHc8/3XSfrdTMnhXd1mBhfIw==
+EWFwaS5pbnRlcm5hbC50ZXN0MAoGCCqGSM49BAMCA2gAMGUCMG/VH7g4wUQNdmu0
+KRwLGegZiQ9Oy8OFs6mD9cxHtZJZukvSTN9OTVrFKFAsNM6quAIxAMgiWcgy//7k
+XF0E3Ng4BLlU05Loyqy+Jm4hnJNe2gNgc7KqgDGSWeZrYGlUa+R8ig==
 -----END CERTIFICATE-----
 subject=C=PL, O=Internal Cloud Platform, OU=Core Engineering, CN=api.internal.test
 issuer=C=PL, O=Internal Cloud Platform, OU=Platform Security, CN=Internal Services Intermediate CA
@@ -215,7 +238,7 @@ Peer signing digest: SHA256
 Peer signature type: ECDSA
 Server Temp Key: X25519, 253 bits
 ---
-SSL handshake has read 1611 bytes and written 313 bytes
+SSL handshake has read 1610 bytes and written 313 bytes
 Verification: OK
 ---
 New, TLSv1.2, Cipher is ECDHE-ECDSA-AES256-GCM-SHA384
@@ -225,13 +248,13 @@ No ALPN negotiated
 SSL-Session:
     Protocol  : TLSv1.2
     Cipher    : ECDHE-ECDSA-AES256-GCM-SHA384
-    Session-ID: 3F6954ADC863325807464FBE6DD9C4F5AA55B3AE0C997E341CA8094A0071BF79
+    Session-ID: CA59D4CF078F881C0EC6BB6D53672705B002F9CE3B404AB3394C09D003464658
     Session-ID-ctx: 
-    Master-Key: 070A8066C3BBA95BF4B8FFC53C49686A673A36BD1C0D3597039ED8A69B28DBB4D2B4F58D0798B6A50CD14BE63C93593A
+    Master-Key: 82319F5398E87D3B3B65ED08624012C322D6D8FC80D1C2F2D28AF813553D6F3C1A5B4845429A5A03B8C2ADE1B26180B9
     PSK identity: None
     PSK identity hint: None
     SRP username: None
-    Start Time: 1794838500
+    Start Time: 1794844591
     Timeout   : 7200 (sec)
     Verify return code: 0 (ok)
     Extended master secret: yes

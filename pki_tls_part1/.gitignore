@@ -1,0 +1,11 @@
+# Private keys and cryptographic material
+*.key
+*.pem
+*.crt
+*.csr
+*.srl
+*.p12
+*.pfx
+
+
+pki/out/

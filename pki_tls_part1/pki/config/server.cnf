@@ -1,0 +1,18 @@
+[ req ]
+default_md          = sha256
+prompt              = no
+distinguished_name  = dn
+
+[ dn ]
+C                   = PL
+O                   = Internal Cloud Platform
+OU                  = Core Engineering
+CN                  = ${ENV::SERVER_CN}
+
+[ v3_server ]
+subjectKeyIdentifier   = hash
+authorityKeyIdentifier = keyid,issuer
+basicConstraints       = critical, CA:false
+keyUsage               = critical, digitalSignature
+extendedKeyUsage       = serverAuth
+subjectAltName         = DNS:${ENV::SERVER_CN}

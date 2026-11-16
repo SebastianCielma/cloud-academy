@@ -1,0 +1,38 @@
+services:
+  nginx-edge:
+    image: nginx:1.27-alpine
+    container_name: pki-nginx-edge
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ../pki/out:/etc/nginx/certs:ro
+    networks:
+      edge_net:
+        aliases:
+          - api.internal.test
+          - payments.internal.test
+          - inventory.internal.test
+      backend_net:
+    depends_on:
+      - api-service
+      - payments-service
+
+  api-service:
+    image: hashicorp/http-echo:1.0
+    container_name: pki-api-service
+    command: ['-listen=:5678', '-text={"service":"api","environment":"internal","tls_terminated":true}']
+    networks:
+      - backend_net
+
+  payments-service:
+    image: hashicorp/http-echo:1.0
+    container_name: pki-payments-service
+    command: ['-listen=:5678', '-text={"service":"payments","environment":"internal","tls_terminated":true}']
+    networks:
+      - backend_net
+
+networks:
+  edge_net:
+    driver: bridge
+  backend_net:
+    driver: bridge
+    internal: true

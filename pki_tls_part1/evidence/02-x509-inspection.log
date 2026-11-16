@@ -1,0 +1,128 @@
+=== ROOT CA X.509 STRUCTURE ===
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number:
+            21:a2:36:e2:9a:7f:f4:d3:ae:c2:eb:a8:a7:92:4a:e3:de:12:84:70
+        Signature Algorithm: ecdsa-with-SHA384
+        Issuer: C=PL, O=Internal Cloud Platform, OU=Platform Security, CN=Internal Root CA
+        Validity
+            Not Before: Nov 16 14:14:58 2026 GMT
+            Not After : Nov 13 14:14:58 2036 GMT
+        Subject: C=PL, O=Internal Cloud Platform, OU=Platform Security, CN=Internal Root CA
+        Subject Public Key Info:
+            Public Key Algorithm: id-ecPublicKey
+                Public-Key: (384 bit)
+                pub:
+                    04:c8:28:22:2e:45:70:dc:a7:b2:11:b1:a1:de:86:
+                    bb:6f:74:4a:8c:b6:6d:2c:c7:47:35:0f:d2:3d:33:
+                    dd:57:c6:44:96:73:6a:ff:c7:d8:22:95:c7:99:77:
+                    bb:76:3e:01:fa:df:97:de:56:09:92:12:fd:05:c2:
+                    9d:ca:ab:f3:7a:7d:e7:85:70:22:68:e3:9a:ad:93:
+                    a4:76:58:92:aa:73:5e:09:86:15:9c:8c:d2:1d:19:
+                    5c:7b:7c:19:90:7f:94
+                ASN1 OID: secp384r1
+                NIST CURVE: P-384
+        X509v3 extensions:
+            X509v3 Subject Key Identifier: 
+                45:3B:6C:17:CF:87:0E:E7:58:4D:02:28:49:D0:20:34:65:C3:91:7F
+            X509v3 Authority Key Identifier: 
+                45:3B:6C:17:CF:87:0E:E7:58:4D:02:28:49:D0:20:34:65:C3:91:7F
+            X509v3 Basic Constraints: critical
+                CA:TRUE
+            X509v3 Key Usage: critical
+                Certificate Sign, CRL Sign
+    Signature Algorithm: ecdsa-with-SHA384
+    Signature Value:
+        30:66:02:31:00:97:a4:7c:74:b4:ac:ce:17:0f:ba:3e:c5:67:
+        95:d5:69:6e:e0:7d:88:ee:5c:6f:48:f3:4e:da:4a:96:bc:07:
+        63:7a:1f:b3:81:67:99:6e:f1:0b:e9:39:b0:21:09:3b:11:02:
+        31:00:f8:c2:d5:e7:29:15:d9:54:f8:cb:18:17:e7:73:af:15:
+        f5:42:e1:bf:48:c3:8a:f6:ab:f3:e7:92:f8:cc:62:17:60:59:
+        f3:94:51:4e:f1:66:83:0f:d1:d8:e5:f5:74:de
+=== INTERMEDIATE CA X.509 STRUCTURE ===
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number:
+            62:1a:6b:d7:75:57:68:b7:fd:06:d2:c3:e4:bc:aa:07:23:26:8f:80
+        Signature Algorithm: ecdsa-with-SHA384
+        Issuer: C=PL, O=Internal Cloud Platform, OU=Platform Security, CN=Internal Root CA
+        Validity
+            Not Before: Nov 16 14:14:58 2026 GMT
+            Not After : Nov 15 14:14:58 2029 GMT
+        Subject: C=PL, O=Internal Cloud Platform, OU=Platform Security, CN=Internal Services Intermediate CA
+        Subject Public Key Info:
+            Public Key Algorithm: id-ecPublicKey
+                Public-Key: (384 bit)
+                pub:
+                    04:73:9e:7c:de:89:4b:cb:93:f9:16:b0:3a:2a:3c:
+                    2d:ae:26:d7:a2:4f:31:03:f7:d4:d4:d2:a4:71:f3:
+                    19:e1:da:77:2e:df:81:20:c0:46:7c:4b:06:b9:29:
+                    51:fd:8f:ee:ee:fc:97:c1:ff:ab:3c:9f:05:f5:8d:
+                    31:3b:f4:c6:84:9c:09:19:86:e5:b2:22:0f:72:1b:
+                    42:83:c4:37:c1:ab:49:90:95:59:a8:fe:cb:70:c4:
+                    7a:94:93:d3:98:d1:d4
+                ASN1 OID: secp384r1
+                NIST CURVE: P-384
+        X509v3 extensions:
+            X509v3 Subject Key Identifier: 
+                67:7E:AB:9E:84:7F:0D:93:40:E1:70:BD:58:A3:D8:B4:AE:61:FC:0C
+            X509v3 Authority Key Identifier: 
+                45:3B:6C:17:CF:87:0E:E7:58:4D:02:28:49:D0:20:34:65:C3:91:7F
+            X509v3 Basic Constraints: critical
+                CA:TRUE, pathlen:0
+            X509v3 Key Usage: critical
+                Certificate Sign, CRL Sign
+    Signature Algorithm: ecdsa-with-SHA384
+    Signature Value:
+        30:66:02:31:00:fd:bf:2c:87:52:95:8d:8b:67:b5:e4:ed:75:
+        fa:76:bf:af:98:c2:aa:a6:23:a1:55:2e:61:ba:1d:cc:bb:c9:
+        0a:19:3a:24:22:95:ad:24:7f:6f:77:fb:9b:ad:1e:83:af:02:
+        31:00:97:c8:7f:fc:98:e4:7a:37:ba:65:43:75:8e:96:9a:82:
+        43:85:6f:ef:cd:a3:50:44:b5:97:56:b0:00:d9:8c:29:d0:1f:
+        af:23:1c:be:9a:b6:70:f2:63:50:64:7d:b2:e7
+=== LEAF CERTIFICATE (api.internal.test) X.509 STRUCTURE ===
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number:
+            7e:c3:2a:ae:b8:94:fd:fb:68:82:94:c8:42:31:0d:8b:ba:2e:04:c1
+        Signature Algorithm: ecdsa-with-SHA256
+        Issuer: C=PL, O=Internal Cloud Platform, OU=Platform Security, CN=Internal Services Intermediate CA
+        Validity
+            Not Before: Nov 16 14:14:58 2026 GMT
+            Not After : Feb 14 14:14:58 2027 GMT
+        Subject: C=PL, O=Internal Cloud Platform, OU=Core Engineering, CN=api.internal.test
+        Subject Public Key Info:
+            Public Key Algorithm: id-ecPublicKey
+                Public-Key: (256 bit)
+                pub:
+                    04:54:23:ff:d3:f8:7c:c8:84:3a:8f:2a:d8:93:33:
+                    87:ba:f8:ed:85:81:2d:b6:12:76:b0:b9:9b:7b:ca:
+                    12:09:21:2f:55:3e:50:cd:22:e9:03:23:91:6f:c4:
+                    b0:9c:b8:a7:9d:26:e7:c5:cf:0e:2f:b6:ae:02:96:
+                    7e:8a:b1:36:15
+                ASN1 OID: prime256v1
+                NIST CURVE: P-256
+        X509v3 extensions:
+            X509v3 Subject Key Identifier: 
+                DB:B5:44:22:37:EF:EA:4F:A8:F0:96:5A:E0:33:73:40:52:1E:9F:14
+            X509v3 Authority Key Identifier: 
+                67:7E:AB:9E:84:7F:0D:93:40:E1:70:BD:58:A3:D8:B4:AE:61:FC:0C
+            X509v3 Basic Constraints: critical
+                CA:FALSE
+            X509v3 Key Usage: critical
+                Digital Signature
+            X509v3 Extended Key Usage: 
+                TLS Web Server Authentication
+            X509v3 Subject Alternative Name: 
+                DNS:api.internal.test
+    Signature Algorithm: ecdsa-with-SHA256
+    Signature Value:
+        30:65:02:30:4c:4d:e3:2c:2c:ca:5c:e9:bf:34:d5:78:13:e1:
+        30:b0:09:28:81:13:8e:46:7a:93:a9:46:cc:07:6c:9a:0a:8f:
+        49:42:c1:5d:1b:e7:cc:99:5a:7c:ff:ae:16:3d:97:b8:02:31:
+        00:aa:08:4b:5c:dc:c2:11:5d:f5:25:5a:84:8d:1b:56:37:88:
+        f2:1f:a6:18:35:6e:b5:f4:62:11:7d:dd:8e:75:47:73:cf:f7:
+        5d:27:eb:75:33:27:85:77:75:98:18:5f:23

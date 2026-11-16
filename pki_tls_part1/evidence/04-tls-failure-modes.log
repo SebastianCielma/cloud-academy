@@ -1,0 +1,45 @@
+docker run --rm --network infra_edge_net -v "/Users/sebastian/akademia/cloud-academy/pki_tls_part1:/work" -w /work alpine:3.20 sh -c "apk add --no-cache curl openssl >/dev/null; \
+		echo '=== [ERR 1] Unknown CA (no --cacert provided) ==='; \
+		curl -sS https://api.internal.test/api || true; \
+		echo ''; \
+		echo '=== [ERR 2] Incomplete Chain (missing Intermediate on port 8443) ==='; \
+		curl -sS --cacert pki/out/root/root-ca.crt https://api.internal.test:8443/api || true; \
+		echo ''; \
+		echo '=== [ERR 3] SAN / Hostname Mismatch (connecting as payments.internal.test) ==='; \
+		curl -sS --cacert pki/out/root/root-ca.crt https://payments.internal.test/api || true; \
+		echo ''; \
+		echo '=== [ERR 4] Legacy TLS 1.1 Rejected ==='; \
+		openssl s_client -connect api.internal.test:443 -servername api.internal.test -tls1_1 </dev/null 2>&1 | grep -E 'error|alert' || true; \
+		echo ''; \
+		echo '=== [ERR 5] Wrong Chain Order (Intermediate before Leaf) ==='; \
+		cat pki/out/intermediate/intermediate-ca.crt pki/out/servers/api.internal.test/server.crt > /tmp/bad-order.pem; \
+		openssl verify -CAfile pki/out/root/root-ca.crt /tmp/bad-order.pem || true"
+=== [ERR 1] Unknown CA (no --cacert provided) ===
+curl: (60) SSL certificate problem: unable to get local issuer certificate
+More details here: https://curl.se/docs/sslcerts.html
+
+curl failed to verify the legitimacy of the server and therefore could not
+establish a secure connection to it. To learn more about this situation and
+how to fix it, please visit the webpage mentioned above.
+
+=== [ERR 2] Incomplete Chain (missing Intermediate on port 8443) ===
+curl: (60) SSL certificate problem: unable to get local issuer certificate
+More details here: https://curl.se/docs/sslcerts.html
+
+curl failed to verify the legitimacy of the server and therefore could not
+establish a secure connection to it. To learn more about this situation and
+how to fix it, please visit the webpage mentioned above.
+
+=== [ERR 3] SAN / Hostname Mismatch (connecting as payments.internal.test) ===
+curl: (60) SSL: no alternative certificate subject name matches target hostname 'payments.internal.test'
+More details here: https://curl.se/docs/sslcerts.html
+
+curl failed to verify the legitimacy of the server and therefore could not
+establish a secure connection to it. To learn more about this situation and
+how to fix it, please visit the webpage mentioned above.
+
+=== [ERR 4] Legacy TLS 1.1 Rejected ===
+204D948CFFFF0000:error:0A0000BF:SSL routines:tls_setup_handshake:no protocols available:ssl/statem/statem_lib.c:154:
+
+=== [ERR 5] Wrong Chain Order (Intermediate before Leaf) ===
+/tmp/bad-order.pem: OK

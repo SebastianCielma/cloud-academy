@@ -1,0 +1,51 @@
+EXPERIMENT 04 — JWT AUTHENTICATION
+Workload identity: istio-part4/order-service
+Endpoint: GET /payments/{id}
+JWT issuer: https://issuer.istio-part4.local
+Required role: payment-reader
+Tokens: not displayed
+
+SETUP: POST /payments
+HTTP 201
+
+TEST: Valid JWT
+REQUEST: GET /payments/{id}
+HTTP 200
+EXPECTED: HTTP 200
+RESPONSE: {"payment_id":"59f78e93-d384-4f08-bfd3-15819855734d","amount":125.5,"status":"created","version":"v1"}
+RESULT: MATCHED
+
+TEST: Invalid signature
+REQUEST: GET /payments/{id}
+HTTP 401
+EXPECTED: HTTP 401
+RESPONSE: Jwt verification fails
+RESULT: MATCHED
+
+TEST: Expired JWT
+REQUEST: GET /payments/{id}
+HTTP 401
+EXPECTED: HTTP 401
+RESPONSE: Jwt is expired
+RESULT: MATCHED
+
+TEST: Missing JWT
+REQUEST: GET /payments/{id}
+HTTP 403
+EXPECTED: HTTP 403
+RESPONSE: RBAC: access denied
+RESULT: MATCHED
+
+TEST: Invalid role claim
+REQUEST: GET /payments/{id}
+HTTP 403
+EXPECTED: HTTP 403
+RESPONSE: RBAC: access denied
+RESULT: MATCHED
+
+REGRESSION CHECK: GET /health without JWT
+HTTP 200
+EXPECTED: HTTP 200
+RESULT: MATCHED
+
+SUMMARY: 6 of 6 checks matched

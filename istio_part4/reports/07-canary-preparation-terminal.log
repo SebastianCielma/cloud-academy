@@ -1,0 +1,77 @@
+EXPERIMENT 07 — CANARY PREPARATION
+
+PAYMENT PODS
+NAME                                  READY   STATUS    RESTARTS   AGE    VERSION
+payment-service-764db4b8f4-qst44      1/1     Running   0          127m   v1
+payment-service-v2-6cb449c47b-5nt75   1/1     Running   0          20s    v2
+
+PAYMENT ROUTING
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"gateway.networking.k8s.io/v1","kind":"HTTPRoute","metadata":{"annotations":{},"name":"payment-canary","namespace":"istio-part4"},"spec":{"parentRefs":[{"group":"","kind":"Service","name":"payment-service","port":8080}],"rules":[{"backendRefs":[{"name":"payment-v1","port":8080,"weight":90},{"name":"payment-v2","port":8080,"weight":10}]}]}}
+  creationTimestamp: "2026-11-13T14:27:11Z"
+  generation: 1
+  name: payment-canary
+  namespace: istio-part4
+  resourceVersion: "6837"
+  uid: 43f44925-cb86-4a23-99f8-b545e57ed713
+spec:
+  parentRefs:
+  - group: ""
+    kind: Service
+    name: payment-service
+    port: 8080
+  rules:
+  - backendRefs:
+    - group: ""
+      kind: Service
+      name: payment-v1
+      port: 8080
+      weight: 90
+    - group: ""
+      kind: Service
+      name: payment-v2
+      port: 8080
+      weight: 10
+    matches:
+    - path:
+        type: PathPrefix
+        value: /
+status:
+  parents:
+  - conditions:
+    - lastTransitionTime: "2026-11-13T14:27:11Z"
+      message: Route was valid
+      observedGeneration: 1
+      reason: Accepted
+      status: "True"
+      type: Accepted
+    - lastTransitionTime: "2026-11-13T14:27:11Z"
+      message: All references resolved
+      observedGeneration: 1
+      reason: ResolvedRefs
+      status: "True"
+      type: ResolvedRefs
+    - lastTransitionTime: "2026-11-13T14:27:11Z"
+      message: All waypoints resolved
+      observedGeneration: 1
+      reason: ResolvedWaypoints
+      status: "True"
+      type: ResolvedWaypoints
+    controllerName: istio.io/gateway-controller
+    parentRef:
+      group: ""
+      kind: Service
+      name: payment-service
+      port: 8080
+
+PAYMENT WAYPOINT
+NAME               CLASS            ADDRESS        PROGRAMMED   AGE
+payment-waypoint   istio-waypoint   10.96.235.97   True         127m
+
+PAYMENT ENDPOINTS
+NAME               ADDRESSTYPE   PORTS   ENDPOINTS     AGE
+payment-v2-c6spb   IPv4          8080    10.244.0.15   20s

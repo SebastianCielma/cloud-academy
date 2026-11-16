@@ -1,0 +1,19 @@
+apiVersion: telemetry.istio.io/v1
+kind: Telemetry
+metadata:
+  name: payment-access-logging
+  namespace: istio-part4
+spec:
+  accessLogging:
+    - providers:
+        - name: envoy
+---
+apiVersion: telemetry.istio.io/v1
+kind: Telemetry
+metadata:
+  name: egress-access-logging
+  namespace: istio-egress
+spec:
+  accessLogging:
+    - providers:
+        - name: envoy

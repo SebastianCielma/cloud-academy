@@ -1,0 +1,61 @@
+EXPERIMENT 03 — HTTP-LEVEL AUTHORIZATION
+Requirement: Restrict Payment Service by workload identity, HTTP method and path
+
+$ kubectl get authorizationpolicy -n istio-part4
+NAME                           ACTION   AGE
+payment-allow-order-l4         ALLOW    96m
+payment-allow-order-waypoint   ALLOW    3m46s
+payment-default-deny-l4        ALLOW    96m
+
+SOURCE: order-service
+$ kubectl exec deployment/order-service -- python3 HTTP authorization tests
+
+$ GET http://payment-service:8080/health
+HTTP 200
+{"service":"payment-service","status":"healthy"}
+Expected: HTTP 200
+RESULT: MATCHED
+
+$ POST http://payment-service:8080/payments
+HTTP 201
+{"payment_id":"df812d0b-901e-4f89-a753-3ca720960069","amount":125.5,"status":"created","version":"v1"}
+Expected: HTTP 201
+RESULT: MATCHED
+
+$ GET http://payment-service:8080/payments/df812d0b-901e-4f89-a753-3ca720960069
+HTTP 200
+{"payment_id":"df812d0b-901e-4f89-a753-3ca720960069","amount":125.5,"status":"created","version":"v1"}
+Expected: HTTP 200
+RESULT: MATCHED
+
+$ GET http://payment-service:8080/version
+HTTP 403
+RBAC: access denied
+Expected: HTTP 403
+RESULT: MATCHED
+
+$ POST http://payment-service:8080/health
+HTTP 403
+RBAC: access denied
+Expected: HTTP 403
+RESULT: MATCHED
+
+SOURCE: inventory-service
+$ kubectl exec deployment/inventory-service -- python3 HTTP authorization tests
+
+$ GET http://payment-service:8080/health
+HTTP 403
+RBAC: access denied
+Expected: HTTP 403
+RESULT: MATCHED
+
+SOURCE: unknown-client
+$ kubectl exec deployment/unknown-client -- python3 HTTP authorization tests
+
+$ GET http://payment-service:8080/health
+HTTP 403
+RBAC: access denied
+Expected: HTTP 403
+RESULT: MATCHED
+
+EXPERIMENT RESULT: ALL 7 CHECKS MATCHED EXPECTATIONS

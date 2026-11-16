@@ -1,0 +1,26 @@
+{
+  "apiVersion": "security.istio.io/v1",
+  "kind": "RequestAuthentication",
+  "metadata": {
+    "name": "payment-jwt",
+    "namespace": "istio-part4"
+  },
+  "spec": {
+    "targetRefs": [
+      {
+        "group": "",
+        "kind": "Service",
+        "name": "payment-service"
+      }
+    ],
+    "jwtRules": [
+      {
+        "issuer": "https://issuer.istio-part4.local",
+        "audiences": [
+          "payment-api"
+        ],
+        "jwks": "{\"keys\": [{\"kty\": \"RSA\", \"key_ops\": [\"verify\"], \"n\": \"r4NkjD5Gd07Loqtr416ib5iksuP4lgpDGo8Zi0PS1y0Chg53YtDChUOhfXWap-HJZrQztP-STEMoVpKupH5oSxye1JRhCGKXVkT5oFRMc0OQhEIFwE7iEZ5ifagqqSZ-YQUxNRU5oxqMV2stqVQDFdzKNLGEMptjhDCPAE7XGWh1Y7-bhMB2P-OvN3ebxxcYkyEUPEzeVyG7GYwTUfRImUGy9ItRu7zBvn4xg1tS98BrTwP0Yy0APCzVjcPGBamBiyme77yxNTyLSYNWdEnCFjOiEd6qk-W8-fH0B-yY_KCySDGt2jbbIA64offuNkDNa8UdF1bj_g-5VIFU5qXdSw\", \"e\": \"AQAB\", \"kid\": \"part4-local-key\", \"alg\": \"RS256\", \"use\": \"sig\"}]}"
+      }
+    ]
+  }
+}

@@ -1,0 +1,41 @@
+EXPERIMENT 07 — FINAL RECOVERY VERIFICATION
+
+ORDER SERVICE IDENTITY
+order-service
+
+PAYMENT WAYPOINT BINDING
+NAME              TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE    LABELS
+payment-service   ClusterIP   10.96.62.107   <none>        8080/TCP   138m   istio.io/use-waypoint=payment-waypoint
+
+CANARY WEIGHTS
+payment-v1 weight=90
+payment-v2 weight=10
+
+CLIENT AUTHORIZATION TESTS
+ACCESS CHECK — Current AuthorizationPolicy configuration
+
+$ kubectl exec deployment/api-gateway -- HTTP GET http://order-service:8080/order
+HTTP 200
+{"service":"order-service","inventory":{"service":"inventory-service","available":true},"payment":{"service":"payment-service","status":"healthy"}}
+
+$ kubectl exec deployment/order-service -- HTTP GET http://payment-service:8080/health
+HTTP 200
+{"service":"payment-service","status":"healthy"}
+
+$ kubectl exec deployment/inventory-service -- HTTP GET http://payment-service:8080/health
+HTTP 403
+RBAC: access denied
+
+$ kubectl exec deployment/unknown-client -- HTTP GET http://payment-service:8080/health
+HTTP 403
+RBAC: access denied
+
+WORKLOAD HEALTH
+NAME                 READY   UP-TO-DATE   AVAILABLE   AGE
+api-gateway          1/1     1            1           138m
+inventory-service    1/1     1            1           138m
+order-service        1/1     1            1           138m
+payment-service      1/1     1            1           138m
+payment-service-v2   1/1     1            1           10m
+payment-waypoint     1/1     1            1           138m
+unknown-client       1/1     1            1           138m

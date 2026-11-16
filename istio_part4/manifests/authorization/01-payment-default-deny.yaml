@@ -1,0 +1,10 @@
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: payment-default-deny-l4
+  namespace: istio-part4
+spec:
+  selector:
+    matchLabels:
+      app: payment-service
+  action: ALLOW

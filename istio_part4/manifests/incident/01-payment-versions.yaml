@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-service-v2
+  namespace: istio-part4
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: payment-service
+      version: v2
+  template:
+    metadata:
+      labels:
+        app: payment-service
+        version: v2
+    spec:
+      serviceAccountName: payment-service
+      containers:
+        - name: app
+          image: istio-part4/app:v1
+          imagePullPolicy: Never
+          env:
+            - name: SERVICE_NAME
+              value: payment-service
+            - name: APP_VERSION
+              value: v2
+          ports:
+            - name: http
+              containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: http
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 20m
+              memory: 32Mi
+            limits:
+              cpu: 500m
+              memory: 128Mi
+          securityContext:
+            runAsUser: 10001
+            runAsNonRoot: true
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: payment-v1
+  namespace: istio-part4
+spec:
+  selector:
+    app: payment-service
+    version: v1
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: payment-v2
+  namespace: istio-part4
+spec:
+  selector:
+    app: payment-service
+    version: v2
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http

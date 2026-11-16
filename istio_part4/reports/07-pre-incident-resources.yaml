@@ -1,0 +1,1227 @@
+apiVersion: v1
+items:
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"api-gateway","namespace":"istio-part4"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"api-gateway"}},"template":{"metadata":{"labels":{"app":"api-gateway","version":"v1"}},"spec":{"containers":[{"env":[{"name":"SERVICE_NAME","value":"api-gateway"},{"name":"APP_VERSION","value":"v1"}],"image":"istio-part4/app:v1","imagePullPolicy":"Never","livenessProbe":{"httpGet":{"path":"/healthz","port":"http"},"periodSeconds":10},"name":"app","ports":[{"containerPort":8080,"name":"http"}],"readinessProbe":{"httpGet":{"path":"/readyz","port":"http"},"periodSeconds":5},"resources":{"limits":{"cpu":"500m","memory":"128Mi"},"requests":{"cpu":"20m","memory":"32Mi"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsNonRoot":true,"runAsUser":10001}}],"serviceAccountName":"api-gateway"}}}}
+    creationTimestamp: "2026-11-13T12:19:25Z"
+    generation: 1
+    name: api-gateway
+    namespace: istio-part4
+    resourceVersion: "1570"
+    uid: a7b67d6d-b5bf-469d-88b8-d4aaa999d904
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: api-gateway
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        labels:
+          app: api-gateway
+          version: v1
+      spec:
+        containers:
+        - env:
+          - name: SERVICE_NAME
+            value: api-gateway
+          - name: APP_VERSION
+            value: v1
+          image: istio-part4/app:v1
+          imagePullPolicy: Never
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /healthz
+              port: http
+              scheme: HTTP
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: app
+          ports:
+          - containerPort: 8080
+            name: http
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /readyz
+              port: http
+              scheme: HTTP
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: 500m
+              memory: 128Mi
+            requests:
+              cpu: 20m
+              memory: 32Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 10001
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: api-gateway
+        serviceAccountName: api-gateway
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-11-13T12:19:26Z"
+      lastUpdateTime: "2026-11-13T12:19:26Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    - lastTransitionTime: "2026-11-13T12:19:25Z"
+      lastUpdateTime: "2026-11-13T12:19:26Z"
+      message: ReplicaSet "api-gateway-76c4cd864" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"inventory-service","namespace":"istio-part4"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"inventory-service"}},"template":{"metadata":{"labels":{"app":"inventory-service","version":"v1"}},"spec":{"containers":[{"env":[{"name":"SERVICE_NAME","value":"inventory-service"},{"name":"APP_VERSION","value":"v1"}],"image":"istio-part4/app:v1","imagePullPolicy":"Never","livenessProbe":{"httpGet":{"path":"/healthz","port":"http"},"periodSeconds":10},"name":"app","ports":[{"containerPort":8080,"name":"http"}],"readinessProbe":{"httpGet":{"path":"/readyz","port":"http"},"periodSeconds":5},"resources":{"limits":{"cpu":"500m","memory":"128Mi"},"requests":{"cpu":"20m","memory":"32Mi"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsNonRoot":true,"runAsUser":10001}}],"serviceAccountName":"inventory-service"}}}}
+    creationTimestamp: "2026-11-13T12:19:25Z"
+    generation: 1
+    name: inventory-service
+    namespace: istio-part4
+    resourceVersion: "1555"
+    uid: 5e21428f-7256-4f5c-9079-b633903ac6a8
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: inventory-service
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        labels:
+          app: inventory-service
+          version: v1
+      spec:
+        containers:
+        - env:
+          - name: SERVICE_NAME
+            value: inventory-service
+          - name: APP_VERSION
+            value: v1
+          image: istio-part4/app:v1
+          imagePullPolicy: Never
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /healthz
+              port: http
+              scheme: HTTP
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: app
+          ports:
+          - containerPort: 8080
+            name: http
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /readyz
+              port: http
+              scheme: HTTP
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: 500m
+              memory: 128Mi
+            requests:
+              cpu: 20m
+              memory: 32Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 10001
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: inventory-service
+        serviceAccountName: inventory-service
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-11-13T12:19:26Z"
+      lastUpdateTime: "2026-11-13T12:19:26Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    - lastTransitionTime: "2026-11-13T12:19:25Z"
+      lastUpdateTime: "2026-11-13T12:19:26Z"
+      message: ReplicaSet "inventory-service-c4b65dcdb" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"order-service","namespace":"istio-part4"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"order-service"}},"template":{"metadata":{"labels":{"app":"order-service","version":"v1"}},"spec":{"containers":[{"env":[{"name":"SERVICE_NAME","value":"order-service"},{"name":"APP_VERSION","value":"v1"}],"image":"istio-part4/app:v1","imagePullPolicy":"Never","livenessProbe":{"httpGet":{"path":"/healthz","port":"http"},"periodSeconds":10},"name":"app","ports":[{"containerPort":8080,"name":"http"}],"readinessProbe":{"httpGet":{"path":"/readyz","port":"http"},"periodSeconds":5},"resources":{"limits":{"cpu":"500m","memory":"128Mi"},"requests":{"cpu":"20m","memory":"32Mi"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsNonRoot":true,"runAsUser":10001}}],"serviceAccountName":"order-service"}}}}
+    creationTimestamp: "2026-11-13T12:19:25Z"
+    generation: 1
+    name: order-service
+    namespace: istio-part4
+    resourceVersion: "1560"
+    uid: d8c3ef62-1ff0-4b0d-b6cc-c5d2bfa9ad37
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: order-service
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        labels:
+          app: order-service
+          version: v1
+      spec:
+        containers:
+        - env:
+          - name: SERVICE_NAME
+            value: order-service
+          - name: APP_VERSION
+            value: v1
+          image: istio-part4/app:v1
+          imagePullPolicy: Never
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /healthz
+              port: http
+              scheme: HTTP
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: app
+          ports:
+          - containerPort: 8080
+            name: http
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /readyz
+              port: http
+              scheme: HTTP
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: 500m
+              memory: 128Mi
+            requests:
+              cpu: 20m
+              memory: 32Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 10001
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: order-service
+        serviceAccountName: order-service
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-11-13T12:19:26Z"
+      lastUpdateTime: "2026-11-13T12:19:26Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    - lastTransitionTime: "2026-11-13T12:19:25Z"
+      lastUpdateTime: "2026-11-13T12:19:26Z"
+      message: ReplicaSet "order-service-7df4d97f58" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"payment-service","namespace":"istio-part4"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"payment-service"}},"template":{"metadata":{"labels":{"app":"payment-service","version":"v1"}},"spec":{"containers":[{"env":[{"name":"SERVICE_NAME","value":"payment-service"},{"name":"APP_VERSION","value":"v1"}],"image":"istio-part4/app:v1","imagePullPolicy":"Never","livenessProbe":{"httpGet":{"path":"/healthz","port":"http"},"periodSeconds":10},"name":"app","ports":[{"containerPort":8080,"name":"http"}],"readinessProbe":{"httpGet":{"path":"/readyz","port":"http"},"periodSeconds":5},"resources":{"limits":{"cpu":"500m","memory":"128Mi"},"requests":{"cpu":"20m","memory":"32Mi"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsNonRoot":true,"runAsUser":10001}}],"serviceAccountName":"payment-service"}}}}
+    creationTimestamp: "2026-11-13T12:19:25Z"
+    generation: 1
+    name: payment-service
+    namespace: istio-part4
+    resourceVersion: "1565"
+    uid: 9d989013-51a9-408b-bc5a-3406d57446ef
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: payment-service
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        labels:
+          app: payment-service
+          version: v1
+      spec:
+        containers:
+        - env:
+          - name: SERVICE_NAME
+            value: payment-service
+          - name: APP_VERSION
+            value: v1
+          image: istio-part4/app:v1
+          imagePullPolicy: Never
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /healthz
+              port: http
+              scheme: HTTP
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: app
+          ports:
+          - containerPort: 8080
+            name: http
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /readyz
+              port: http
+              scheme: HTTP
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: 500m
+              memory: 128Mi
+            requests:
+              cpu: 20m
+              memory: 32Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 10001
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: payment-service
+        serviceAccountName: payment-service
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-11-13T12:19:26Z"
+      lastUpdateTime: "2026-11-13T12:19:26Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    - lastTransitionTime: "2026-11-13T12:19:25Z"
+      lastUpdateTime: "2026-11-13T12:19:26Z"
+      message: ReplicaSet "payment-service-764db4b8f4" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+    creationTimestamp: "2026-11-13T12:19:25Z"
+    generation: 1
+    labels:
+      gateway.istio.io/managed: istio.io-mesh-controller
+      gateway.networking.k8s.io/gateway-class-name: istio-waypoint
+      gateway.networking.k8s.io/gateway-name: payment-waypoint
+      istio.io/waypoint-for: service
+    name: payment-waypoint
+    namespace: istio-part4
+    ownerReferences:
+    - apiVersion: gateway.networking.k8s.io/v1
+      kind: Gateway
+      name: payment-waypoint
+      uid: 6adc2ccd-3cae-4974-8596-aa19ffdb9467
+    resourceVersion: "1606"
+    uid: 46491ee9-40ec-44e3-9ca8-260a36b06013
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        gateway.networking.k8s.io/gateway-name: payment-waypoint
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        annotations:
+          istio.io/rev: default
+          prometheus.io/path: /stats/prometheus
+          prometheus.io/port: "15020"
+          prometheus.io/scrape: "true"
+        labels:
+          gateway.istio.io/managed: istio.io-mesh-controller
+          gateway.networking.k8s.io/gateway-class-name: istio-waypoint
+          gateway.networking.k8s.io/gateway-name: payment-waypoint
+          istio.io/dataplane-mode: none
+          istio.io/waypoint-for: service
+          service.istio.io/canonical-name: payment-waypoint
+          service.istio.io/canonical-revision: latest
+          sidecar.istio.io/inject: "false"
+      spec:
+        containers:
+        - args:
+          - proxy
+          - waypoint
+          - --domain
+          - $(POD_NAMESPACE).svc.cluster.local
+          - --serviceCluster
+          - payment-waypoint.$(POD_NAMESPACE)
+          - --proxyLogLevel
+          - warning
+          - --proxyComponentLogLevel
+          - misc:error
+          - --log_output_level
+          - default:info
+          env:
+          - name: ISTIO_META_SERVICE_ACCOUNT
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: spec.serviceAccountName
+          - name: ISTIO_META_NODE_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: spec.nodeName
+          - name: PILOT_CERT_PROVIDER
+            value: istiod
+          - name: CA_ADDR
+            value: istiod.istio-system.svc:15012
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.name
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+          - name: INSTANCE_IP
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: status.podIP
+          - name: SERVICE_ACCOUNT
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: spec.serviceAccountName
+          - name: HOST_IP
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: status.hostIP
+          - name: ISTIO_CPU_LIMIT
+            valueFrom:
+              resourceFieldRef:
+                divisor: "1"
+                resource: limits.cpu
+          - name: PROXY_CONFIG
+            value: |
+              {"proxyMetadata":{"ISTIO_META_ENABLE_HBONE":"true"},"image":{"imageType":"distroless"}}
+          - name: ISTIO_META_ENABLE_HBONE
+            value: "true"
+          - name: GOMEMLIMIT
+            valueFrom:
+              resourceFieldRef:
+                divisor: "1"
+                resource: limits.memory
+          - name: GOMAXPROCS
+            valueFrom:
+              resourceFieldRef:
+                divisor: "1"
+                resource: limits.cpu
+          - name: ISTIO_META_CLUSTER_ID
+            value: Kubernetes
+          - name: ISTIO_META_INTERCEPTION_MODE
+            value: REDIRECT
+          - name: ISTIO_META_WORKLOAD_NAME
+            value: payment-waypoint
+          - name: ISTIO_META_OWNER
+            value: kubernetes://apis/apps/v1/namespaces/istio-part4/deployments/payment-waypoint
+          - name: ISTIO_META_MESH_ID
+            value: cluster.local
+          - name: TRUST_DOMAIN
+            value: cluster.local
+          image: docker.io/istio/proxyv2:1.31.4-distroless
+          imagePullPolicy: IfNotPresent
+          name: istio-proxy
+          ports:
+          - containerPort: 15020
+            name: metrics
+            protocol: TCP
+          - containerPort: 15021
+            name: status-port
+            protocol: TCP
+          - containerPort: 15090
+            name: http-envoy-prom
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 4
+            httpGet:
+              path: /healthz/ready
+              port: 15021
+              scheme: HTTP
+            periodSeconds: 15
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: "2"
+              memory: 1Gi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+            runAsGroup: 1337
+            runAsNonRoot: true
+            runAsUser: 1337
+          startupProbe:
+            failureThreshold: 30
+            httpGet:
+              path: /healthz/ready
+              port: 15021
+              scheme: HTTP
+            initialDelaySeconds: 1
+            periodSeconds: 1
+            successThreshold: 1
+            timeoutSeconds: 1
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /var/run/secrets/workload-spiffe-uds
+            name: workload-socket
+          - mountPath: /var/run/secrets/istio
+            name: istiod-ca-cert
+          - mountPath: /var/lib/istio/data
+            name: istio-data
+          - mountPath: /etc/istio/proxy
+            name: istio-envoy
+          - mountPath: /var/run/secrets/tokens
+            name: istio-token
+          - mountPath: /etc/istio/pod
+            name: istio-podinfo
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: payment-waypoint
+        serviceAccountName: payment-waypoint
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - emptyDir: {}
+          name: workload-socket
+        - emptyDir:
+            medium: Memory
+          name: istio-envoy
+        - emptyDir:
+            medium: Memory
+          name: go-proxy-envoy
+        - emptyDir: {}
+          name: istio-data
+        - emptyDir: {}
+          name: go-proxy-data
+        - downwardAPI:
+            defaultMode: 420
+            items:
+            - fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.labels
+              path: labels
+            - fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.annotations
+              path: annotations
+          name: istio-podinfo
+        - name: istio-token
+          projected:
+            defaultMode: 420
+            sources:
+            - serviceAccountToken:
+                audience: istio-ca
+                expirationSeconds: 43200
+                path: istio-token
+        - configMap:
+            defaultMode: 420
+            name: istio-ca-root-cert
+          name: istiod-ca-cert
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-11-13T12:19:32Z"
+      lastUpdateTime: "2026-11-13T12:19:32Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    - lastTransitionTime: "2026-11-13T12:19:25Z"
+      lastUpdateTime: "2026-11-13T12:19:32Z"
+      message: ReplicaSet "payment-waypoint-756445f549" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"unknown-client","namespace":"istio-part4"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"unknown-client"}},"template":{"metadata":{"labels":{"app":"unknown-client","version":"v1"}},"spec":{"containers":[{"env":[{"name":"SERVICE_NAME","value":"unknown-client"},{"name":"APP_VERSION","value":"v1"}],"image":"istio-part4/app:v1","imagePullPolicy":"Never","livenessProbe":{"httpGet":{"path":"/healthz","port":"http"},"periodSeconds":10},"name":"app","ports":[{"containerPort":8080,"name":"http"}],"readinessProbe":{"httpGet":{"path":"/readyz","port":"http"},"periodSeconds":5},"resources":{"limits":{"cpu":"500m","memory":"128Mi"},"requests":{"cpu":"20m","memory":"32Mi"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsNonRoot":true,"runAsUser":10001}}],"serviceAccountName":"unknown-client"}}}}
+    creationTimestamp: "2026-11-13T12:19:25Z"
+    generation: 1
+    name: unknown-client
+    namespace: istio-part4
+    resourceVersion: "1572"
+    uid: 2f2a1776-6be3-4e10-934a-6a9196374e02
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: unknown-client
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        labels:
+          app: unknown-client
+          version: v1
+      spec:
+        containers:
+        - env:
+          - name: SERVICE_NAME
+            value: unknown-client
+          - name: APP_VERSION
+            value: v1
+          image: istio-part4/app:v1
+          imagePullPolicy: Never
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /healthz
+              port: http
+              scheme: HTTP
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: app
+          ports:
+          - containerPort: 8080
+            name: http
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /readyz
+              port: http
+              scheme: HTTP
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: 500m
+              memory: 128Mi
+            requests:
+              cpu: 20m
+              memory: 32Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 10001
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccount: unknown-client
+        serviceAccountName: unknown-client
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-11-13T12:19:26Z"
+      lastUpdateTime: "2026-11-13T12:19:26Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    - lastTransitionTime: "2026-11-13T12:19:25Z"
+      lastUpdateTime: "2026-11-13T12:19:26Z"
+      message: ReplicaSet "unknown-client-7b7cc5c57d" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{},"name":"api-gateway","namespace":"istio-part4"},"spec":{"ports":[{"name":"http","port":8080,"targetPort":"http"}],"selector":{"app":"api-gateway"}}}
+    creationTimestamp: "2026-11-13T12:19:25Z"
+    name: api-gateway
+    namespace: istio-part4
+    resourceVersion: "1465"
+    uid: 2f56f1fa-3392-40eb-a51a-f3908e32de5d
+  spec:
+    clusterIP: 10.96.241.119
+    clusterIPs:
+    - 10.96.241.119
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: http
+    selector:
+      app: api-gateway
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{},"name":"inventory-service","namespace":"istio-part4"},"spec":{"ports":[{"name":"http","port":8080,"targetPort":"http"}],"selector":{"app":"inventory-service"}}}
+    creationTimestamp: "2026-11-13T12:19:25Z"
+    name: inventory-service
+    namespace: istio-part4
+    resourceVersion: "1478"
+    uid: ed3b3b59-c91f-40ef-b92f-b095b3573af6
+  spec:
+    clusterIP: 10.96.48.138
+    clusterIPs:
+    - 10.96.48.138
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: http
+    selector:
+      app: inventory-service
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{},"name":"order-service","namespace":"istio-part4"},"spec":{"ports":[{"name":"http","port":8080,"targetPort":"http"}],"selector":{"app":"order-service"}}}
+    creationTimestamp: "2026-11-13T12:19:25Z"
+    name: order-service
+    namespace: istio-part4
+    resourceVersion: "1469"
+    uid: aeadc17e-0e3f-4f05-80ca-c799e1a8b493
+  spec:
+    clusterIP: 10.96.45.181
+    clusterIPs:
+    - 10.96.45.181
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: http
+    selector:
+      app: order-service
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"istio.io/use-waypoint":"payment-waypoint"},"name":"payment-service","namespace":"istio-part4"},"spec":{"ports":[{"name":"http","port":8080,"targetPort":"http"}],"selector":{"app":"payment-service"}}}
+    creationTimestamp: "2026-11-13T12:19:25Z"
+    labels:
+      istio.io/use-waypoint: payment-waypoint
+    name: payment-service
+    namespace: istio-part4
+    resourceVersion: "1598"
+    uid: e63227ea-280c-4770-ba45-e6e3c3c9ee76
+  spec:
+    clusterIP: 10.96.62.107
+    clusterIPs:
+    - 10.96.62.107
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: http
+    selector:
+      app: payment-service
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    conditions:
+    - lastTransitionTime: "2026-11-13T12:19:31Z"
+      message: Successfully attached to waypoint istio-part4/payment-waypoint
+      reason: WaypointAccepted
+      status: "True"
+      type: istio.io/WaypointBound
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      networking.istio.io/traffic-distribution: PreferClose
+    creationTimestamp: "2026-11-13T12:19:25Z"
+    labels:
+      gateway.istio.io/managed: istio.io-mesh-controller
+      gateway.networking.k8s.io/gateway-class-name: istio-waypoint
+      gateway.networking.k8s.io/gateway-name: payment-waypoint
+      istio.io/waypoint-for: service
+    name: payment-waypoint
+    namespace: istio-part4
+    ownerReferences:
+    - apiVersion: gateway.networking.k8s.io/v1
+      kind: Gateway
+      name: payment-waypoint
+      uid: 6adc2ccd-3cae-4974-8596-aa19ffdb9467
+    resourceVersion: "1487"
+    uid: 7b58d2f3-ebf2-451c-9dc0-b8517edfc41d
+  spec:
+    clusterIP: 10.96.235.97
+    clusterIPs:
+    - 10.96.235.97
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: PreferDualStack
+    ports:
+    - appProtocol: tcp
+      name: status-port
+      port: 15021
+      protocol: TCP
+      targetPort: 15021
+    - appProtocol: hbone
+      name: mesh
+      port: 15008
+      protocol: TCP
+      targetPort: 15008
+    selector:
+      gateway.networking.k8s.io/gateway-name: payment-waypoint
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"istio.io/use-waypoint":"payment-waypoint"},"name":"unavailable-service","namespace":"istio-part4"},"spec":{"ports":[{"name":"http","port":8080,"targetPort":8080}],"selector":{"app":"intentionally-missing-backend"}}}
+    creationTimestamp: "2026-11-13T14:23:04Z"
+    labels:
+      istio.io/use-waypoint: payment-waypoint
+    name: unavailable-service
+    namespace: istio-part4
+    resourceVersion: "6252"
+    uid: 9f84fee6-923b-44af-a857-6e10f9787bec
+  spec:
+    clusterIP: 10.96.195.73
+    clusterIPs:
+    - 10.96.195.73
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      app: intentionally-missing-backend
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    conditions:
+    - lastTransitionTime: "2026-11-13T14:23:04Z"
+      message: Successfully attached to waypoint istio-part4/payment-waypoint
+      reason: WaypointAccepted
+      status: "True"
+      type: istio.io/WaypointBound
+    loadBalancer: {}
+- apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"ServiceAccount","metadata":{"annotations":{},"name":"api-gateway","namespace":"istio-part4"}}
+    creationTimestamp: "2026-11-13T12:19:25Z"
+    name: api-gateway
+    namespace: istio-part4
+    resourceVersion: "1395"
+    uid: e0a1030a-d1fb-4f32-a638-3ff2fed7b3f6
+- apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    creationTimestamp: "2026-11-13T12:19:25Z"
+    name: default
+    namespace: istio-part4
+    resourceVersion: "1391"
+    uid: 6899263b-be5b-443c-aeec-38c7aeb067f4
+- apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"ServiceAccount","metadata":{"annotations":{},"name":"inventory-service","namespace":"istio-part4"}}
+    creationTimestamp: "2026-11-13T12:19:25Z"
+    name: inventory-service
+    namespace: istio-part4
+    resourceVersion: "1398"
+    uid: ecc8b788-9c71-4608-870d-cb66297c5438
+- apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"ServiceAccount","metadata":{"annotations":{},"name":"order-service","namespace":"istio-part4"}}
+    creationTimestamp: "2026-11-13T12:19:25Z"
+    name: order-service
+    namespace: istio-part4
+    resourceVersion: "1396"
+    uid: 7c521ea7-1d02-44e1-8539-b473c1f049de
+- apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"ServiceAccount","metadata":{"annotations":{},"name":"payment-service","namespace":"istio-part4"}}
+    creationTimestamp: "2026-11-13T12:19:25Z"
+    name: payment-service
+    namespace: istio-part4
+    resourceVersion: "1397"
+    uid: f58c8f24-32e3-4043-ba4c-b4c042888912
+- apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    creationTimestamp: "2026-11-13T12:19:25Z"
+    labels:
+      gateway.istio.io/managed: istio.io-mesh-controller
+      gateway.networking.k8s.io/gateway-class-name: istio-waypoint
+      gateway.networking.k8s.io/gateway-name: payment-waypoint
+      istio.io/waypoint-for: service
+    name: payment-waypoint
+    namespace: istio-part4
+    ownerReferences:
+    - apiVersion: gateway.networking.k8s.io/v1
+      kind: Gateway
+      name: payment-waypoint
+      uid: 6adc2ccd-3cae-4974-8596-aa19ffdb9467
+    resourceVersion: "1484"
+    uid: 8e48908a-93d4-4eb2-8e57-5f0048450f40
+- apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"ServiceAccount","metadata":{"annotations":{},"name":"unknown-client","namespace":"istio-part4"}}
+    creationTimestamp: "2026-11-13T12:19:25Z"
+    name: unknown-client
+    namespace: istio-part4
+    resourceVersion: "1399"
+    uid: 4bf708c9-62c6-47bc-8dab-b41c39f6b5f1
+- apiVersion: security.istio.io/v1
+  kind: AuthorizationPolicy
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"security.istio.io/v1","kind":"AuthorizationPolicy","metadata":{"annotations":{},"name":"payment-allow-order-l4","namespace":"istio-part4"},"spec":{"action":"ALLOW","rules":[{"from":[{"source":{"principals":["cluster.local/ns/istio-part4/sa/payment-waypoint"]}}]}],"selector":{"matchLabels":{"app":"payment-service"}}}}
+    creationTimestamp: "2026-11-13T12:25:58Z"
+    generation: 2
+    name: payment-allow-order-l4
+    namespace: istio-part4
+    resourceVersion: "2962"
+    uid: 07699d39-04ee-4463-b8ae-f3ad1f76e3a1
+  spec:
+    action: ALLOW
+    rules:
+    - from:
+      - source:
+          principals:
+          - cluster.local/ns/istio-part4/sa/payment-waypoint
+    selector:
+      matchLabels:
+        app: payment-service
+  status:
+    conditions:
+    - lastTransitionTime: "2026-11-13T13:58:40.309767364Z"
+      message: attached to ztunnel
+      observedGeneration: "2"
+      reason: Accepted
+      status: "True"
+      type: ZtunnelAccepted
+- apiVersion: security.istio.io/v1
+  kind: AuthorizationPolicy
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"security.istio.io/v1","kind":"AuthorizationPolicy","metadata":{"annotations":{},"name":"payment-allow-order-waypoint","namespace":"istio-part4"},"spec":{"action":"ALLOW","rules":[{"from":[{"source":{"principals":["cluster.local/ns/istio-part4/sa/order-service"]}}],"to":[{"operation":{"methods":["GET"],"paths":["/health"]}},{"operation":{"methods":["POST"],"paths":["/payments"]}}]},{"from":[{"source":{"principals":["cluster.local/ns/istio-part4/sa/order-service"],"requestPrincipals":["*"]}}],"to":[{"operation":{"methods":["GET"],"paths":["/payments/*"]}}],"when":[{"key":"request.auth.claims[role]","values":["payment-reader"]}]}],"targetRefs":[{"group":"","kind":"Service","name":"payment-service"}]}}
+    creationTimestamp: "2026-11-13T13:58:40Z"
+    generation: 3
+    name: payment-allow-order-waypoint
+    namespace: istio-part4
+    resourceVersion: "4019"
+    uid: 1b524a84-5c0e-441f-8fa6-83a660a971b6
+  spec:
+    action: ALLOW
+    rules:
+    - from:
+      - source:
+          principals:
+          - cluster.local/ns/istio-part4/sa/order-service
+      to:
+      - operation:
+          methods:
+          - GET
+          paths:
+          - /health
+      - operation:
+          methods:
+          - POST
+          paths:
+          - /payments
+    - from:
+      - source:
+          principals:
+          - cluster.local/ns/istio-part4/sa/order-service
+          requestPrincipals:
+          - '*'
+      to:
+      - operation:
+          methods:
+          - GET
+          paths:
+          - /payments/*
+      when:
+      - key: request.auth.claims[role]
+        values:
+        - payment-reader
+    targetRefs:
+    - group: ""
+      kind: Service
+      name: payment-service
+  status:
+    conditions:
+    - lastTransitionTime: "2026-11-13T14:06:39.084178578Z"
+      message: bound to istio-part4/payment-waypoint
+      observedGeneration: "3"
+      reason: Accepted
+      status: "True"
+      type: WaypointAccepted
+- apiVersion: security.istio.io/v1
+  kind: AuthorizationPolicy
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"security.istio.io/v1","kind":"AuthorizationPolicy","metadata":{"annotations":{},"name":"payment-default-deny-l4","namespace":"istio-part4"},"spec":{"action":"ALLOW","selector":{"matchLabels":{"app":"payment-service"}}}}
+    creationTimestamp: "2026-11-13T12:25:28Z"
+    generation: 1
+    name: payment-default-deny-l4
+    namespace: istio-part4
+    resourceVersion: "2388"
+    uid: aeb7f26c-741a-4c74-ae07-ccf34bb0321b
+  spec:
+    action: ALLOW
+    selector:
+      matchLabels:
+        app: payment-service
+  status:
+    conditions:
+    - lastTransitionTime: "2026-11-13T12:25:28.638409745Z"
+      message: attached to ztunnel
+      observedGeneration: "1"
+      reason: Accepted
+      status: "True"
+      type: ZtunnelAccepted
+- apiVersion: security.istio.io/v1
+  kind: RequestAuthentication
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"security.istio.io/v1","kind":"RequestAuthentication","metadata":{"annotations":{},"name":"payment-jwt","namespace":"istio-part4"},"spec":{"jwtRules":[{"audiences":["payment-api"],"issuer":"https://issuer.istio-part4.local","jwks":"{\"keys\": [{\"kty\": \"RSA\", \"key_ops\": [\"verify\"], \"n\": \"r4NkjD5Gd07Loqtr416ib5iksuP4lgpDGo8Zi0PS1y0Chg53YtDChUOhfXWap-HJZrQztP-STEMoVpKupH5oSxye1JRhCGKXVkT5oFRMc0OQhEIFwE7iEZ5ifagqqSZ-YQUxNRU5oxqMV2stqVQDFdzKNLGEMptjhDCPAE7XGWh1Y7-bhMB2P-OvN3ebxxcYkyEUPEzeVyG7GYwTUfRImUGy9ItRu7zBvn4xg1tS98BrTwP0Yy0APCzVjcPGBamBiyme77yxNTyLSYNWdEnCFjOiEd6qk-W8-fH0B-yY_KCySDGt2jbbIA64offuNkDNa8UdF1bj_g-5VIFU5qXdSw\", \"e\": \"AQAB\", \"kid\": \"part4-local-key\", \"alg\": \"RS256\", \"use\": \"sig\"}]}"}],"targetRefs":[{"group":"","kind":"Service","name":"payment-service"}]}}
+    creationTimestamp: "2026-11-13T14:04:35Z"
+    generation: 1
+    name: payment-jwt
+    namespace: istio-part4
+    resourceVersion: "3751"
+    uid: 3829f01f-ac0a-49a4-9aaa-d0de9d5209f9
+  spec:
+    jwtRules:
+    - audiences:
+      - payment-api
+      issuer: https://issuer.istio-part4.local
+      jwks: '{"keys": [{"kty": "RSA", "key_ops": ["verify"], "n": "r4NkjD5Gd07Loqtr416ib5iksuP4lgpDGo8Zi0PS1y0Chg53YtDChUOhfXWap-HJZrQztP-STEMoVpKupH5oSxye1JRhCGKXVkT5oFRMc0OQhEIFwE7iEZ5ifagqqSZ-YQUxNRU5oxqMV2stqVQDFdzKNLGEMptjhDCPAE7XGWh1Y7-bhMB2P-OvN3ebxxcYkyEUPEzeVyG7GYwTUfRImUGy9ItRu7zBvn4xg1tS98BrTwP0Yy0APCzVjcPGBamBiyme77yxNTyLSYNWdEnCFjOiEd6qk-W8-fH0B-yY_KCySDGt2jbbIA64offuNkDNa8UdF1bj_g-5VIFU5qXdSw",
+        "e": "AQAB", "kid": "part4-local-key", "alg": "RS256", "use": "sig"}]}'
+    targetRefs:
+    - group: ""
+      kind: Service
+      name: payment-service
+kind: List
+metadata:
+  resourceVersion: ""

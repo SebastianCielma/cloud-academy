@@ -1,0 +1,96 @@
+EXPERIMENT 06 — OBSERVABILITY
+
+PHASE 1 — CLIENT-SIDE RESPONSES
+
+ACCESS CHECK — Current AuthorizationPolicy configuration
+
+$ kubectl exec deployment/api-gateway -- HTTP GET http://order-service:8080/order
+HTTP 200
+{"service":"order-service","inventory":{"service":"inventory-service","available":true},"payment":{"service":"payment-service","status":"healthy"}}
+
+$ kubectl exec deployment/order-service -- HTTP GET http://payment-service:8080/health
+HTTP 200
+{"service":"payment-service","status":"healthy"}
+
+$ kubectl exec deployment/inventory-service -- HTTP GET http://payment-service:8080/health
+HTTP 403
+RBAC: access denied
+
+$ kubectl exec deployment/unknown-client -- HTTP GET http://payment-service:8080/health
+HTTP 403
+RBAC: access denied
+
+PHASE 2  PAYMENT WAYPOINT ACCESS LOGS
+
+[2026-11-13T14:19:29.656Z] "GET /health HTTP/1.1" 200 - via_upstream - "-" 0 48 0 0 "-" "Python-urllib/3.12" "daf4683b-2e71-43cf-9659-aa3f4a790193" "payment-service:8080" "envoy://connect_originate/10.244.0.12:8080" inbound-vip|8080|http|payment-service.istio-part4.svc.cluster.local envoy://internal_client_address/ 10.96.62.107:8080 10.244.0.10:54866 - default
+[2026-11-13T14:19:29.987Z] "GET /health HTTP/1.1" 200 - via_upstream - "-" 0 48 0 0 "-" "Python-urllib/3.12" "9afc30c6-b29f-45a6-95b8-4a551ae2287a" "payment-service:8080" "envoy://connect_originate/10.244.0.12:8080" inbound-vip|8080|http|payment-service.istio-part4.svc.cluster.local envoy://internal_client_address/ 10.96.62.107:8080 10.244.0.10:54866 - default
+[2026-11-13T14:19:30.300Z] "GET /health HTTP/1.1" 403 - rbac_access_denied_matched_policy[none] - "-" 0 19 0 - "-" "Python-urllib/3.12" "e08851fd-4f2b-4ebc-a49c-1d524cc3d10c" "payment-service:8080" "-" inbound-vip|8080|http|payment-service.istio-part4.svc.cluster.local - 10.96.62.107:8080 10.244.0.9:53774 - default
+[2026-11-13T14:19:30.568Z] "GET /health HTTP/1.1" 403 - rbac_access_denied_matched_policy[none] - "-" 0 19 0 - "-" "Python-urllib/3.12" "5190bfd1-fdc5-4120-9e1c-dad1a83f22b6" "payment-service:8080" "-" inbound-vip|8080|http|payment-service.istio-part4.svc.cluster.local - 10.96.62.107:8080 10.244.0.11:42726 - default
+2026-11-13T14:20:01.759496Z	info	xdsproxy	connected to delta upstream XDS server: istiod.istio-system.svc:15012	id=2
+
+PHASE 3  EGRESS WAYPOINT ACCESS LOGS
+
+
+PHASE 4 — CONTROLLED UNAVAILABLE BACKEND
+
+Requirement: Distinguish routing/backend failure from RBAC denial
+Target: unavailable-service (no backend pods)
+
+$ kubectl exec deployment/order-service -- GET http://unavailable-service:8080/health
+HTTP 503
+no healthy upstream
+
+BACKEND DIAGNOSTICS
+NAME                        ADDRESSTYPE   PORTS     ENDPOINTS   AGE
+unavailable-service-czgh9   IPv4          <unset>   <unset>     18s
+
+WAYPOINT ACCESS LOGS
+
+PHASE 5 — AMBIENT PROXY DIAGNOSTICS
+
+$ kubectl get pods -n istio-system
+NAME                      READY   STATUS    RESTARTS   AGE
+istio-cni-node-lqhsf      1/1     Running   0          129m
+istiod-7f9bd889f7-kxpph   1/1     Running   0          129m
+ztunnel-fgvtf             1/1     Running   0          129m
+
+$ kubectl get gateways -A
+NAMESPACE      NAME               CLASS            ADDRESS        PROGRAMMED   AGE
+istio-egress   waypoint           istio-waypoint   10.96.4.137    True         8m37s
+istio-part4    payment-waypoint   istio-waypoint   10.96.235.97   True         124m
+
+$ istioctl proxy-status
+NAME                                              CLUSTER        ISTIOD                      VERSION     SUBSCRIBED TYPES
+payment-waypoint-756445f549-2g2zx.istio-part4     Kubernetes     istiod-7f9bd889f7-kxpph     1.31.4      4 (CDS,LDS,EDS,WDS)
+waypoint-74f558ff9d-qcdvs.istio-egress            Kubernetes     istiod-7f9bd889f7-kxpph     1.31.4      3 (CDS,LDS,WDS)
+ztunnel-fgvtf.istio-system                        Kubernetes     istiod-7f9bd889f7-kxpph     1.31.4      2 (WADS,WDS)
+
+$ kubectl logs daemonset/ztunnel -n istio-system
+2026-11-13T14:15:31.747876Z	info	xds::client:xds{id=2}	Stream established	
+2026-11-13T14:15:31.748880Z	info	xds:xds{id=2}	handling RBAC update payment-default-deny-l4	
+2026-11-13T14:15:31.748931Z	info	xds:xds{id=2}	handling RBAC update payment-allow-order-l4	
+2026-11-13T14:16:21.655679Z	info	xds:xds{id=2}	handling RBAC delete istio-egress/httpbin-allow-order	
+2026-11-13T14:16:42.160220Z	info	access	connection complete	src.addr=10.244.0.10:45966 src.workload="order-service-7df4d97f58-rc7r6" src.namespace="istio-part4" src.identity="spiffe://cluster.local/ns/istio-part4/sa/order-service" src.cluster="Kubernetes" dst.addr=10.244.0.14:15008 dst.hbone_addr=240.240.0.1:80 dst.service="httpbin.org" dst.workload="waypoint-74f558ff9d-qcdvs" dst.namespace="istio-egress" dst.identity="spiffe://cluster.local/ns/istio-egress/sa/waypoint" dst.cluster="Kubernetes" direction="outbound" bytes_sent=118 bytes_recv=648 duration="391ms"
+2026-11-13T14:16:42.167709Z	info	access	connection complete	src.addr=10.244.0.10:45974 src.workload="order-service-7df4d97f58-rc7r6" src.namespace="istio-part4" src.identity="spiffe://cluster.local/ns/istio-part4/sa/order-service" src.cluster="Kubernetes" dst.addr=10.244.0.14:15008 dst.hbone_addr=240.240.0.1:80 dst.service="httpbin.org" dst.workload="waypoint-74f558ff9d-qcdvs" dst.namespace="istio-egress" dst.identity="spiffe://cluster.local/ns/istio-egress/sa/waypoint" dst.cluster="Kubernetes" direction="outbound" bytes_sent=139 bytes_recv=215 duration="6ms"
+2026-11-13T14:16:42.170016Z	info	access	connection complete	src.addr=10.244.0.10:45976 src.workload="order-service-7df4d97f58-rc7r6" src.namespace="istio-part4" src.identity="spiffe://cluster.local/ns/istio-part4/sa/order-service" src.cluster="Kubernetes" dst.addr=10.244.0.14:15008 dst.hbone_addr=240.240.0.1:80 dst.service="httpbin.org" dst.workload="waypoint-74f558ff9d-qcdvs" dst.namespace="istio-egress" dst.identity="spiffe://cluster.local/ns/istio-egress/sa/waypoint" dst.cluster="Kubernetes" direction="outbound" bytes_sent=122 bytes_recv=215 duration="1ms"
+2026-11-13T14:19:29.654347Z	info	access	connection complete	src.addr=10.244.0.10:59722 src.workload="order-service-7df4d97f58-rc7r6" src.namespace="istio-part4" src.identity="spiffe://cluster.local/ns/istio-part4/sa/order-service" src.cluster="Kubernetes" dst.addr=10.244.0.9:15008 dst.hbone_addr=10.244.0.9:8080 dst.service="inventory-service.istio-part4.svc.cluster.local" dst.workload="inventory-service-c4b65dcdb-ckngq" dst.namespace="istio-part4" dst.identity="spiffe://cluster.local/ns/istio-part4/sa/inventory-service" dst.cluster="Kubernetes" direction="outbound" bytes_sent=167 bytes_recv=193 duration="0ms"
+2026-11-13T14:19:29.654391Z	info	access	connection complete	src.addr=10.244.0.10:43422 src.workload="order-service-7df4d97f58-rc7r6" src.namespace="istio-part4" src.identity="spiffe://cluster.local/ns/istio-part4/sa/order-service" src.cluster="Kubernetes" dst.addr=10.244.0.9:15008 dst.hbone_addr=10.244.0.9:8080 dst.service="inventory-service.istio-part4.svc.cluster.local" dst.workload="inventory-service-c4b65dcdb-ckngq" dst.namespace="istio-part4" dst.identity="spiffe://cluster.local/ns/istio-part4/sa/inventory-service" dst.cluster="Kubernetes" direction="inbound" bytes_sent=193 bytes_recv=167 duration="0ms"
+2026-11-13T14:19:29.658591Z	info	access	connection complete	src.addr=10.244.0.13:42810 src.workload="payment-waypoint-756445f549-2g2zx" src.namespace="istio-part4" src.identity="spiffe://cluster.local/ns/istio-part4/sa/payment-waypoint" src.cluster="Kubernetes" dst.addr=10.244.0.12:15008 dst.hbone_addr=10.244.0.12:8080 dst.service="payment-service.istio-part4.svc.cluster.local" dst.workload="payment-service-764db4b8f4-qst44" dst.namespace="istio-part4" dst.identity="spiffe://cluster.local/ns/istio-part4/sa/payment-service" dst.cluster="Kubernetes" direction="inbound" bytes_sent=193 bytes_recv=220 duration="2ms"
+2026-11-13T14:19:29.658860Z	info	access	connection complete	src.addr=10.244.0.10:50304 src.workload="order-service-7df4d97f58-rc7r6" src.namespace="istio-part4" src.identity="spiffe://cluster.local/ns/istio-part4/sa/order-service" src.cluster="Kubernetes" dst.addr=10.244.0.13:15008 dst.hbone_addr=10.96.62.107:8080 dst.service="payment-service.istio-part4.svc.cluster.local" dst.workload="payment-waypoint-756445f549-2g2zx" dst.namespace="istio-part4" dst.identity="spiffe://cluster.local/ns/istio-part4/sa/payment-waypoint" dst.cluster="Kubernetes" direction="outbound" bytes_sent=162 bytes_recv=313 duration="4ms"
+2026-11-13T14:19:29.659035Z	info	access	connection complete	src.addr=10.244.0.8:38146 src.workload="api-gateway-76c4cd864-qt4ls" src.namespace="istio-part4" src.identity="spiffe://cluster.local/ns/istio-part4/sa/api-gateway" src.cluster="Kubernetes" dst.addr=10.244.0.10:15008 dst.hbone_addr=10.244.0.10:8080 dst.service="order-service.istio-part4.svc.cluster.local" dst.workload="order-service-7df4d97f58-rc7r6" dst.namespace="istio-part4" dst.identity="spiffe://cluster.local/ns/istio-part4/sa/order-service" dst.cluster="Kubernetes" direction="outbound" bytes_sent=127 bytes_recv=293 duration="7ms"
+2026-11-13T14:19:29.659061Z	info	access	connection complete	src.addr=10.244.0.8:41890 src.workload="api-gateway-76c4cd864-qt4ls" src.namespace="istio-part4" src.identity="spiffe://cluster.local/ns/istio-part4/sa/api-gateway" src.cluster="Kubernetes" dst.addr=10.244.0.10:15008 dst.hbone_addr=10.244.0.10:8080 dst.service="order-service.istio-part4.svc.cluster.local" dst.workload="order-service-7df4d97f58-rc7r6" dst.namespace="istio-part4" dst.identity="spiffe://cluster.local/ns/istio-part4/sa/order-service" dst.cluster="Kubernetes" direction="inbound" bytes_sent=293 bytes_recv=127 duration="6ms"
+2026-11-13T14:19:29.988556Z	info	access	connection complete	src.addr=10.244.0.13:42810 src.workload="payment-waypoint-756445f549-2g2zx" src.namespace="istio-part4" src.identity="spiffe://cluster.local/ns/istio-part4/sa/payment-waypoint" src.cluster="Kubernetes" dst.addr=10.244.0.12:15008 dst.hbone_addr=10.244.0.12:8080 dst.service="payment-service.istio-part4.svc.cluster.local" dst.workload="payment-service-764db4b8f4-qst44" dst.namespace="istio-part4" dst.identity="spiffe://cluster.local/ns/istio-part4/sa/payment-service" dst.cluster="Kubernetes" direction="inbound" bytes_sent=193 bytes_recv=188 duration="0ms"
+2026-11-13T14:19:29.988754Z	info	access	connection complete	src.addr=10.244.0.10:50308 src.workload="order-service-7df4d97f58-rc7r6" src.namespace="istio-part4" src.identity="spiffe://cluster.local/ns/istio-part4/sa/order-service" src.cluster="Kubernetes" dst.addr=10.244.0.13:15008 dst.hbone_addr=10.96.62.107:8080 dst.service="payment-service.istio-part4.svc.cluster.local" dst.workload="payment-waypoint-756445f549-2g2zx" dst.namespace="istio-part4" dst.identity="spiffe://cluster.local/ns/istio-part4/sa/payment-waypoint" dst.cluster="Kubernetes" direction="outbound" bytes_sent=130 bytes_recv=313 duration="1ms"
+2026-11-13T14:19:30.301682Z	info	access	connection complete	src.addr=10.244.0.9:33542 src.workload="inventory-service-c4b65dcdb-ckngq" src.namespace="istio-part4" src.identity="spiffe://cluster.local/ns/istio-part4/sa/inventory-service" src.cluster="Kubernetes" dst.addr=10.244.0.13:15008 dst.hbone_addr=10.96.62.107:8080 dst.service="payment-service.istio-part4.svc.cluster.local" dst.workload="payment-waypoint-756445f549-2g2zx" dst.namespace="istio-part4" dst.identity="spiffe://cluster.local/ns/istio-part4/sa/payment-waypoint" dst.cluster="Kubernetes" direction="outbound" bytes_sent=130 bytes_recv=251 duration="3ms"
+2026-11-13T14:19:30.570151Z	info	access	connection complete	src.addr=10.244.0.11:40320 src.workload="unknown-client-7b7cc5c57d-wsrvk" src.namespace="istio-part4" src.identity="spiffe://cluster.local/ns/istio-part4/sa/unknown-client" src.cluster="Kubernetes" dst.addr=10.244.0.13:15008 dst.hbone_addr=10.96.62.107:8080 dst.service="payment-service.istio-part4.svc.cluster.local" dst.workload="payment-waypoint-756445f549-2g2zx" dst.namespace="istio-part4" dst.identity="spiffe://cluster.local/ns/istio-part4/sa/payment-waypoint" dst.cluster="Kubernetes" direction="outbound" bytes_sent=130 bytes_recv=251 duration="2ms"
+2026-11-13T14:23:22.410041Z	info	access	connection complete	src.addr=10.244.0.10:47396 src.workload="order-service-7df4d97f58-rc7r6" src.namespace="istio-part4" src.identity="spiffe://cluster.local/ns/istio-part4/sa/order-service" src.cluster="Kubernetes" dst.addr=10.244.0.13:15008 dst.hbone_addr=10.96.195.73:8080 dst.service="unavailable-service.istio-part4.svc.cluster.local" dst.workload="payment-waypoint-756445f549-2g2zx" dst.namespace="istio-part4" dst.identity="spiffe://cluster.local/ns/istio-part4/sa/payment-waypoint" dst.cluster="Kubernetes" direction="outbound" bytes_sent=134 bytes_recv=265 duration="2ms"
+2026-11-13T14:23:29.197336Z	info	access	connection complete	src.addr=10.244.0.10:33182 src.workload="order-service-7df4d97f58-rc7r6" src.namespace="istio-part4" src.identity="spiffe://cluster.local/ns/istio-part4/sa/order-service" src.cluster="Kubernetes" dst.addr=10.244.0.9:15008 dst.hbone_addr=10.244.0.9:8080 dst.service="inventory-service.istio-part4.svc.cluster.local" dst.workload="inventory-service-c4b65dcdb-ckngq" dst.namespace="istio-part4" dst.identity="spiffe://cluster.local/ns/istio-part4/sa/inventory-service" dst.cluster="Kubernetes" direction="outbound" bytes_sent=167 bytes_recv=193 duration="0ms"
+2026-11-13T14:23:29.197369Z	info	access	connection complete	src.addr=10.244.0.10:43422 src.workload="order-service-7df4d97f58-rc7r6" src.namespace="istio-part4" src.identity="spiffe://cluster.local/ns/istio-part4/sa/order-service" src.cluster="Kubernetes" dst.addr=10.244.0.9:15008 dst.hbone_addr=10.244.0.9:8080 dst.service="inventory-service.istio-part4.svc.cluster.local" dst.workload="inventory-service-c4b65dcdb-ckngq" dst.namespace="istio-part4" dst.identity="spiffe://cluster.local/ns/istio-part4/sa/inventory-service" dst.cluster="Kubernetes" direction="inbound" bytes_sent=193 bytes_recv=167 duration="0ms"
+2026-11-13T14:23:29.198484Z	info	access	connection complete	src.addr=10.244.0.13:42810 src.workload="payment-waypoint-756445f549-2g2zx" src.namespace="istio-part4" src.identity="spiffe://cluster.local/ns/istio-part4/sa/payment-waypoint" src.cluster="Kubernetes" dst.addr=10.244.0.12:15008 dst.hbone_addr=10.244.0.12:8080 dst.service="payment-service.istio-part4.svc.cluster.local" dst.workload="payment-service-764db4b8f4-qst44" dst.namespace="istio-part4" dst.identity="spiffe://cluster.local/ns/istio-part4/sa/payment-service" dst.cluster="Kubernetes" direction="inbound" bytes_sent=193 bytes_recv=220 duration="0ms"
+2026-11-13T14:23:29.198734Z	info	access	connection complete	src.addr=10.244.0.10:53814 src.workload="order-service-7df4d97f58-rc7r6" src.namespace="istio-part4" src.identity="spiffe://cluster.local/ns/istio-part4/sa/order-service" src.cluster="Kubernetes" dst.addr=10.244.0.13:15008 dst.hbone_addr=10.96.62.107:8080 dst.service="payment-service.istio-part4.svc.cluster.local" dst.workload="payment-waypoint-756445f549-2g2zx" dst.namespace="istio-part4" dst.identity="spiffe://cluster.local/ns/istio-part4/sa/payment-waypoint" dst.cluster="Kubernetes" direction="outbound" bytes_sent=162 bytes_recv=313 duration="1ms"
+2026-11-13T14:23:29.198885Z	info	access	connection complete	src.addr=10.244.0.8:39762 src.workload="api-gateway-76c4cd864-qt4ls" src.namespace="istio-part4" src.identity="spiffe://cluster.local/ns/istio-part4/sa/api-gateway" src.cluster="Kubernetes" dst.addr=10.244.0.10:15008 dst.hbone_addr=10.244.0.10:8080 dst.service="order-service.istio-part4.svc.cluster.local" dst.workload="order-service-7df4d97f58-rc7r6" dst.namespace="istio-part4" dst.identity="spiffe://cluster.local/ns/istio-part4/sa/order-service" dst.cluster="Kubernetes" direction="outbound" bytes_sent=127 bytes_recv=293 duration="2ms"
+2026-11-13T14:23:29.198905Z	info	access	connection complete	src.addr=10.244.0.8:41890 src.workload="api-gateway-76c4cd864-qt4ls" src.namespace="istio-part4" src.identity="spiffe://cluster.local/ns/istio-part4/sa/api-gateway" src.cluster="Kubernetes" dst.addr=10.244.0.10:15008 dst.hbone_addr=10.244.0.10:8080 dst.service="order-service.istio-part4.svc.cluster.local" dst.workload="order-service-7df4d97f58-rc7r6" dst.namespace="istio-part4" dst.identity="spiffe://cluster.local/ns/istio-part4/sa/order-service" dst.cluster="Kubernetes" direction="inbound" bytes_sent=293 bytes_recv=127 duration="2ms"
+2026-11-13T14:23:29.486737Z	info	access	connection complete	src.addr=10.244.0.13:42810 src.workload="payment-waypoint-756445f549-2g2zx" src.namespace="istio-part4" src.identity="spiffe://cluster.local/ns/istio-part4/sa/payment-waypoint" src.cluster="Kubernetes" dst.addr=10.244.0.12:15008 dst.hbone_addr=10.244.0.12:8080 dst.service="payment-service.istio-part4.svc.cluster.local" dst.workload="payment-service-764db4b8f4-qst44" dst.namespace="istio-part4" dst.identity="spiffe://cluster.local/ns/istio-part4/sa/payment-service" dst.cluster="Kubernetes" direction="inbound" bytes_sent=193 bytes_recv=188 duration="0ms"
+2026-11-13T14:23:29.486941Z	info	access	connection complete	src.addr=10.244.0.10:53822 src.workload="order-service-7df4d97f58-rc7r6" src.namespace="istio-part4" src.identity="spiffe://cluster.local/ns/istio-part4/sa/order-service" src.cluster="Kubernetes" dst.addr=10.244.0.13:15008 dst.hbone_addr=10.96.62.107:8080 dst.service="payment-service.istio-part4.svc.cluster.local" dst.workload="payment-waypoint-756445f549-2g2zx" dst.namespace="istio-part4" dst.identity="spiffe://cluster.local/ns/istio-part4/sa/payment-waypoint" dst.cluster="Kubernetes" direction="outbound" bytes_sent=130 bytes_recv=313 duration="1ms"
+2026-11-13T14:23:29.723765Z	info	access	connection complete	src.addr=10.244.0.9:52580 src.workload="inventory-service-c4b65dcdb-ckngq" src.namespace="istio-part4" src.identity="spiffe://cluster.local/ns/istio-part4/sa/inventory-service" src.cluster="Kubernetes" dst.addr=10.244.0.13:15008 dst.hbone_addr=10.96.62.107:8080 dst.service="payment-service.istio-part4.svc.cluster.local" dst.workload="payment-waypoint-756445f549-2g2zx" dst.namespace="istio-part4" dst.identity="spiffe://cluster.local/ns/istio-part4/sa/payment-waypoint" dst.cluster="Kubernetes" direction="outbound" bytes_sent=130 bytes_recv=251 duration="0ms"
+2026-11-13T14:23:29.964229Z	info	access	connection complete	src.addr=10.244.0.11:54648 src.workload="unknown-client-7b7cc5c57d-wsrvk" src.namespace="istio-part4" src.identity="spiffe://cluster.local/ns/istio-part4/sa/unknown-client" src.cluster="Kubernetes" dst.addr=10.244.0.13:15008 dst.hbone_addr=10.96.62.107:8080 dst.service="payment-service.istio-part4.svc.cluster.local" dst.workload="payment-waypoint-756445f549-2g2zx" dst.namespace="istio-part4" dst.identity="spiffe://cluster.local/ns/istio-part4/sa/payment-waypoint" dst.cluster="Kubernetes" direction="outbound" bytes_sent=130 bytes_recv=251 duration="0ms"

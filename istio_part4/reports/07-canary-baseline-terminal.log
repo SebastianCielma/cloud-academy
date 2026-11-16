@@ -1,0 +1,24 @@
+EXPERIMENT 07 — CANARY TRAFFIC MEASUREMENT
+Phase: baseline
+Requests: 200
+Endpoint: POST /payments
+
+CURRENT ROUTING CONFIGURATION
+payment-v1 weight=90
+payment-v2 weight=10
+
+ACTUAL HTTP MEASUREMENTS
+Progress: 50/200
+Progress: 100/200
+Progress: 150/200
+Progress: 200/200
+
+MEASURED RESULTS
+HTTP 201 v1: 183
+HTTP 201 v2: 17
+Other responses: 0
+Success rate: 100.00%
+v1 traffic share: 91.50%
+v2 traffic share: 8.50%
+Elapsed: 0.14s
+Configured target: v1=90%, v2=10%

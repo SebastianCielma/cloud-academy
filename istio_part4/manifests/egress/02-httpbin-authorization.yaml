@@ -1,0 +1,20 @@
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: httpbin-allow-order
+  namespace: istio-egress
+spec:
+  targetRefs:
+    - group: networking.istio.io
+      kind: ServiceEntry
+      name: httpbin-org
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            principals:
+              - cluster.local/ns/istio-part4/sa/order-service
+      to:
+        - operation:
+            methods: ["GET"]
+            paths: ["/get"]

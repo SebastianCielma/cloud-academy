@@ -1,0 +1,35 @@
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: payment-allow-order-waypoint
+  namespace: istio-part4
+spec:
+  targetRefs:
+    - group: ""
+      kind: Service
+      name: payment-service
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            principals:
+              - cluster.local/ns/istio-part4/sa/order-service
+      to:
+        - operation:
+            methods: ["GET"]
+            paths: ["/health"]
+        - operation:
+            methods: ["POST"]
+            paths: ["/payments"]
+    - from:
+        - source:
+            principals:
+              - cluster.local/ns/istio-part4/sa/order-service
+            requestPrincipals: ["*"]
+      to:
+        - operation:
+            methods: ["GET"]
+            paths: ["/payments/*"]
+      when:
+        - key: request.auth.claims[role]
+          values: ["payment-reader"]

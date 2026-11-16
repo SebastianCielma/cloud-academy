@@ -1,0 +1,17 @@
+BASELINE — No AuthorizationPolicy applied
+
+$ kubectl exec deployment/api-gateway -- HTTP GET http://order-service:8080/order
+HTTP 200
+{"service":"order-service","inventory":{"service":"inventory-service","available":true},"payment":{"service":"payment-service","status":"healthy"}}
+
+$ kubectl exec deployment/order-service -- HTTP GET http://payment-service:8080/health
+HTTP 200
+{"service":"payment-service","status":"healthy"}
+
+$ kubectl exec deployment/inventory-service -- HTTP GET http://payment-service:8080/health
+HTTP 200
+{"service":"payment-service","status":"healthy"}
+
+$ kubectl exec deployment/unknown-client -- HTTP GET http://payment-service:8080/health
+HTTP 200
+{"service":"payment-service","status":"healthy"}

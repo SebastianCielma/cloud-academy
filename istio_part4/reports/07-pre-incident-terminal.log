@@ -1,0 +1,45 @@
+EXPERIMENT 07 — PRE-INCIDENT CONFIGURATION
+
+DEPLOYMENTS
+NAME                READY   UP-TO-DATE   AVAILABLE   AGE    CONTAINERS    IMAGES                                      SELECTOR
+api-gateway         1/1     1            1           125m   app           istio-part4/app:v1                          app=api-gateway
+inventory-service   1/1     1            1           125m   app           istio-part4/app:v1                          app=inventory-service
+order-service       1/1     1            1           125m   app           istio-part4/app:v1                          app=order-service
+payment-service     1/1     1            1           125m   app           istio-part4/app:v1                          app=payment-service
+payment-waypoint    1/1     1            1           125m   istio-proxy   docker.io/istio/proxyv2:1.31.4-distroless   gateway.networking.k8s.io/gateway-name=payment-waypoint
+unknown-client      1/1     1            1           125m   app           istio-part4/app:v1                          app=unknown-client
+
+PODS AND SERVICE ACCOUNTS
+NAME                                APP                 VERSION   SERVICEACCOUNT
+api-gateway-76c4cd864-qt4ls         api-gateway         v1        api-gateway
+inventory-service-c4b65dcdb-ckngq   inventory-service   v1        inventory-service
+order-service-7df4d97f58-rc7r6      order-service       v1        order-service
+payment-service-764db4b8f4-qst44    payment-service     v1        payment-service
+payment-waypoint-756445f549-2g2zx   <none>              <none>    payment-waypoint
+unknown-client-7b7cc5c57d-wsrvk     unknown-client      v1        unknown-client
+
+SERVICES
+NAME                  TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)               AGE    LABELS
+api-gateway           ClusterIP   10.96.241.119   <none>        8080/TCP              125m   <none>
+inventory-service     ClusterIP   10.96.48.138    <none>        8080/TCP              125m   <none>
+order-service         ClusterIP   10.96.45.181    <none>        8080/TCP              125m   <none>
+payment-service       ClusterIP   10.96.62.107    <none>        8080/TCP              125m   istio.io/use-waypoint=payment-waypoint
+payment-waypoint      ClusterIP   10.96.235.97    <none>        15021/TCP,15008/TCP   125m   gateway.istio.io/managed=istio.io-mesh-controller,gateway.networking.k8s.io/gateway-class-name=istio-waypoint,gateway.networking.k8s.io/gateway-name=payment-waypoint,istio.io/waypoint-for=service
+unavailable-service   ClusterIP   10.96.195.73    <none>        8080/TCP              81s    istio.io/use-waypoint=payment-waypoint
+
+ROUTING CONFIGURATION
+No resources found in istio-part4 namespace.
+
+AUTHORIZATION CONFIGURATION
+NAME                                                                 ACTION   AGE
+authorizationpolicy.security.istio.io/payment-allow-order-l4         ALLOW    118m
+authorizationpolicy.security.istio.io/payment-allow-order-waypoint   ALLOW    25m
+authorizationpolicy.security.istio.io/payment-default-deny-l4        ALLOW    118m
+
+NAME                                                  AGE
+requestauthentication.security.istio.io/payment-jwt   19m
+
+WAYPOINTS
+NAMESPACE      NAME               CLASS            ADDRESS        PROGRAMMED   AGE
+istio-egress   waypoint           istio-waypoint   10.96.4.137    True         8m44s
+istio-part4    payment-waypoint   istio-waypoint   10.96.235.97   True         125m

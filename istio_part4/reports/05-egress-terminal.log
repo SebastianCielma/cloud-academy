@@ -1,0 +1,44 @@
+EXPERIMENT 05 — EGRESS CONTROL
+Target: httpbin.org
+Authorized workload: order-service
+Policy: GET /get only
+
+$ kubectl get serviceentry,authorizationpolicy -n istio-egress
+NAME                                           HOSTS             LOCATION   RESOLUTION   AGE
+serviceentry.networking.istio.io/httpbin-org   ["httpbin.org"]              DNS          20s
+
+NAME                                                        ACTION   AGE
+authorizationpolicy.security.istio.io/httpbin-allow-order   ALLOW    20s
+
+$ kubectl get gateway -n istio-egress
+NAME       CLASS            ADDRESS       PROGRAMMED   AGE
+waypoint   istio-waypoint   10.96.4.137   True         60s
+
+$ kubectl exec deployment/order-service -- DNS and HTTP checks
+
+DNS CHECK: httpbin.org
+DNS RESULT: RESOLVED
+ADDRESSES: 2001:2::1, 240.240.0.1
+
+TEST: Allowed endpoint
+REQUEST: GET http://httpbin.org/get
+HTTP 200
+EXPECTED: HTTP 200
+RESPONSE: {   "args": {},   "headers": {     "Accept-Encoding": "identity",     "Host": "httpbin.org",     "User-Agent": "Python-urllib/3.12"   },   "method": "GET",   "o
+RESULT: MATCHED
+
+TEST: Denied method
+REQUEST: POST http://httpbin.org/post
+HTTP 403
+EXPECTED: HTTP 403
+RESPONSE: RBAC: access denied
+RESULT: MATCHED
+
+TEST: Denied path
+REQUEST: GET http://httpbin.org/headers
+HTTP 403
+EXPECTED: HTTP 403
+RESPONSE: RBAC: access denied
+RESULT: MATCHED
+
+SUMMARY: 3 of 3 HTTP checks matched

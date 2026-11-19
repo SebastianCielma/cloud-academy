@@ -1,0 +1,65 @@
+[v3_intermediate]
+basicConstraints       = critical, CA:TRUE, pathlen:0
+keyUsage               = critical, keyCertSign, cRLSign
+subjectKeyIdentifier   = hash
+authorityKeyIdentifier = keyid:always
+
+[v3_server_payments]
+basicConstraints       = critical, CA:FALSE
+keyUsage               = critical, digitalSignature
+extendedKeyUsage       = serverAuth
+subjectAltName         = DNS:payments.internal.test
+crlDistributionPoints  = URI:http://payments.internal.test/crl/intermediate.crl.pem
+subjectKeyIdentifier   = hash
+authorityKeyIdentifier = keyid:always
+
+[v3_server_wrong_san]
+basicConstraints       = critical, CA:FALSE
+keyUsage               = critical, digitalSignature
+extendedKeyUsage       = serverAuth
+subjectAltName         = DNS:wrong-payments.internal.test
+subjectKeyIdentifier   = hash
+authorityKeyIdentifier = keyid:always
+
+[v3_client_order]
+basicConstraints       = critical, CA:FALSE
+keyUsage               = critical, digitalSignature
+extendedKeyUsage       = clientAuth
+subjectAltName         = DNS:order-service.internal.test
+crlDistributionPoints  = URI:http://payments.internal.test/crl/intermediate.crl.pem
+subjectKeyIdentifier   = hash
+authorityKeyIdentifier = keyid:always
+
+[v3_client_inventory]
+basicConstraints       = critical, CA:FALSE
+keyUsage               = critical, digitalSignature
+extendedKeyUsage       = clientAuth
+subjectAltName         = DNS:inventory-service.internal.test
+crlDistributionPoints  = URI:http://payments.internal.test/crl/intermediate.crl.pem
+subjectKeyIdentifier   = hash
+authorityKeyIdentifier = keyid:always
+
+[v3_client_unauthorized]
+basicConstraints       = critical, CA:FALSE
+keyUsage               = critical, digitalSignature
+extendedKeyUsage       = clientAuth
+subjectAltName         = DNS:unauthorized-client.internal.test
+crlDistributionPoints  = URI:http://payments.internal.test/crl/intermediate.crl.pem
+subjectKeyIdentifier   = hash
+authorityKeyIdentifier = keyid:always
+
+[v3_client_expired]
+basicConstraints       = critical, CA:FALSE
+keyUsage               = critical, digitalSignature
+extendedKeyUsage       = clientAuth
+subjectAltName         = DNS:expired-client.internal.test
+subjectKeyIdentifier   = hash
+authorityKeyIdentifier = keyid:always
+
+[v3_client_wrong_eku]
+basicConstraints       = critical, CA:FALSE
+keyUsage               = critical, digitalSignature
+extendedKeyUsage       = serverAuth
+subjectAltName         = DNS:wrong-eku-client.internal.test
+subjectKeyIdentifier   = hash
+authorityKeyIdentifier = keyid:always

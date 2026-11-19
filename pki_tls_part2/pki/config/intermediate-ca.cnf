@@ -1,0 +1,29 @@
+[ca]
+default_ca = CA_default
+
+[CA_default]
+dir               = /work/pki/out/intermediate/db
+database          = $dir/index.txt
+new_certs_dir     = $dir/newcerts
+certificate       = /work/pki/out/intermediate/intermediate-ca.crt
+serial            = $dir/serial
+crlnumber         = $dir/crlnumber
+crl               = /work/pki/out/crl/intermediate.crl.pem
+private_key       = /work/pki/out/intermediate/intermediate-ca.key
+default_md        = sha256
+default_days      = 90
+default_crl_days  = 30
+unique_subject    = no
+copy_extensions   = none
+policy            = policy_loose
+
+[policy_loose]
+countryName             = optional
+stateOrProvinceName     = optional
+organizationName        = optional
+organizationalUnitName  = optional
+commonName              = supplied
+emailAddress            = optional
+
+[crl_ext]
+authorityKeyIdentifier = keyid:always

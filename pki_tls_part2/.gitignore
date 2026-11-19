@@ -1,0 +1,8 @@
+pki/out/
+*.key
+*.pem
+*.crt
+*.csr
+*.srl
+*.crl
+.DS_Store

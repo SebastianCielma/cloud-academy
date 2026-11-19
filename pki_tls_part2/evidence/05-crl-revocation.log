@@ -1,0 +1,50 @@
+=== [CRL 1] Revoking inventory-service certificate ===
+Revoking client certificate: inventory-service...
+Regenerating signed CRL bundle...
+CA database status (R = Revoked, V = Valid):
+V	270216155620Z		1000	unknown	/C=PL/O=Internal Cloud Platform/CN=payments.internal.test
+V	270216155620Z		1001	unknown	/C=PL/O=Internal Cloud Platform/CN=wrong-payments.internal.test
+V	270216155620Z		1002	unknown	/C=PL/O=Internal Cloud Platform/CN=order-service
+R	270216155620Z	261118155628Z	1003	unknown	/C=PL/O=Internal Cloud Platform/CN=inventory-service
+V	270216155620Z		1004	unknown	/C=PL/O=Internal Cloud Platform/CN=unauthorized-client
+V	250102000000Z		1005	unknown	/C=PL/O=Internal Cloud Platform/CN=expired-client
+V	270216155620Z		1006	unknown	/C=PL/O=Internal Cloud Platform/CN=wrong-eku-client
+2026/11/18 15:56:28 [notice] 59#59: signal process started
+
+=== [CRL 2] Server WITH ssl_crl enabled (port 443 -> REJECTED) ===
+HTTP/1.1 400 Bad Request
+Server: nginx
+Date: Wed, 18 Nov 2026 15:56:29 GMT
+Content-Type: text/html
+Content-Length: 208
+Connection: close
+
+<html>
+<head><title>400 The SSL certificate error</title></head>
+<body>
+<center><h1>400 Bad Request</h1></center>
+<center>The SSL certificate error</center>
+<hr><center>nginx</center>
+</body>
+</html>
+
+=== [CRL 3] Server WITHOUT ssl_crl (port 8445 -> STILL ACCEPTED!) ===
+HTTP/1.1 200 OK
+Server: nginx
+Date: Wed, 18 Nov 2026 15:56:30 GMT
+Content-Type: text/plain; charset=utf-8
+Content-Length: 50
+Connection: keep-alive
+X-App-Name: http-echo
+X-App-Version: 1.0.0
+X-Authenticated-Client: inventory-service
+
+{"service":"payment-service","status":"accepted"}
+
+=== [CRL 4] Client fetches CRL via HTTP CDP & compares -crl_check vs no check ===
+--- Client WITHOUT CRL check ---
+pki/out/clients/inventory-service/inventory-service.crt: OK
+--- Client WITH CRL check ---
+C=PL, O=Internal Cloud Platform, CN=inventory-service
+error 23 at 0 depth lookup: certificate revoked
+error pki/out/clients/inventory-service/inventory-service.crt: verification failed

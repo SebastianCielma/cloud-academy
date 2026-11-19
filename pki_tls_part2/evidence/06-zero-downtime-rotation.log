@@ -1,0 +1,15 @@
+=== [ROTATE 1] Before rotation: order-service serial in live mTLS request ===
+HTTP/1.1 200 OK
+X-Authenticated-Client: order-service
+X-Client-Cert-Serial: 1002
+{"service":"payment-service","status":"accepted"}
+
+=== [ROTATE 2] Rotating order-service cert & key atomically (no container restart) ===
+Old order-service certificate serial: 1002
+New order-service certificate serial: 1007
+
+=== [ROTATE 3] After rotation: order-service immediately uses new serial ===
+HTTP/1.1 200 OK
+X-Authenticated-Client: order-service
+X-Client-Cert-Serial: 1007
+{"service":"payment-service","status":"accepted"}

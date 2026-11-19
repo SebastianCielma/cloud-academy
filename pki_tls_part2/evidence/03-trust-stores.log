@@ -1,0 +1,24 @@
+=== [TRUST 1] Valid client cert, but client uses rogue-truststore.pem (Server CA untrusted) ===
+curl: (60) SSL certificate problem: unable to get local issuer certificate
+More details here: https://curl.se/docs/sslcerts.html
+
+curl failed to verify the legitimacy of the server and therefore could not
+establish a secure connection to it. To learn more about this situation and
+how to fix it, please visit the webpage mentioned above.
+
+=== [TRUST 2] Client trusts company CA, but presents rogue-client cert (CN=order-service signed by Rogue CA) ===
+HTTP/1.1 400 Bad Request
+Server: nginx
+Date: Wed, 18 Nov 2026 15:56:26 GMT
+Content-Type: text/html
+Content-Length: 208
+Connection: close
+
+<html>
+<head><title>400 The SSL certificate error</title></head>
+<body>
+<center><h1>400 Bad Request</h1></center>
+<center>The SSL certificate error</center>
+<hr><center>nginx</center>
+</body>
+</html>

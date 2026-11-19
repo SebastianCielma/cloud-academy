@@ -1,0 +1,86 @@
+=== [ERR 1] Missing Client Certificate ===
+HTTP/1.1 400 Bad Request
+Server: nginx
+Date: Wed, 18 Nov 2026 15:56:27 GMT
+Content-Type: text/html
+Content-Length: 230
+Connection: close
+
+<html>
+<head><title>400 No required SSL certificate was sent</title></head>
+<body>
+<center><h1>400 Bad Request</h1></center>
+<center>No required SSL certificate was sent</center>
+<hr><center>nginx</center>
+</body>
+</html>
+
+=== [ERR 2] Expired Client Certificate (expired-client) ===
+HTTP/1.1 400 Bad Request
+Server: nginx
+Date: Wed, 18 Nov 2026 15:56:27 GMT
+Content-Type: text/html
+Content-Length: 208
+Connection: close
+
+<html>
+<head><title>400 The SSL certificate error</title></head>
+<body>
+<center><h1>400 Bad Request</h1></center>
+<center>The SSL certificate error</center>
+<hr><center>nginx</center>
+</body>
+</html>
+
+=== [ERR 3] Wrong EKU (serverAuth used as client cert) ===
+HTTP/1.1 400 Bad Request
+Server: nginx
+Date: Wed, 18 Nov 2026 15:56:27 GMT
+Content-Type: text/html
+Content-Length: 208
+Connection: close
+
+<html>
+<head><title>400 The SSL certificate error</title></head>
+<body>
+<center><h1>400 Bad Request</h1></center>
+<center>The SSL certificate error</center>
+<hr><center>nginx</center>
+</body>
+</html>
+
+=== [ERR 4] Missing Intermediate CA (client sends leaf cert only) ===
+HTTP/1.1 400 Bad Request
+Server: nginx
+Date: Wed, 18 Nov 2026 15:56:27 GMT
+Content-Type: text/html
+Content-Length: 208
+Connection: close
+
+<html>
+<head><title>400 The SSL certificate error</title></head>
+<body>
+<center><h1>400 Bad Request</h1></center>
+<center>The SSL certificate error</center>
+<hr><center>nginx</center>
+</body>
+</html>
+
+=== [ERR 5] Missing Intermediate CA on Server (port 8443) ===
+curl: (60) SSL certificate problem: unable to get local issuer certificate
+More details here: https://curl.se/docs/sslcerts.html
+
+curl failed to verify the legitimacy of the server and therefore could not
+establish a secure connection to it. To learn more about this situation and
+how to fix it, please visit the webpage mentioned above.
+
+=== [ERR 6] Wrong Server SAN (port 8444 -> wrong-payments.internal.test) ===
+curl: (60) SSL: no alternative certificate subject name matches target hostname 'payments.internal.test'
+More details here: https://curl.se/docs/sslcerts.html
+
+curl failed to verify the legitimacy of the server and therefore could not
+establish a secure connection to it. To learn more about this situation and
+how to fix it, please visit the webpage mentioned above.
+
+=== [ERR 7] Certificate / Private Key Mismatch ===
+curl: (58) unable to set private key file: 'pki/out/clients/inventory-service/inventory-service.key' type PEM

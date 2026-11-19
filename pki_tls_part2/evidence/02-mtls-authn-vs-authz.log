@@ -1,0 +1,65 @@
+=== [1] Order Service -> /payments/status (AuthN=OK, AuthZ=200) ===
+HTTP/1.1 200 OK
+Server: nginx
+Date: Wed, 18 Nov 2026 15:56:23 GMT
+Content-Type: text/plain; charset=utf-8
+Content-Length: 50
+Connection: keep-alive
+X-App-Name: http-echo
+X-App-Version: 1.0.0
+X-Authenticated-Client: order-service
+X-Client-Cert-Serial: 1002
+
+{"service":"payment-service","status":"accepted"}
+
+=== [2] Order Service -> /payments/charge (AuthN=OK, AuthZ=200 ALLOWED) ===
+HTTP/1.1 200 OK
+Server: nginx
+Date: Wed, 18 Nov 2026 15:56:23 GMT
+Content-Type: text/plain; charset=utf-8
+Content-Length: 50
+Connection: keep-alive
+X-App-Name: http-echo
+X-App-Version: 1.0.0
+X-Authenticated-Client: order-service
+X-Client-Cert-Serial: 1002
+
+{"service":"payment-service","status":"accepted"}
+
+=== [3] Inventory Service -> /payments/status (AuthN=OK, AuthZ=200) ===
+HTTP/1.1 200 OK
+Server: nginx
+Date: Wed, 18 Nov 2026 15:56:24 GMT
+Content-Type: text/plain; charset=utf-8
+Content-Length: 50
+Connection: keep-alive
+X-App-Name: http-echo
+X-App-Version: 1.0.0
+X-Authenticated-Client: inventory-service
+X-Client-Cert-Serial: 1003
+
+{"service":"payment-service","status":"accepted"}
+
+=== [4] Inventory Service -> /payments/charge (AuthN=OK, AuthZ=403 FORBIDDEN) ===
+HTTP/1.1 403 Forbidden
+Server: nginx
+Date: Wed, 18 Nov 2026 15:56:24 GMT
+Content-Type: application/json
+Content-Length: 103
+Connection: keep-alive
+X-Authenticated-Client: inventory-service
+X-Client-Cert-Serial: 1003
+
+{"error":"forbidden","reason":"client_identity_not_authorized","authenticated_cn":"inventory-service"}
+
+=== [5] Unauthorized Client -> /payments/charge (AuthN=OK, AuthZ=403 FORBIDDEN) ===
+HTTP/1.1 403 Forbidden
+Server: nginx
+Date: Wed, 18 Nov 2026 15:56:24 GMT
+Content-Type: application/json
+Content-Length: 105
+Connection: keep-alive
+X-Authenticated-Client: unauthorized-client
+X-Client-Cert-Serial: 1004
+
+{"error":"forbidden","reason":"client_identity_not_authorized","authenticated_cn":"unauthorized-client"}

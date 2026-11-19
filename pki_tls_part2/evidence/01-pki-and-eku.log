@@ -1,0 +1,33 @@
+=== SERVER EKU (payments.internal.test) ===
+subject=C=PL, O=Internal Cloud Platform, CN=payments.internal.test
+issuer=C=PL, O=Internal Cloud Platform, OU=Platform Security, CN=Internal Services Intermediate CA
+X509v3 Extended Key Usage: 
+    TLS Web Server Authentication
+X509v3 Subject Alternative Name: 
+    DNS:payments.internal.test
+=== CLIENT EKU (order-service) ===
+subject=C=PL, O=Internal Cloud Platform, CN=order-service
+issuer=C=PL, O=Internal Cloud Platform, OU=Platform Security, CN=Internal Services Intermediate CA
+X509v3 Extended Key Usage: 
+    TLS Web Client Authentication
+X509v3 Subject Alternative Name: 
+    DNS:order-service.internal.test
+=== CLIENT EKU (inventory-service) ===
+subject=C=PL, O=Internal Cloud Platform, CN=inventory-service
+issuer=C=PL, O=Internal Cloud Platform, OU=Platform Security, CN=Internal Services Intermediate CA
+X509v3 Extended Key Usage: 
+    TLS Web Client Authentication
+X509v3 Subject Alternative Name: 
+    DNS:inventory-service.internal.test
+=== CLIENT EKU (unauthorized-client) ===
+subject=C=PL, O=Internal Cloud Platform, CN=unauthorized-client
+issuer=C=PL, O=Internal Cloud Platform, OU=Platform Security, CN=Internal Services Intermediate CA
+X509v3 Extended Key Usage: 
+    TLS Web Client Authentication
+X509v3 Subject Alternative Name: 
+    DNS:unauthorized-client.internal.test
+=== TRUST STORES ===
+subject=C=PL, O=Internal Cloud Platform, OU=Platform Security, CN=Internal Root CA
+SHA1 Fingerprint=63:E3:86:D3:77:0F:84:81:E3:5F:AC:B4:68:53:FC:78:AB:04:B6:A7
+subject=C=US, O=External Rogue Corp, OU=Untrusted Security, CN=Rogue External Root CA
+SHA1 Fingerprint=A7:3E:87:C1:7F:B7:FB:12:83:C4:E0:AD:A9:D3:04:C4:A7:E0:1F:64

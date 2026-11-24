@@ -4,7 +4,7 @@ set -euo pipefail
 EVIDENCE_DIR="evidence"
 mkdir -p "${EVIDENCE_DIR}"
 
-echo "[1/7] Capturing step-ca ACME directory & direct ACME client certificate issuance..."
+echo "[1/7] Capturing step-ca ACME directory & direct ACME client certificate issuance"
 {
   echo "=== ACME DIRECTORY (step-ca) ==="
   kubectl run acme-dir-ev --rm -i --restart=Never -n step-ca \
@@ -17,7 +17,7 @@ echo "[1/7] Capturing step-ca ACME directory & direct ACME client certificate is
   kubectl get orders,challenges -A
 } > "${EVIDENCE_DIR}/01-step-ca-acme.log" 2>&1
 
-echo "[2/7] Capturing cert-manager controllers, CRDs, webhook & ClusterIssuer..."
+echo "[2/7] Capturing cert-manager controllers, CRDs, webhook & ClusterIssuer"
 {
   echo "=== CERT-MANAGER PODS ==="
   kubectl get pods -n cert-manager -o wide
@@ -63,13 +63,12 @@ sleep 12
 } > "${EVIDENCE_DIR}/04-failure-scenarios.log" 2>&1
 kubectl delete -f k8s/cert-manager/failure-scenarios.yaml --ignore-not-found >/dev/null
 
-echo "[5/7] Capturing Forced Certificate & Key Rotation (payments-internal-cert)..."
+echo "[5/7] Capturing Forced Certificate & Key Rotation (payments-internal-cert)"
 {
   BEFORE_SERIAL=$(kubectl get secret payments-internal-tls -n apps -o jsonpath='{.data.tls\.crt}' | base64 -d | openssl x509 -noout -serial)
   BEFORE_PUBKEY=$(kubectl get secret payments-internal-tls -n apps -o jsonpath='{.data.tls\.crt}' | base64 -d | openssl x509 -noout -pubkey | openssl sha256)
   echo "BEFORE ROTATION: ${BEFORE_SERIAL} | ${BEFORE_PUBKEY}"
 
-  # Force re-issuance by deleting TLS Secret (cert-manager immediately re-issues with new key due to rotationPolicy: Always)
   kubectl delete secret payments-internal-tls -n apps >/dev/null
   sleep 8
   kubectl wait --for=condition=Ready certificate/payments-internal-cert -n apps --timeout=60s >/dev/null
@@ -83,7 +82,7 @@ echo "[5/7] Capturing Forced Certificate & Key Rotation (payments-internal-cert)
   openssl s_client -connect 127.0.0.1:8443 -servername payments.internal.test -CAfile .local/step-ca/root_ca.crt </dev/null 2>/dev/null | openssl x509 -noout -serial -dates
 } > "${EVIDENCE_DIR}/05-forced-rotation.log" 2>&1
 
-echo "[6/7] Observing Automatic Renewal of short-lived api-internal-cert (waiting up to 180s)..."
+echo "[6/7] Observing Automatic Renewal of short-lived api-internal-cert (waiting up to 180s)"
 {
   ORIG_SERIAL=$(kubectl get secret api-internal-tls -n apps -o jsonpath='{.data.tls\.crt}' | base64 -d | openssl x509 -noout -serial)
   RENEW_TIME=$(kubectl get certificate api-internal-cert -n apps -o jsonpath='{.status.renewalTime}')
@@ -105,7 +104,7 @@ echo "[6/7] Observing Automatic Renewal of short-lived api-internal-cert (waitin
   echo "LIVE NGINX SERVED SERIAL (auto-reloaded without restart): ${LIVE_SERIAL}"
 } > "${EVIDENCE_DIR}/06-automatic-renewal.log" 2>&1
 
-echo "[7/7] Capturing Certificate Expiry Monitoring & Test Alert..."
+echo "[7/7] Capturing Certificate Expiry Monitoring & Test Alert"
 {
   echo "--- Check with 0h threshold (normal state) ---"
   ./scripts/check-cert-expiry.sh 0 apps

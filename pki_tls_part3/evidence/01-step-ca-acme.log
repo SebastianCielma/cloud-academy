@@ -1,0 +1,25 @@
+=== ACME DIRECTORY (step-ca) ===
+{"newNonce":"https://step-ca.step-ca.svc.cluster.local:9000/acme/acme-prov/new-nonce","newAccount":"https://step-ca.step-ca.svc.cluster.local:9000/acme/acme-prov/new-account","newOrder":"https://step-ca.step-ca.svc.cluster.local:9000/acme/acme-prov/new-order","revokeCert":"https://step-ca.step-ca.svc.cluster.local:9000/acme/acme-prov/revoke-cert","keyChange":"https://step-ca.step-ca.svc.cluster.local:9000/acme/acme-prov/key-change"}
+{"newNonce":"https://step-ca.step-ca.svc.cluster.local:9000/acme/acme-prov/new-nonce","newAccount":"https://step-ca.step-ca.svc.cluster.local:9000/acme/acme-prov/new-account","newOrder":"https://step-ca.step-ca.svc.cluster.local:9000/acme/acme-prov/new-order","revokeCert":"https://step-ca.step-ca.svc.cluster.local:9000/acme/acme-prov/revoke-cert","keyChange":"https://step-ca.step-ca.svc.cluster.local:9000/acme/acme-prov/key-change"}
+
+=== DIRECT ACME CLIENT ISSUANCE (step ca certificate via HTTP-01) ===
+Issuing certificate for api.internal.test is validated via ACME HTTP-01 by cert-manager; verifying cert-manager ACME Order & Challenge objects:
+NAMESPACE   NAME                                                             STATE   AGE
+apps        order.acme.cert-manager.io/api-internal-cert-1-3175480055        valid   4m57s
+apps        order.acme.cert-manager.io/api-internal-cert-2-3175480055        valid   117s
+apps        order.acme.cert-manager.io/payments-internal-cert-1-1810762592   valid   4m57s
+apps        order.acme.cert-manager.io/payments-internal-cert-2-1810762592   valid   117s
+All commands and output from this session will be recorded in container logs, including credentials and sensitive information passed through the command prompt.
+If you don't see a command prompt, try pressing enter.
+Using Standalone Mode HTTP challenge to validate 10.244.0.37 . done!
+Waiting for Order to be 'ready' for finalization .. done!
+Finalizing Order .. done!
+[32m[32m✔[0m [1mCertificate[0m[1m:[0m /tmp/cli.crt
+[32m[32m✔[0m [1mPrivate Key[0m[1m:[0m /tmp/cli.key
+X.509v3 TLS Certificate (ECDSA P-256) [Serial: 1612...5284]
+  Subject:     10.244.0.37
+  Issuer:      Internal Cloud ACME CA Intermediate CA
+  Provisioner: acme-prov
+  Valid from:  2026-11-23T10:39:15Z
+          to:  2026-11-23T11:40:15Z
+pod "acme-client-test" deleted from step-ca namespace

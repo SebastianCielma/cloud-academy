@@ -1,0 +1,17 @@
+=== [FAIL 1] Issuer with wrong CA URL ===
+Status:
+    Message:               Failed to register ACME account: Get "https://non-existent-ca.step-ca.svc.cluster.local:9000/acme/acme-prov/directory": dial tcp: lookup non-existent-ca.step-ca.svc.cluster.local on 10.96.0.10:53: no such host
+    Reason:                ErrRegisterACMEAccount
+    Status:                False
+
+=== [FAIL 2] Issuer with missing/wrong Trust Bundle ===
+Status:
+    Message:               Failed to register ACME account: Get "https://step-ca.step-ca.svc.cluster.local:9000/acme/acme-prov/directory": tls: failed to verify certificate: x509: certificate signed by unknown authority
+    Reason:                ErrRegisterACMEAccount
+    Status:                False
+
+=== [FAIL 3] Certificate with failing HTTP-01 Challenge (fail-challenge.internal.test) ===
+NAME                  READY   SECRET               AGE
+fail-challenge-cert   False   fail-challenge-tls   12s
+  Reason:      Waiting for HTTP-01 challenge propagation: failed to perform self check GET request 'http://fail-challenge.internal.test/.well-known/acme-challenge/v6HYB8cPIZD9yoWQYjfUGNV77qijvhjq': Get "http://fail-challenge.internal.test/.well-known/acme-challenge/v6HYB8cPIZD9yoWQYjfUGNV77qijvhjq": dial tcp: lookup fail-challenge.internal.test on 10.96.0.10:53: no such host
+  State:       pending

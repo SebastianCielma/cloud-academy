@@ -1,0 +1,11 @@
+--- Check with 0h threshold (normal state) ---
+=== Certificate Expiry Monitor (threshold: < 0h) ===
+[OK]    Certificate apps/api-internal-cert valid for 59m (2026-11-23T11:34:00Z)
+[OK]    Certificate apps/payments-internal-cert valid for 58m (2026-11-23T11:33:10Z)
+Total active expiry alerts: 0
+
+--- Check with 2h threshold (triggers test expiry alert for 1h certs) ---
+=== Certificate Expiry Monitor (threshold: < 2h) ===
+[ALERT] Certificate apps/api-internal-cert expires in 59m (2026-11-23T11:34:00Z) — below 2h threshold!
+[ALERT] Certificate apps/payments-internal-cert expires in 58m (2026-11-23T11:33:10Z) — below 2h threshold!
+Total active expiry alerts: 2

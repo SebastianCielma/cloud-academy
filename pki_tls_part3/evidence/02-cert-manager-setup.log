@@ -1,0 +1,26 @@
+=== CERT-MANAGER PODS ===
+NAME                                       READY   STATUS    RESTARTS   AGE   IP            NODE                         NOMINATED NODE   READINESS GATES
+cert-manager-cainjector-85694c9d6f-7lht5   1/1     Running   0          10m   10.244.0.18   pki-acme-lab-control-plane   <none>           <none>
+cert-manager-cb9978498-kljvb               1/1     Running   0          10m   10.244.0.17   pki-acme-lab-control-plane   <none>           <none>
+cert-manager-webhook-57c55c4f46-2mh88      1/1     Running   0          10m   10.244.0.19   pki-acme-lab-control-plane   <none>           <none>
+
+=== CERT-MANAGER CRDS ===
+certificaterequests.cert-manager.io   Namespaced   v1(storage)   2026-11-23T10:22:46Z
+certificates.cert-manager.io          Namespaced   v1(storage)   2026-11-23T10:22:46Z
+challenges.acme.cert-manager.io       Namespaced   v1(storage)   2026-11-23T10:22:46Z
+clusterissuers.cert-manager.io        Cluster      v1(storage)   2026-11-23T10:22:46Z
+issuers.cert-manager.io               Namespaced   v1(storage)   2026-11-23T10:22:46Z
+orders.acme.cert-manager.io           Namespaced   v1(storage)   2026-11-23T10:22:46Z
+
+=== VALIDATING WEBHOOK ===
+cert-manager-webhook      1          10m
+
+=== CLUSTERISSUER STATUS ===
+Name:         step-ca-acme
+      Name:  step-ca-acme-account-key
+    Server:  https://step-ca.step-ca.svc.cluster.local:9000/acme/acme-prov/directory
+          Ingress Class Name:  nginx
+Status:
+    Message:               The ACME account was registered with the ACME server
+    Reason:                ACMEAccountRegistered
+    Status:                True

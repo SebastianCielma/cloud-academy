@@ -1,0 +1,46 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: issuer-wrong-url
+  namespace: apps
+spec:
+  acme:
+    server: https://non-existent-ca.step-ca.svc.cluster.local:9000/acme/acme-prov/directory
+    email: devops@internal.test
+    privateKeySecretRef:
+      name: issuer-wrong-url-key
+    solvers:
+      - http01:
+          ingress:
+            ingressClassName: nginx
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: issuer-wrong-trust
+  namespace: apps
+spec:
+  acme:
+    server: https://step-ca.step-ca.svc.cluster.local:9000/acme/acme-prov/directory
+    email: devops@internal.test
+    privateKeySecretRef:
+      name: issuer-wrong-trust-key
+    solvers:
+      - http01:
+          ingress:
+            ingressClassName: nginx
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: fail-challenge-cert
+  namespace: apps
+spec:
+  secretName: fail-challenge-tls
+  duration: 1h
+  renewBefore: 57m
+  dnsNames:
+    - fail-challenge.internal.test
+  issuerRef:
+    name: step-ca-acme
+    kind: ClusterIssuer

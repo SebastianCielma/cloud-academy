@@ -1,0 +1,23 @@
+=== CERTIFICATES & SECRETS (namespace: apps) ===
+NAME                                                 READY   SECRET                  AGE
+certificate.cert-manager.io/api-internal-cert        True    api-internal-tls        4m58s
+certificate.cert-manager.io/payments-internal-cert   True    payments-internal-tls   4m58s
+
+NAME                           TYPE                DATA   AGE
+secret/api-internal-tls        kubernetes.io/tls   2      4m39s
+secret/payments-internal-tls   kubernetes.io/tls   2      4m39s
+
+=== HTTPS TEST: api.internal.test ===
+{"service":"api-service","tls":"cert-manager-acme"}
+
+=== HTTPS TEST: payments.internal.test ===
+{"service":"payments-service","tls":"cert-manager-acme"}
+
+=== LIVE TLS CERTIFICATE DETAILS (api.internal.test) ===
+subject=
+issuer=O=Internal Cloud ACME CA, CN=Internal Cloud ACME CA Intermediate CA
+serial=FC698C525ECFB189CCE0073C0C985A09
+notBefore=Nov 23 10:30:00 2026 GMT
+notAfter=Nov 23 11:31:00 2026 GMT
+X509v3 Subject Alternative Name: critical
+    DNS:api.internal.test

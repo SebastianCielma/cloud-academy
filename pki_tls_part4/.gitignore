@@ -1,0 +1,8 @@
+.local/
+*.key
+*.pem
+*.crt
+*.csr
+*.srl
+*.crl
+.DS_Store

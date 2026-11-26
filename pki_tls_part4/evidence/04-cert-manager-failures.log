@@ -1,0 +1,28 @@
+================================================================
+  CERT-MANAGER FAILURE DIAGNOSTICS & LAYER CLASSIFICATION
+================================================================
+
+[FAILURE 1] Unavailable CA (CA Layer / Network)
+  Symptom:   Issuer/ClusterIssuer Ready=False, Reason=ErrRegisterACMEAccount
+  Log:       dial tcp: lookup non-existent-ca.step-ca.svc.cluster.local: no such host (or connection refused)
+  Layer:     CA / Infrastructure Layer (step-ca Pod down, wrong Service/DNS, NetworkPolicy)
+  Fix:       Verify step-ca Deployment/Service health and DNS resolution inside cluster.
+
+[FAILURE 2] Misconfigured Issuer / Wrong Trust Bundle (cert-manager Config Layer)
+  Symptom:   Issuer Ready=False, Reason=ErrRegisterACMEAccount
+  Log:       tls: failed to verify certificate: x509: certificate signed by unknown authority
+  Layer:     cert-manager Configuration Layer (missing or stale spec.acme.caBundle)
+  Fix:       Inject current Root CA PEM (Base64) into spec.acme.caBundle on Issuer/ClusterIssuer.
+
+[FAILURE 3] Failed ACME HTTP-01 Challenge (Kubernetes Ingress / DNS Layer)
+  Symptom:   Certificate Ready=False, Challenge State=pending
+  Log:       failed to perform self check GET request 'http://fail-challenge.internal.test/.well-known/acme-challenge/...': no such host
+  Layer:     Kubernetes / DNS / Ingress Layer (CoreDNS missing host, IngressClass mismatch, port 80 blocked)
+  Fix:       Fix DNS routing to ingress-nginx-controller and verify HTTP-01 solver Ingress.
+
+[FAILURE 4] Secret Update / Application Stale Cert (Kubernetes RBAC / Application Layer)
+  Symptom:   Certificate Ready=True in cert-manager, but app still serves old serial OR Secret fails to update
+  Log:       (a) K8s RBAC: secrets is forbidden: User system:serviceaccount:cert-manager:cert-manager cannot update resource
+             (b) App Layer: Secret updated in etcd, but app mounted Secret as volume and did not hot-reload
+  Layer:     Kubernetes Layer (RBAC/quota) vs Application Layer (no hot-reload on file change)
+  Fix:       Restore cert-manager RBAC for Secrets; for non-reloading apps use Stakater Reloader, SIGHUP, or rolling restart.

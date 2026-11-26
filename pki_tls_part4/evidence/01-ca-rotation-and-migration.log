@@ -1,0 +1,35 @@
+=== 1. INTERMEDIATE CA ROTATION (v1 -> v2 under same Root CA v1) ===
+[Check] Verify Intermediate v2 chain against Root CA v1:
+.local/pki/int-v2/ca.crt: OK
+[Check] Verify new payment-v2 leaf cert chain (leaf -> int-v2 -> root-v1):
+.local/pki/services/payment-v2.crt: OK
+
+=== 2. WRONG TRUST MIGRATION ORDER (CA v2 used BEFORE client trust store update) ===
+[Sim] Client pinned only to Intermediate CA v1 verifies server cert from Intermediate CA v2:
+C=PL, O=CloudAcademy, CN=payment.internal.test
+error 20 at 0 depth lookup: unable to get local issuer certificate
+error .local/pki/services/payment-v2.crt: verification failed
+[EXPECTED FAILURE] Verification failed because client trust store only trusts Intermediate v1!
+
+=== 3. CORRECT TRUST MIGRATION ORDER (Zero-Downtime) ===
+Step A: Distribute dual trust store (Root v1 + Int v1 + Int v2) to clients
+Step B: Issue v2 certs for services & clients
+Step C: Swap service certificates to v2 (live reload without downtime)
+2026/11/24 22:21:44 [notice] 75#75: signal process started
+2026/11/24 22:21:44 [notice] 75#75: signal process started
+2026/11/24 22:21:44 [notice] 75#75: signal process started
+Step D: Validate TLS & mTLS on v2 (both v1 & v2 clients accepted during migration window):
+{"service":"payment-service","status":"ok","ca_version":"v2"}
+{"service":"order-service","status":"ok","ca_version":"v2"}
+Step E: Verify chain served live by payment-service is now Intermediate CA v2:
+subject=C=PL, O=CloudAcademy, CN=payment.internal.test
+issuer=C=PL, O=CloudAcademy, CN=CloudAcademy Intermediate CA v2
+
+=== 4. ROOT CA ROTATION (Dual-Root Temporary Trust) ===
+[Check] Single Root v1 bundle FAILS to verify Root v2 cert:
+C=PL, O=CloudAcademy, CN=rootv2.internal.test
+error 20 at 0 depth lookup: unable to get local issuer certificate
+error .local/pki/services/rootv2-test.crt: verification failed
+[Check] Dual-Root bundle (Root v1 + Root v2) verifies BOTH Root v1 (via int-v2) AND Root v2 certs:
+.local/pki/services/payment-v2.crt: OK
+.local/pki/services/rootv2-test.crt: OK

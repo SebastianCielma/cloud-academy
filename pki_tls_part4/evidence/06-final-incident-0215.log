@@ -1,0 +1,36 @@
+================================================================
+  FINAL PRODUCTION INCIDENT (02:15) — SIMULATE, DIAGNOSE & FIX
+================================================================
+[02:15] Injecting incident state:
+  - Payment Service serves LEAF ONLY (incomplete chain: missing int-v2) & old mTLS trust (int-v1-only)
+  - Inventory Service remains healthy on v2 fullchain
+
+[02:17] EVIDENCE COLLECTION:
+  1) Inventory Service health check (expected OK):
+{"service":"inventory-service","status":"ok","ca_version":"v2"}
+  2) Order Service -> Payment Service mTLS call (expected FAILURE: verify failed):
+curl: (60) SSL certificate problem: unable to get local issuer certificate
+More details here: https://curl.se/docs/sslcerts.html
+
+curl failed to verify the legitimacy of the server and therefore could not
+establish a secure connection to it. To learn more about this situation and
+how to fix it, please visit the web page mentioned above.
+  3) Inspecting live TLS chain presented by Payment Service (depth=0 only -> missing Intermediate v2):
+depth=0 C=PL, O=CloudAcademy, CN=payment.internal.test
+depth=0 C=PL, O=CloudAcademy, CN=payment.internal.test
+depth=0 C=PL, O=CloudAcademy, CN=payment.internal.test
+Verify return code: 21 (unable to verify the first certificate)
+
+[02:22] ROOT CAUSE ANALYSIS:
+  1. Payment Service serves payment-v2.crt (leaf only) instead of payment-v2-fullchain.crt (missing Intermediate CA v2).
+  2. Payment Service ssl_client_certificate still points to stale int-v1-only.pem (rejects v2 mTLS clients).
+  3. Order Service & other pods had inconsistent trust stores during Intermediate CA v1 -> v2 rotation.
+
+[02:25] REMEDIATION (without disabling TLS verification):
+  - Restore payment-v2-fullchain.crt and dual-int-bundle.pem on Payment Service
+  - Reload Nginx gracefully (zero-downtime)
+
+[02:27] POST-FIX VERIFICATION:
+{"service":"payment-service","status":"ok","ca_version":"v2"}
+Verify return code: 0 (ok)
+[RESOLVED] Incident 02:15 fully mitigated with strict TLS/mTLS verification intact.

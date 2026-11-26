@@ -1,0 +1,27 @@
+=== COMPROMISED INTERMEDIATE CA v1 INCIDENT RESPONSE ===
+[Step 1] Halt issuance: disable/quarantine compromised Intermediate CA v1 key
+Quarantined .local/pki/int-v1/ca.key (permissions 000).
+
+[Step 2] Identify all certificates issued by compromised Intermediate CA v1:
+  [AFFECTED] .local/pki/services/inventory-v1.crt | subject=C=PL, O=CloudAcademy, CN=inventory.internal.test | serial=21116576EC1DCF6E60E238A661447BFCD54AFEC6 | issuer=C=PL, O=CloudAcademy, CN=CloudAcademy Intermediate CA v1
+  [AFFECTED] .local/pki/services/order-v1.crt | subject=C=PL, O=CloudAcademy, CN=order.internal.test | serial=21116576EC1DCF6E60E238A661447BFCD54AFEC5 | issuer=C=PL, O=CloudAcademy, CN=CloudAcademy Intermediate CA v1
+  [AFFECTED] .local/pki/services/payment-v1.crt | subject=C=PL, O=CloudAcademy, CN=payment.internal.test | serial=21116576EC1DCF6E60E238A661447BFCD54AFEC4 | issuer=C=PL, O=CloudAcademy, CN=CloudAcademy Intermediate CA v1
+  [AFFECTED] .local/pki/clients/order-client-v1.crt | subject=C=PL, O=CloudAcademy, CN=order-client.internal.test | serial=21116576EC1DCF6E60E238A661447BFCD54AFEC7 | issuer=C=PL, O=CloudAcademy, CN=CloudAcademy Intermediate CA v1
+
+[Step 3] Revoke Intermediate CA v1 at Root CA v1 and publish CRL:
+Published Root CA v1 CRL: .local/pki/root-v1/root-v1.crl
+Revoked Certificates:
+    Serial Number: 34718B8F0610772C669F25496DAF3672C3C042D1
+        Revocation Date: Nov 24 14:30:02 2026 GMT
+    Signature Algorithm: sha256WithRSAEncryption
+
+[Step 4] Distribute updated trust store (Root v1 + CRL, Int v1 removed) & verify enforcement:
+[Check] Compromised Intermediate CA v1 MUST BE REJECTED by Root CA CRL (certificate revoked):
+C=PL, O=CloudAcademy, CN=CloudAcademy Intermediate CA v1
+error 23 at 0 depth lookup: certificate revoked
+error .local/pki/int-v1/ca.crt: verification failed
+[OK] Compromised Intermediate CA v1 explicitly REVOKED by Root CA v1 CRL!
+[Check] Clean Intermediate CA v2 PASSES Root CA CRL check:
+.local/pki/int-v2/ca.crt: OK
+[Check] Replacement leaf cert (payment-v2) verifies cleanly against Root v1 + Int v2:
+.local/pki/services/payment-v2.crt: OK
